@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+
+jobs:
+  install_and_lint:
+    name: Install, Lint, and Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Bootstrap Lerna packages
+        run: yarn lerna bootstrap
+
+      - name: Run Lint
+        run: yarn lint
+
+      - name: Run Prettier Check
+        run: yarn prettier --check .
+
+  build:
+    name: Build All Packages
+    runs-on: ubuntu-latest
+    needs: install_and_lint
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Bootstrap Lerna packages
+        run: yarn lerna bootstrap
+
+      - name: Build all packages
+        run: yarn build
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Bootstrap Lerna packages
+        run: yarn lerna bootstrap
+
+      - name: Run tests
+        run: yarn test
