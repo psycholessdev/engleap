@@ -1,9 +1,9 @@
-import dotenv from "dotenv"
-import cors from "cors"
-import path from "path"
-import express from "express"
+import dotenv from 'dotenv'
+import cors from 'cors'
+import path from 'path'
+import express from 'express'
 // import your routes here
-import { connectDB } from "./db"
+import { connectDB } from './db'
 // import your controllers here
 
 // Docker will automatically pass the config in production

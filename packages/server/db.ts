@@ -1,9 +1,9 @@
-import { Sequelize } from "sequelize-typescript"
+import { Sequelize } from 'sequelize-typescript'
 // import your models here
 
-import dotenv from "dotenv"
-import path from "path"
-import * as console from "node:console";
+import dotenv from 'dotenv'
+import path from 'path'
+import * as console from 'node:console'
 
 // Docker will automatically pass the config in production
 const envConfig =
@@ -17,19 +17,19 @@ const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } = process
 const POSTGRES_HOST = process.env.NODE_ENV === 'development' ? 'localhost' : 'postgres'
 
 export const sequelize = new Sequelize({
-  dialect: "postgres",
+  dialect: 'postgres',
   host: POSTGRES_HOST,
   port: Number(POSTGRES_PORT || 5432),
   database: POSTGRES_DB,
   username: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
-  models: [] // include your models here
+  models: [], // include your models here
 })
 
 export const connectDB = async () => {
   try {
     await sequelize.authenticate()
-    console.log("Connected to PostgreSQL")
+    console.log('Connected to PostgreSQL')
     await sequelize.sync({ alter: true }) // use { force: true } to drop and recreate tables
   } catch (error) {
     console.error('Unable to connect to the database:', error)
