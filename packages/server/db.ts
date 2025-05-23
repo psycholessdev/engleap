@@ -6,6 +6,7 @@ import {
   Deck,
   Definition,
   User,
+  UserCardProgress,
   UserDeck,
   Word,
 } from './src/models'
@@ -32,7 +33,17 @@ export const sequelize = new Sequelize({
   database: POSTGRES_DB,
   username: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
-  models: [Card, CardDefinition, CardTargetWord, Deck, Definition, User, UserDeck, Word],
+  models: [
+    Card,
+    CardDefinition,
+    CardTargetWord,
+    Deck,
+    Definition,
+    User,
+    UserCardProgress,
+    UserDeck,
+    Word,
+  ],
 })
 
 export const connectDB = async () => {
