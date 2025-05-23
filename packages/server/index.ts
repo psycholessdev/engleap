@@ -4,6 +4,7 @@ import path from 'path'
 import express from 'express'
 // import your routes here
 import { connectDB } from './db'
+import { checkAuth } from './src/middlewares/checkAuth'
 // import your controllers here
 
 // Docker will automatically pass the config in production
@@ -28,6 +29,7 @@ app.use(
 )
 app.use(express.json())
 
+app.use(checkAuth)
 // routes here
 // app.use('/api/topics', topicRoutes)
 
