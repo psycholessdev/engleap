@@ -19,8 +19,8 @@ export class Word extends Model {
   @Column({ type: DataType.UUID })
   override id!: string
 
-  @Column
   @Unique
+  @Column
   text!: string
 
   @HasMany(() => Definition, 'wordId')

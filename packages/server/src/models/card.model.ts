@@ -8,7 +8,6 @@ import {
   HasMany,
   PrimaryKey,
   Default,
-  NotNull,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { NonAttribute } from 'sequelize'
@@ -26,9 +25,8 @@ export class Card extends Model {
   @BelongsTo(() => Deck, 'deckId')
   deck!: NonAttribute<Deck>
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => Deck)
+  @Column({ type: DataType.UUID, allowNull: false })
   deckId!: string
 
   @Column({ type: DataType.TEXT })
@@ -37,9 +35,8 @@ export class Card extends Model {
   @BelongsTo(() => User, 'createdByUserId')
   creator!: NonAttribute<User>
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => User)
+  @Column({ type: DataType.UUID, allowNull: false })
   createdByUserId!: string
 
   @HasMany(() => CardTargetWord, 'cardId')

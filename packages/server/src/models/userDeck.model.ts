@@ -6,7 +6,6 @@ import {
   ForeignKey,
   PrimaryKey,
   Default,
-  NotNull,
   CreatedAt,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
@@ -20,17 +19,15 @@ export class UserDeck extends Model {
   @Column({ type: DataType.UUID })
   override id!: string
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => User)
+  @Column({ type: DataType.UUID, allowNull: false })
   userId!: string
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => Deck)
+  @Column({ type: DataType.UUID, allowNull: false })
   deckId!: string
 
-  @Column
   @CreatedAt
+  @Column
   subscribedAt!: Date
 }

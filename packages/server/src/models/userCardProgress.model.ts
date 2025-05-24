@@ -7,8 +7,6 @@ import {
   BelongsTo,
   PrimaryKey,
   Default,
-  NotNull,
-  AllowNull,
   Unique,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
@@ -26,38 +24,34 @@ export class UserCardProgress extends Model {
   @BelongsTo(() => User, 'userId')
   user!: NonAttribute<User>
 
-  @Column({ type: DataType.UUID })
-  @Unique('user_card_unique')
-  @NotNull
   @ForeignKey(() => User)
+  @Unique('user_card_unique')
+  @Column({ type: DataType.UUID, allowNull: false })
   userId!: string
 
   @BelongsTo(() => Card, 'cardId')
   card!: NonAttribute<Card>
 
-  @Column({ type: DataType.UUID })
-  @Unique('user_card_unique')
-  @NotNull
   @ForeignKey(() => Card)
+  @Unique('user_card_unique')
+  @Column({ type: DataType.UUID, allowNull: false })
   cardId!: string
 
-  @Column({ type: DataType.INTEGER })
   @Default(0)
+  @Column({ type: DataType.INTEGER })
   repetitionCount!: number
 
-  @Column({ type: DataType.FLOAT })
   @Default(2.5)
+  @Column({ type: DataType.FLOAT })
   easinessFactor!: number
 
-  @Column({ type: DataType.INTEGER })
   @Default(0)
+  @Column({ type: DataType.INTEGER })
   intervalDays!: number
 
-  @Column({ type: DataType.DATE })
-  @AllowNull
+  @Column({ type: DataType.DATE, allowNull: true })
   nextReviewAt!: Date
 
-  @Column({ type: DataType.DATE })
-  @AllowNull
+  @Column({ type: DataType.DATE, allowNull: true })
   lastReviewedAt!: Date
 }

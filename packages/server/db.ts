@@ -18,7 +18,7 @@ import * as console from 'node:console'
 // Docker will automatically pass the config in production
 const envConfig =
   process.env.NODE_ENV === 'development'
-    ? { path: path.resolve(__dirname, '../../../.env') }
+    ? { path: path.resolve(__dirname, '../../.env') }
     : undefined
 
 dotenv.config(envConfig)

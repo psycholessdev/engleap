@@ -1,23 +1,32 @@
 import { Request, Response, NextFunction } from 'express'
+import { getUserByAuth } from '../services'
 import { User } from '../models'
 import getErrorObject from '../utils/getErrorObject'
 declare module 'express' {
   interface Request {
-    authenticated?: boolean
+    authedUser?: User
   }
 }
 
 export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
-  const authHash = (req.cookies.authHash ?? '').toString().trim()
-  if (!authHash) {
-    res.status(403).json(getErrorObject('Unauthorized'))
+  // authHash cookie => ${user_id}_${passwordHash}
+  const authHash = (req.cookies?.authHash ?? '').toString().trim()
+  const parsedCookie = authHash.split('_')
+  if (authHash && parsedCookie.length == 2) {
+    try {
+      const user = await getUserByAuth(parsedCookie[0], parsedCookie[1])
+      if (user) {
+        req.authedUser = user
+      }
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json(getErrorObject('Error while fetching the user'))
+    }
   }
 
-  const user = await User.findOne({ where: { id: authHash } })
-  if (!user) {
-    res.status(403).json(getErrorObject('Unauthorized'))
+  if (req.path.startsWith('/auth') || req.authedUser) {
+    return next()
+  } else {
+    return res.status(403).json(getErrorObject('Unauthorized'))
   }
-  req.authenticated = true
-
-  next()
 }

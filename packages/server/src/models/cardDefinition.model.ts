@@ -7,7 +7,6 @@ import {
   BelongsTo,
   PrimaryKey,
   Default,
-  NotNull,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { CardTargetWord } from './cardTargetWord.model'
@@ -28,16 +27,14 @@ export class CardDefinition extends Model {
   @BelongsTo(() => CardTargetWord, 'cardTargetWordId')
   cardTargetWord!: NonAttribute<CardTargetWord>
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => CardTargetWord)
+  @Column({ type: DataType.UUID, allowNull: false })
   cardTargetWordId!: string
 
   @BelongsTo(() => Definition, 'definitionId')
   definition!: NonAttribute<Definition>
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => Definition)
+  @Column({ type: DataType.UUID, allowNull: false })
   definitionId!: string
 }

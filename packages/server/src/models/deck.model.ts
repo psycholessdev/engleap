@@ -7,7 +7,6 @@ import {
   BelongsTo,
   PrimaryKey,
   Default,
-  NotNull,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { NonAttribute } from 'sequelize'
@@ -30,13 +29,11 @@ export class Deck extends Model {
   @BelongsTo(() => User, 'creatorId')
   creator!: NonAttribute<User>
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => User)
+  @Column({ type: DataType.UUID, allowNull: false })
   creatorId!: string
 
-  @Column({ type: DataType.BOOLEAN })
-  @NotNull
   @Default(true)
+  @Column({ type: DataType.BOOLEAN, allowNull: false })
   isPublic!: boolean
 }

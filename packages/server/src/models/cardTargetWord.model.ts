@@ -7,7 +7,6 @@ import {
   HasMany,
   PrimaryKey,
   Default,
-  NotNull,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { Card } from './card.model'
@@ -25,14 +24,12 @@ export class CardTargetWord extends Model {
   @Column({ type: DataType.UUID })
   override id!: string
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => Card)
+  @Column({ type: DataType.UUID, allowNull: false })
   cardId!: string
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => Word)
+  @Column({ type: DataType.UUID, allowNull: false })
   wordId!: string
 
   @HasMany(() => CardDefinition, 'cardTargetWordId')

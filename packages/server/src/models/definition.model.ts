@@ -7,8 +7,6 @@ import {
   BelongsTo,
   PrimaryKey,
   Default,
-  NotNull,
-  AllowNull,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { NonAttribute } from 'sequelize'
@@ -25,24 +23,20 @@ export class Definition extends Model {
   @BelongsTo(() => Word, 'wordId')
   word!: NonAttribute<Word>
 
-  @Column({ type: DataType.UUID })
-  @NotNull
   @ForeignKey(() => Word)
+  @Column({ type: DataType.UUID, allowNull: false })
   wordId!: string
 
-  @Column
-  @NotNull
+  @Column({ allowNull: false })
   text!: string
 
   @Column({ type: DataType.ENUM('dictionary', 'user') })
   source!: string
 
-  @Column
-  @AllowNull
+  @Column({ allowNull: true })
   sourceName?: string
 
-  @Column({ type: DataType.ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2') })
-  @AllowNull
+  @Column({ type: DataType.ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'), allowNull: false })
   difficulty?: string
 
   // only show user defs once you’ve vetted them
@@ -53,8 +47,7 @@ export class Definition extends Model {
   @BelongsTo(() => User, 'createdByUserId')
   user?: NonAttribute<User>
 
-  @Column({ type: DataType.UUID })
-  @AllowNull
   @ForeignKey(() => User)
+  @Column({ type: DataType.UUID, allowNull: true })
   createdByUserId?: string
 }
