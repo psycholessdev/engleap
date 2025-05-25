@@ -1,3 +1,3 @@
-export default function getErrorObject(message: string) {
-  return { reason: message }
+export function getErrorObject(message: string, options?: Record<string, string>) {
+  return { reason: message, ...options }
 }

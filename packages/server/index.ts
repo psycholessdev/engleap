@@ -2,9 +2,10 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
 import express from 'express'
-import { authRoutes } from './src/routes'
+import { authRoutes, deckRoutes } from './src/routes'
 import { connectDB } from './db'
 import { checkAuth } from './src/middlewares'
+import cookieParser from 'cookie-parser'
 // import your controllers here
 
 // Docker will automatically pass the config in production
@@ -27,11 +28,14 @@ app.use(
     credentials: true,
   })
 )
+
 app.use(express.json())
+app.use(cookieParser())
 
 app.use(checkAuth)
-// routes here
+
 app.use('/auth', authRoutes)
+app.use('/decks', deckRoutes)
 
 async function startServer() {
   try {

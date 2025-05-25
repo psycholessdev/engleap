@@ -1,6 +1,6 @@
 import { NOT_FOUND_MESSAGES } from '../constants'
 import type { Response } from 'express'
-import getErrorObject from './getErrorObject'
+import { getErrorObject } from './getErrorObject'
 import { UniqueConstraintError } from 'sequelize'
 
 export function handleError(

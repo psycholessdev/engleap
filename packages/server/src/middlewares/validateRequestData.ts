@@ -1,6 +1,6 @@
 import type { ZodSchema } from 'zod'
 import type { Request, Response, NextFunction } from 'express'
-import getErrorObject from '../utils/getErrorObject'
+import { getErrorObject } from '../utils'
 
 type Source = 'body' | 'query' | 'params'
 
@@ -15,7 +15,7 @@ export const validateRequestData = <T extends ZodSchema>(schema: T, source: Sour
       return res.status(400).json(getErrorObject(errorMessage))
     }
 
-    req[source] = result.data
+    Object.assign(req[source], result.data)
     return next()
   }
 }
