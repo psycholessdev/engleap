@@ -10,8 +10,5 @@ export const createDeck = async (
 }
 
 export const getDeckById = async (id: string, attributes = ['id']) => {
-  return await Deck.findOne({
-    where: { id },
-    attributes,
-  })
+  return await Deck.findByPk(id, { attributes })
 }

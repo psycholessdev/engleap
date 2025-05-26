@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { createDeckRequest } from '../types/deck.types'
+import { createDeckRequest } from '../types'
 import { createDeck } from '../services'
 import { getErrorObject, handleError } from '../utils'
 

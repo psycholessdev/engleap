@@ -1,7 +1,16 @@
 import express from 'express'
 import { validateRequestData } from '../middlewares'
-import { createDeckSchema, getAllCardsByDeckIdSchema, deckIdParamUtilizedSchema } from '../schemas'
-import { createDeckController, getAllCardsByDeckIdController } from '../controllers'
+import {
+  createDeckSchema,
+  getAllCardsByDeckIdSchema,
+  deckIdParamUtilizedSchema,
+  addCardToDeckSchema,
+} from '../schemas'
+import {
+  createDeckController,
+  getAllCardsByDeckIdController,
+  addCardToDeckController,
+} from '../controllers'
 
 const router = express.Router()
 
@@ -16,6 +25,11 @@ router.get(
 )
 
 // create card
-// router.post('/:deckId/cards')
+router.post(
+  '/:deckId/cards',
+  validateRequestData(deckIdParamUtilizedSchema, 'params'),
+  validateRequestData(addCardToDeckSchema),
+  addCardToDeckController
+)
 
 export default router

@@ -8,6 +8,7 @@ export function handleError(
   res: Response,
   message = 'An unexpected error occurred'
 ) {
+  console.error(error)
   if (error instanceof Error) {
     if (error.name == 'SequelizeUniqueConstraintError' && error instanceof UniqueConstraintError) {
       // when trying to insert a unique value into db that already exists

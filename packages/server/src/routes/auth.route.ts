@@ -9,9 +9,9 @@ import {
 
 const router = express.Router()
 
-router.post('/signup', validateRequestData(credentialsAuthSchema), credentialsAuthController)
+router.post('/signin', validateRequestData(credentialsAuthSchema), credentialsAuthController)
 
-router.post('/signin', validateRequestData(createAccountSchema), createAccountController)
+router.post('/signup', validateRequestData(createAccountSchema), createAccountController)
 
 router.post('/logout', logoutController)
 

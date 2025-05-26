@@ -30,6 +30,20 @@ export class Definition extends Model {
   @Column({ allowNull: false })
   text!: string
 
+  @Column({ allowNull: false })
+  partOfSpeech!: string
+
+  @Column({ allowNull: false, type: DataType.ARRAY(DataType.STRING), defaultValue: [] })
+  labels!: string[]
+
+  // divided into syllables
+  // examples: "in-side", "de-sign"
+  @Column({ allowNull: false })
+  syllabifiedWord!: string
+
+  @Column({ type: DataType.BOOLEAN })
+  offensive!: boolean
+
   @Column({ type: DataType.ENUM('dictionary', 'user') })
   source!: string
 
