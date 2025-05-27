@@ -1,9 +1,9 @@
 import { Response } from 'express'
-import { createDeckRequest } from '../types'
+import { CreateDeckRequest } from '../types'
 import { createDeck } from '../services'
 import { getErrorObject, handleError } from '../utils'
 
-export const createDeckController = async (req: createDeckRequest, res: Response) => {
+export const createDeckController = async (req: CreateDeckRequest, res: Response) => {
   try {
     const { title, description, isPublic } = req.body
     const userId = req.authedUser?.id

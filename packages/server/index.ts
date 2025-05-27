@@ -4,7 +4,7 @@ import path from 'path'
 import express from 'express'
 import { authRoutes, deckRoutes } from './src/routes'
 import { connectDB } from './db'
-import { checkAuth } from './src/middlewares'
+import { checkAuth, finalMiddleware } from './src/middlewares'
 import cookieParser from 'cookie-parser'
 // import your controllers here
 
@@ -36,6 +36,8 @@ app.use(checkAuth)
 
 app.use('/auth', authRoutes)
 app.use('/decks', deckRoutes)
+
+app.use(finalMiddleware)
 
 async function startServer() {
   try {

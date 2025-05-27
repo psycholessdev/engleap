@@ -11,10 +11,14 @@ import {
 // result.hwi.prs object[] sound.audio audio
 // result.meta.offensive boolean
 // result.meta.stems string[] synonyms (like with -s or with nearly the same meaning)
-export function extractDefinitions(entries: MerriamWebsterResponse): DictionaryServiceResult {
+export function extractDefinitions(
+  word: string,
+  entries: MerriamWebsterResponse
+): DictionaryServiceResult {
   // not found
   if (!isMerriamWebsterEntry(entries)) {
     return {
+      id: word,
       found: false,
       extractedDefinitions: [],
       similarWords: entries,
@@ -70,6 +74,7 @@ export function extractDefinitions(entries: MerriamWebsterResponse): DictionaryS
   }
 
   return {
+    id: definitions[0]?.id || '',
     found: true,
     extractedDefinitions: definitions,
     similarWords: [],

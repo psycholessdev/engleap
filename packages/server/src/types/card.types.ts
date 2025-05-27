@@ -1,11 +1,18 @@
 import type { Request } from 'express'
 import type { AnyObject } from './utils.types'
 import { z } from 'zod'
-import { addCardToDeckSchema } from '../schemas'
-import { deckIdParamUtilizedData, cardIdParamUtilizedData } from '../utils'
+import { addCardToDeckSchema, editCardToDeckSchema } from '../schemas'
+import { DeckIdParamUtilizedData, cardIdParamUtilizedData } from '../utils'
 
-export type addCardToDeckData = z.infer<typeof addCardToDeckSchema>
-export type addCardToDeckRequest = Request<deckIdParamUtilizedData, AnyObject, addCardToDeckData>
+export type AddCardToDeckData = z.infer<typeof addCardToDeckSchema>
+export type AddCardToDeckRequest = Request<DeckIdParamUtilizedData, AnyObject, AddCardToDeckData>
 
-type cardIdDeckIdParamUtilizedData = cardIdParamUtilizedData & deckIdParamUtilizedData
-export type getCardByIdRequest = Request<cardIdDeckIdParamUtilizedData>
+type CardIdDeckIdParamUtilizedData = cardIdParamUtilizedData & DeckIdParamUtilizedData
+export type GetCardByIdRequest = Request<CardIdDeckIdParamUtilizedData>
+
+export type EditCardToDeckData = z.infer<typeof editCardToDeckSchema>
+export type EditCardToDeckRequest = Request<
+  CardIdDeckIdParamUtilizedData,
+  AnyObject,
+  EditCardToDeckData
+>

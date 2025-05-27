@@ -2,7 +2,7 @@ import { Transaction, Op } from 'sequelize'
 
 const { MERRIAM_WEBSTER_INTERMEDIATE_DICTIONARY_API_KEY } = process.env
 import { MerriamWebsterResponse } from '../types'
-import { extractDefinitions } from '../services/utils'
+import { extractDefinitions } from './utils'
 import { Definition, Word } from '../models'
 
 export const getMerriamWebsterIntermediateMeaning = async (word: string) => {
@@ -18,7 +18,7 @@ export const getMerriamWebsterIntermediateMeaning = async (word: string) => {
   }
   const result = (await response.json()) as MerriamWebsterResponse
 
-  return extractDefinitions(result)
+  return extractDefinitions(word, result)
 }
 
 // fetches and creates words and their definitions if they do not exist yet
@@ -49,6 +49,7 @@ export const createMeanings = async (
   const fetchedDefinitions = dictionaryServiceResults
     .filter(result => result.found)
     .map(result => result.extractedDefinitions)
+  const notFoundWords = dictionaryServiceResults.filter(result => !result.found)
 
   // TODO create inflected forms (stems) as well
 
@@ -93,5 +94,10 @@ export const createMeanings = async (
   }
   await Definition.bulkCreate([...definitionEntities], { transaction })
 
-  return { insertedWords, existingWords, allWords: [...insertedWords, ...existingWords] }
+  return {
+    insertedWords,
+    existingWords,
+    allWords: [...insertedWords, ...existingWords],
+    notFoundWords,
+  }
 }

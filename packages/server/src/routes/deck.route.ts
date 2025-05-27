@@ -6,12 +6,14 @@ import {
   deckIdParamUtilizedSchema,
   addCardToDeckSchema,
   cardIdDeckIdScheme,
+  editCardToDeckSchema,
 } from '../schemas'
 import {
   createDeckController,
   getAllCardsByDeckIdController,
   addCardToDeckController,
   getCardByIdController,
+  editCardController,
 } from '../controllers'
 
 const router = express.Router()
@@ -39,6 +41,14 @@ router.get(
   '/:deckId/cards/:cardId',
   validateRequestData(cardIdDeckIdScheme, 'params'),
   getCardByIdController
+)
+
+// edit card
+router.put(
+  '/:deckId/cards/:cardId',
+  validateRequestData(cardIdDeckIdScheme, 'params'),
+  validateRequestData(editCardToDeckSchema),
+  editCardController
 )
 
 export default router

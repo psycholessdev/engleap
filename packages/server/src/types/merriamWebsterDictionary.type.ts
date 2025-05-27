@@ -1,4 +1,5 @@
 export interface DictionaryServiceResult {
+  id: string
   found: boolean
   extractedDefinitions: ExtractedDefinition[]
   similarWords: string[]

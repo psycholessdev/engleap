@@ -1,10 +1,21 @@
-import { getAllCardsByDeckIdRequest, addCardToDeckRequest, getCardByIdRequest } from '../types'
+import {
+  GetAllCardsByDeckIdRequest,
+  AddCardToDeckRequest,
+  GetCardByIdRequest,
+  EditCardToDeckRequest,
+} from '../types'
 import { Response } from 'express'
 import { getErrorObject, handleError } from '../utils'
-import { addCard, getCardsByDeckId, getDeckById, getCardById } from '../services'
+import {
+  addCard,
+  getCardsByDeckId,
+  getDeckById,
+  getCardByIdWithDeckAndDefinitions,
+  getCardById,
+} from '../services'
 
 export const getAllCardsByDeckIdController = async (
-  req: getAllCardsByDeckIdRequest,
+  req: GetAllCardsByDeckIdRequest,
   res: Response
 ) => {
   try {
@@ -32,7 +43,7 @@ export const getAllCardsByDeckIdController = async (
   }
 }
 
-export const getCardByIdController = async (req: getCardByIdRequest, res: Response) => {
+export const getCardByIdController = async (req: GetCardByIdRequest, res: Response) => {
   const { deckId, cardId } = req.params
   const userId = req.authedUser?.id
 
@@ -40,7 +51,7 @@ export const getCardByIdController = async (req: getCardByIdRequest, res: Respon
     return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
   }
 
-  const card = await getCardById(cardId)
+  const card = await getCardByIdWithDeckAndDefinitions(cardId)
   if (!card || card.deck?.id != deckId) {
     return res.status(404).json(getErrorObject('Card not found'))
   }
@@ -50,7 +61,7 @@ export const getCardByIdController = async (req: getCardByIdRequest, res: Respon
   return res.status(200).json(card)
 }
 
-export const addCardToDeckController = async (req: addCardToDeckRequest, res: Response) => {
+export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Response) => {
   try {
     const { sentence, targetWords } = req.body
     const { deckId } = req.params
@@ -60,7 +71,7 @@ export const addCardToDeckController = async (req: addCardToDeckRequest, res: Re
       return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
     }
 
-    // check the right to do the action
+    // checks if the user is allowed to do the action
     const deck = await getDeckById(deckId, ['creatorId'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
@@ -70,10 +81,33 @@ export const addCardToDeckController = async (req: addCardToDeckRequest, res: Re
     }
 
     // creates a cards and related words, fetches and creates definitions and connections between them
-    const createdCard = await addCard(deckId, sentence, userId, targetWords)
+    const { createdCard, notFoundWords } = await addCard(deckId, sentence, userId, targetWords)
 
-    return res.status(201).json(createdCard)
+    return res.status(201).json({
+      card: createdCard,
+      notFoundWords,
+    })
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to add card')
   }
+}
+
+export const editCardController = async (req: EditCardToDeckRequest, res: Response) => {
+  const { cardId, deckId } = req.params
+  // const { sentence, targetWords, definitions } = req.body
+  const userId = req.authedUser?.id
+
+  if (!userId) {
+    return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
+  }
+
+  // checks if the user is allowed to do the action
+  const card = await getCardById(cardId, ['createdByUserId'])
+  if (!card || card.deckId != deckId) {
+    return res.status(404).json(getErrorObject('Card not found'))
+  }
+  if (card.createdByUserId !== userId) {
+    return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
+  }
+  throw new Error('Not implemented')
 }
