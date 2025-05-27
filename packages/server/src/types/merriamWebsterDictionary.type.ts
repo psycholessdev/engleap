@@ -1,3 +1,9 @@
+export interface DictionaryServiceResult {
+  found: boolean
+  extractedDefinitions: ExtractedDefinition[]
+  similarWords: string[]
+}
+
 export type ExtractedDefinition = {
   id: string
   text: string
@@ -6,11 +12,10 @@ export type ExtractedDefinition = {
   pronunciationAudioUrl?: string
   offensive: boolean
   labels: string[]
-  synonyms: string[]
   stems: string[]
 }
 
-export type MerriamWebsterResponse = Array<MerriamWebsterEntry>
+export type MerriamWebsterResponse = Array<MerriamWebsterEntry> | string[]
 
 export interface MerriamWebsterEntry {
   meta: {

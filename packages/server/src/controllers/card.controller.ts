@@ -1,7 +1,7 @@
-import { getAllCardsByDeckIdRequest, addCardToDeckRequest } from '../types'
+import { getAllCardsByDeckIdRequest, addCardToDeckRequest, getCardByIdRequest } from '../types'
 import { Response } from 'express'
 import { getErrorObject, handleError } from '../utils'
-import { addCard, getCardsByDeckId, getDeckById } from '../services'
+import { addCard, getCardsByDeckId, getDeckById, getCardById } from '../services'
 
 export const getAllCardsByDeckIdController = async (
   req: getAllCardsByDeckIdRequest,
@@ -30,6 +30,24 @@ export const getAllCardsByDeckIdController = async (
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to get cards')
   }
+}
+
+export const getCardByIdController = async (req: getCardByIdRequest, res: Response) => {
+  const { deckId, cardId } = req.params
+  const userId = req.authedUser?.id
+
+  if (!userId) {
+    return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
+  }
+
+  const card = await getCardById(cardId)
+  if (!card || card.deck?.id != deckId) {
+    return res.status(404).json(getErrorObject('Card not found'))
+  }
+  if (card.deck.creatorId !== userId && !card.deck.isPublic) {
+    return res.status(403).json(getErrorObject('You do not have the right to see this card'))
+  }
+  return res.status(200).json(card)
 }
 
 export const addCardToDeckController = async (req: addCardToDeckRequest, res: Response) => {

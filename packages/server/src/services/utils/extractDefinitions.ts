@@ -1,4 +1,9 @@
-import { MerriamWebsterResponse, ExtractedDefinition } from '../../types'
+import {
+  MerriamWebsterResponse,
+  ExtractedDefinition,
+  MerriamWebsterEntry,
+  DictionaryServiceResult,
+} from '../../types'
 
 // result.shortdef string[] meaning (like drag*on)
 // result.fl string Part of speech (like noun or verb)
@@ -6,7 +11,16 @@ import { MerriamWebsterResponse, ExtractedDefinition } from '../../types'
 // result.hwi.prs object[] sound.audio audio
 // result.meta.offensive boolean
 // result.meta.stems string[] synonyms (like with -s or with nearly the same meaning)
-export function extractDefinitions(entries: MerriamWebsterResponse): ExtractedDefinition[] {
+export function extractDefinitions(entries: MerriamWebsterResponse): DictionaryServiceResult {
+  // not found
+  if (!isMerriamWebsterEntry(entries)) {
+    return {
+      found: false,
+      extractedDefinitions: [],
+      similarWords: entries,
+    }
+  }
+
   const definitions: ExtractedDefinition[] = []
 
   for (const entry of entries) {
@@ -26,24 +40,12 @@ export function extractDefinitions(entries: MerriamWebsterResponse): ExtractedDe
         if (type !== 'sense') continue
 
         const labels: string[] = []
-        const synonyms: string[] = []
         let text = ''
 
         for (const [dtType, dtVal] of sense.dt) {
           if (dtType === 'text' && typeof dtVal === 'string') {
             // Clean definition text
             text = dtVal.replace(/\{.*?}/g, '').trim()
-
-            // Extract synonyms inside {sx|word||}
-            const sxMatches = dtVal.match(/\{sx\|([^|}]+)\|/g)
-            if (sxMatches) {
-              for (const match of sxMatches) {
-                const synonym = match.match(/\{sx\|([^|}]+)\|/)?.[1]
-                if (synonym && !synonyms.includes(synonym)) {
-                  synonyms.push(synonym)
-                }
-              }
-            }
           }
         }
 
@@ -60,7 +62,6 @@ export function extractDefinitions(entries: MerriamWebsterResponse): ExtractedDe
             pronunciationAudioUrl: audioUrl,
             offensive,
             labels,
-            synonyms,
             stems,
           })
         }
@@ -68,5 +69,15 @@ export function extractDefinitions(entries: MerriamWebsterResponse): ExtractedDe
     }
   }
 
-  return definitions
+  return {
+    found: true,
+    extractedDefinitions: definitions,
+    similarWords: [],
+  }
+}
+
+function isMerriamWebsterEntry(
+  entries: MerriamWebsterResponse
+): entries is Array<MerriamWebsterEntry> {
+  return entries.length != 0 && typeof entries[0] !== 'string'
 }

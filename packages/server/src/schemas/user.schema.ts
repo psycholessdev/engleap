@@ -28,6 +28,6 @@ export const createAccountSchema = z.strictObject({
     .min(5, { message: 'Password must be at least 5 characters' }),
 
   proficiencyLevel: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], {
-    message: 'proficiencyLevel is required',
+    message: 'You should provide a valid proficiencyLevel',
   }),
 })

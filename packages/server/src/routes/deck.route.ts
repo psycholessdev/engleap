@@ -5,11 +5,13 @@ import {
   getAllCardsByDeckIdSchema,
   deckIdParamUtilizedSchema,
   addCardToDeckSchema,
+  cardIdDeckIdScheme,
 } from '../schemas'
 import {
   createDeckController,
   getAllCardsByDeckIdController,
   addCardToDeckController,
+  getCardByIdController,
 } from '../controllers'
 
 const router = express.Router()
@@ -30,6 +32,13 @@ router.post(
   validateRequestData(deckIdParamUtilizedSchema, 'params'),
   validateRequestData(addCardToDeckSchema),
   addCardToDeckController
+)
+
+// get card
+router.get(
+  '/:deckId/cards/:cardId',
+  validateRequestData(cardIdDeckIdScheme, 'params'),
+  getCardByIdController
 )
 
 export default router

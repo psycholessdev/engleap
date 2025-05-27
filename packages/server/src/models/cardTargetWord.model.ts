@@ -7,6 +7,7 @@ import {
   HasMany,
   PrimaryKey,
   Default,
+  BelongsTo,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { Card } from './card.model'
@@ -34,4 +35,10 @@ export class CardTargetWord extends Model {
 
   @HasMany(() => CardDefinition, 'cardTargetWordId')
   definitions!: NonAttribute<CardDefinition[]>
+
+  @BelongsTo(() => Word, 'wordId')
+  word!: NonAttribute<Word>
+
+  @BelongsTo(() => Card, 'cardId')
+  card!: NonAttribute<Card>
 }

@@ -8,12 +8,14 @@ import {
   HasMany,
   PrimaryKey,
   Default,
+  BelongsToMany,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { NonAttribute } from 'sequelize'
 import { Deck } from './deck.model'
 import { User } from './user.model'
 import { CardTargetWord } from './cardTargetWord.model'
+import { Definition } from './definition.model'
 
 @Table
 export class Card extends Model {
@@ -41,4 +43,16 @@ export class Card extends Model {
 
   @HasMany(() => CardTargetWord, 'cardId')
   targetWords!: NonAttribute<CardTargetWord[]>
+
+  @BelongsToMany(() => Definition, {
+    through: {
+      model: () => CardTargetWord,
+      unique: false,
+    },
+    sourceKey: 'id',
+    foreignKey: 'cardId',
+    otherKey: 'wordId',
+    constraints: false,
+  })
+  definitions!: NonAttribute<Definition[]>
 }
