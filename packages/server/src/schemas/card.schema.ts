@@ -6,6 +6,7 @@ export const extractedDefinitionSchema = z.strictObject({
   id: z
     .string()
     .trim()
+    .toLowerCase()
     .min(1)
     .max(200)
     .transform(val => xss(val)),
@@ -13,6 +14,7 @@ export const extractedDefinitionSchema = z.strictObject({
   word: z
     .string()
     .trim()
+    .toLowerCase()
     .min(1)
     .max(200)
     .transform(val => xss(val)),
@@ -27,6 +29,7 @@ export const extractedDefinitionSchema = z.strictObject({
   partOfSpeech: z
     .string()
     .trim()
+    .toLowerCase()
     .min(1)
     .max(30)
     .transform(val => xss(val)),
@@ -53,6 +56,7 @@ export const extractedDefinitionSchema = z.strictObject({
       z
         .string()
         .trim()
+        .toLowerCase()
         .min(1)
         .max(30)
         .transform(val => xss(val))
@@ -70,6 +74,11 @@ export const extractedDefinitionSchema = z.strictObject({
     )
     .default([]),
 })
+
+const userProvidedDefinitions = z
+  .array(z.array(extractedDefinitionSchema).min(1).max(10))
+  .min(1)
+  .max(15)
 
 export const addCardToDeckSchema = z
   .strictObject({
@@ -106,6 +115,8 @@ export const addCardToDeckSchema = z
         },
         { message: 'all items in targetWords array should be unique' }
       ),
+
+    definitions: userProvidedDefinitions.optional(),
   })
   .refine(
     ({ sentence, targetWords }) => {
@@ -160,7 +171,7 @@ export const editCardToDeckSchema = z
       )
       .optional(),
 
-    definitions: z.array(z.array(extractedDefinitionSchema).min(1)).optional(),
+    definitions: userProvidedDefinitions.optional(),
   })
   .refine(
     ({ sentence, targetWords, definitions }) => {
@@ -188,7 +199,7 @@ export const editCardToDeckSchema = z
           // targetWords should be provided
           return false
         }
-        const wordsLowercase = definitions.map(def => def[0].id)
+        const wordsLowercase = definitions.map(def => def[0].word.toLowerCase())
         for (const word of wordsLowercase) {
           if (!targetWords.includes(word)) {
             // unrecognized definition

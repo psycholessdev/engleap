@@ -1,7 +1,8 @@
-import { Card, Definition, Word, CardTargetWord, Deck } from '../models'
+import { Card, Definition, Word, CardTargetWord, Deck, CardDefinition } from '../models'
 import { sequelize } from '../../db'
 import { createAutoMeanings, saveWordsAndDefinitions } from '../services'
 import { ExtractedDefinition } from '../types'
+import { Transaction } from 'sequelize'
 
 export const getCardsByDeckId = async (deckId: string, offset = 0, limit = 10) => {
   // offset tells the database to skip the first N records
@@ -55,22 +56,18 @@ export const addCard = async (
   deckId: string,
   sentence: string,
   createdByUserId: string,
-  targetWords: string[]
+  targetWords: string[],
+  definitions?: ExtractedDefinition[][]
 ) => {
   return await sequelize.transaction(async transaction => {
     const createdCard = await Card.create({ deckId, sentence, createdByUserId }, { transaction })
 
-    // fetches and creates words and their definitions if they do not exist yet
-    const { allWords, notFoundWords } = await createAutoMeanings(
+    const { notFoundWords } = await createCardDefinitions(
+      createdCard.id,
       createdByUserId,
       targetWords,
+      definitions || [],
       transaction
-    )
-
-    // connects all created and existing words (target words) with the card
-    await CardTargetWord.bulkCreate(
-      [...allWords.map(targetWord => ({ cardId: createdCard.id, wordId: targetWord.id }))],
-      { transaction }
     )
 
     return { createdCard, notFoundWords }
@@ -85,10 +82,9 @@ export const editCard = async (
   definitions?: ExtractedDefinition[][]
 ) => {
   return await sequelize.transaction(async transaction => {
-    // checks if both values are defined
-    if (sentence && targetWords) {
+    if (sentence) {
       await Card.update(
-        { sentence, targetWords },
+        { sentence },
         {
           transaction,
           where: {
@@ -99,36 +95,64 @@ export const editCard = async (
     }
 
     if (targetWords) {
-      // fetches and creates words and their definitions if they do not exist yet
-      const { insertedWords: autoCreatedWords } = await createAutoMeanings(
-        userId,
-        targetWords,
-        transaction
-      )
-
-      // saves user-defined definitions
-      const { insertedWords: userCreatedWords } = await saveWordsAndDefinitions(
-        targetWords || [],
-        definitions || [],
-        'user',
-        undefined,
-        userId,
-        transaction
-      )
-
-      // infers all words and excludes repetitions
-      const allWords: Word[] = []
-      for (const word of [...autoCreatedWords, ...userCreatedWords]) {
-        if (!allWords.includes(word)) {
-          allWords.push(word)
-        }
-      }
-
-      // connects all created and existing words (target words) with the card
-      await CardTargetWord.bulkCreate(
-        [...allWords.map(targetWord => ({ cardId, wordId: targetWord.id }))],
-        { transaction }
-      )
+      await createCardDefinitions(cardId, userId, targetWords, definitions || [], transaction)
     }
   })
+}
+
+// creates words, auto and user-defined definitions
+// and connects them to the card
+export const createCardDefinitions = async (
+  cardId: string,
+  userId: string,
+  targetWords: string[],
+  definitions: ExtractedDefinition[][],
+  transaction: Transaction
+) => {
+  // fetches and creates words and their definitions if they do not exist yet
+  const { insertedWords: autoCreatedWords, notFoundWords } = await createAutoMeanings(
+    userId,
+    targetWords,
+    transaction
+  )
+
+  // saves user-defined definitions
+  const { insertedWords: userCreatedWords, insertedDefinitions: userInsertedDefinitions } =
+    await saveWordsAndDefinitions(
+      targetWords || [],
+      definitions || [],
+      'user',
+      undefined,
+      userId,
+      transaction
+    )
+
+  // infers all words and excludes repetitions
+  const allWords: Word[] = []
+  for (const word of [...autoCreatedWords, ...userCreatedWords]) {
+    if (!allWords.includes(word)) {
+      allWords.push(word)
+    }
+  }
+
+  // connects all created and existing words (target words) with the card
+  const cardTargetWords = await CardTargetWord.bulkCreate(
+    [...allWords.map(targetWord => ({ cardId, wordId: targetWord.id }))],
+    { transaction }
+  )
+
+  // prioritizes user-defined definitions
+  const cardDefinitionEntities: { cardTargetWordId: string; definitionId: string }[] = []
+
+  for (const def of userInsertedDefinitions) {
+    const cardTargetWord = cardTargetWords.find(item => item.wordId == def.wordId)
+
+    if (cardTargetWord) {
+      cardDefinitionEntities.push({ cardTargetWordId: cardTargetWord.id, definitionId: def.id })
+    }
+  }
+
+  await CardDefinition.bulkCreate(cardDefinitionEntities, { transaction })
+
+  return { notFoundWords }
 }

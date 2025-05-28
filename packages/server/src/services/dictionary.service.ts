@@ -83,6 +83,7 @@ export const saveWordsAndDefinitions = async (
       existingWords: [],
       insertedWords: [],
       allWords: [],
+      insertedDefinitions: [],
     }
   }
 
@@ -129,13 +130,16 @@ export const saveWordsAndDefinitions = async (
       })
     }
   }
-  if (definitionsToInsert.length > 0) {
-    await Definition.bulkCreate([...definitionsToInsert], { transaction })
-  }
+
+  const insertedDefinitions =
+    definitionsToInsert.length > 0
+      ? await Definition.bulkCreate([...definitionsToInsert], { transaction })
+      : []
 
   return {
     existingWords,
     insertedWords,
     allWords,
+    insertedDefinitions,
   }
 }

@@ -3,7 +3,6 @@ import {
   AddCardToDeckRequest,
   GetCardByIdRequest,
   EditCardToDeckRequest,
-  ExtractedDefinition,
 } from '../types'
 import { Response } from 'express'
 import { getErrorObject, handleError } from '../utils'
@@ -65,7 +64,7 @@ export const getCardByIdController = async (req: GetCardByIdRequest, res: Respon
 
 export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Response) => {
   try {
-    const { sentence, targetWords } = req.body
+    const { sentence, targetWords, definitions } = req.body
     const { deckId } = req.params
     const userId = req.authedUser?.id
 
@@ -83,7 +82,13 @@ export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Re
     }
 
     // creates a cards and related words, fetches and creates definitions and connections between them
-    const { createdCard, notFoundWords } = await addCard(deckId, sentence, userId, targetWords)
+    const { createdCard, notFoundWords } = await addCard(
+      deckId,
+      sentence,
+      userId,
+      targetWords,
+      definitions
+    )
 
     return res.status(201).json({
       card: createdCard,
@@ -112,13 +117,7 @@ export const editCardController = async (req: EditCardToDeckRequest, res: Respon
     return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
   }
 
-  await editCard(
-    cardId,
-    userId,
-    sentence,
-    targetWords,
-    definitions as unknown as ExtractedDefinition[][] | undefined
-  )
+  await editCard(cardId, userId, sentence, targetWords, definitions)
   const updatedCard = await getCardByIdWithDeckAndDefinitions(cardId)
   return res.status(200).json(updatedCard)
 }

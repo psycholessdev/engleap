@@ -15,8 +15,8 @@ export function extractDefinitions(
   word: string,
   entries: MerriamWebsterResponse
 ): DictionaryServiceResult {
-  // not found
   if (!isMerriamWebsterEntry(entries)) {
+    // not found
     return {
       id: word,
       found: false,
