@@ -2,6 +2,75 @@ import { z } from 'zod'
 import xss from 'xss'
 import { deckIdParamUtilizedSchema } from './deck.schema'
 
+export const extractedDefinitionSchema = z.strictObject({
+  id: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .transform(val => xss(val)),
+
+  word: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .transform(val => xss(val)),
+
+  text: z
+    .string()
+    .trim()
+    .min(1)
+    .max(4000)
+    .transform(val => xss(val)),
+
+  partOfSpeech: z
+    .string()
+    .trim()
+    .min(1)
+    .max(30)
+    .transform(val => xss(val)),
+
+  syllabifiedWord: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .transform(val => xss(val)),
+
+  pronunciationAudioUrl: z
+    .string()
+    .trim()
+    .min(1)
+    .max(2048)
+    .transform(val => xss(val))
+    .optional(),
+
+  offensive: z.boolean().default(false),
+
+  labels: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(1)
+        .max(30)
+        .transform(val => xss(val))
+    )
+    .default([]),
+
+  stems: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(1)
+        .max(30)
+        .transform(val => xss(val))
+    )
+    .default([]),
+})
+
 export const addCardToDeckSchema = z
   .strictObject({
     sentence: z
@@ -91,43 +160,21 @@ export const editCardToDeckSchema = z
       )
       .optional(),
 
-    definitions: z
-      .array(
-        z
-          .record(
-            z
-              .string()
-              .trim()
-              .min(2)
-              .max(200)
-              .transform(val => xss(val)),
-            z
-              .string()
-              .trim()
-              .min(2)
-              .max(4000)
-              .transform(val => xss(val))
-          )
-          .refine(record => Object.keys(record).length === 1, {
-            message:
-              'you should provide a valid definition: object with key (target word) and value (definition). Other fields should not be present',
-          })
-      )
-      .optional(),
+    definitions: z.array(z.array(extractedDefinitionSchema).min(1)).optional(),
   })
   .refine(
     ({ sentence, targetWords, definitions }) => {
-      if ((!sentence && targetWords) || (sentence && !targetWords)) {
+      if (!!sentence !== !!targetWords) {
         // ether both sentence and targetWords should be provided
         // or none of them at all
         return false
       }
       if (!sentence || !targetWords) {
-        // making typescript happy
+        // makes typescript happy
         return false
       }
 
-      // check if all targetWords are included in the sentence
+      // checks if all targetWords are included in the sentence
       const lowercaseSentence = sentence.toLowerCase()
       for (const word of targetWords) {
         if (!lowercaseSentence.includes(word)) {
@@ -137,12 +184,14 @@ export const editCardToDeckSchema = z
 
       if (definitions) {
         // checks regarding definitions
-        const wordsLowercase = definitions.map(
-          word => Object.keys(word)?.[0]?.toLowerCase() || null
-        )
+        if (!targetWords) {
+          // targetWords should be provided
+          return false
+        }
+        const wordsLowercase = definitions.map(def => def[0].id)
         for (const word of wordsLowercase) {
-          if (!word || !targetWords.includes(word)) {
-            // empty or unrecognized definitions not listed in targetWords array
+          if (!targetWords.includes(word)) {
+            // unrecognized definition
             return false
           }
         }

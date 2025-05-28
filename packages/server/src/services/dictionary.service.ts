@@ -1,7 +1,7 @@
-import { Transaction, Op } from 'sequelize'
+import { Transaction } from 'sequelize'
 
 const { MERRIAM_WEBSTER_INTERMEDIATE_DICTIONARY_API_KEY } = process.env
-import { MerriamWebsterResponse } from '../types'
+import { ExtractedDefinition, MerriamWebsterResponse } from '../types'
 import { extractDefinitions } from './utils'
 import { Definition, Word } from '../models'
 
@@ -22,7 +22,7 @@ export const getMerriamWebsterIntermediateMeaning = async (word: string) => {
 }
 
 // fetches and creates words and their definitions if they do not exist yet
-export const createMeanings = async (
+export const createAutoMeanings = async (
   createdByUserId: string,
   targetWords: string[],
   transaction: Transaction
@@ -30,9 +30,7 @@ export const createMeanings = async (
   // checks what words do not exist
   const existingWords = await Word.findAll({
     where: {
-      text: {
-        [Op.in]: targetWords,
-      },
+      text: targetWords,
     },
     transaction,
   })
@@ -42,6 +40,7 @@ export const createMeanings = async (
   const missingWords = targetWords.filter(word => !existingWordsValues.includes(word))
 
   // fetches the definitions simultaneously
+  // TODO load balancing and many sources
   const dictionaryServiceResults =
     missingWords.length > 0
       ? await Promise.all([...missingWords.map(word => getMerriamWebsterIntermediateMeaning(word))])
@@ -51,53 +50,92 @@ export const createMeanings = async (
     .map(result => result.extractedDefinitions)
   const notFoundWords = dictionaryServiceResults.filter(result => !result.found)
 
-  // TODO create inflected forms (stems) as well
-
-  // inserts the words into the database
-  const wordsToInsert: string[] = []
-  for (const bunchOfDefs of fetchedDefinitions) {
-    bunchOfDefs.forEach(def => {
-      // checks if the word is already in the list
-      // it's important because one word can have many definitions
-      if (!wordsToInsert.includes(def.id)) {
-        wordsToInsert.push(def.id)
-      }
-    })
-  }
-  const insertedWords = await Word.bulkCreate([...wordsToInsert.map(word => ({ text: word }))], {
-    transaction,
-  })
-
-  // inserts the definitions into the database
-  const definitionEntities: Record<string, unknown>[] = []
-  for (const bunchOfDefs of fetchedDefinitions) {
-    // one word can have many definitions here
-    const wordUuid = insertedWords.find(word => word.text === bunchOfDefs[0].id)?.id
-    if (!wordUuid) {
-      throw new Error('Failed to get the word associated with a definition')
-    }
-
-    for (const def of bunchOfDefs) {
-      definitionEntities.push({
-        wordId: wordUuid,
-        text: def.text,
-        partOfSpeech: def.partOfSpeech,
-        labels: def.labels,
-        syllabifiedWord: def.syllabifiedWord,
-        offensive: def.offensive,
-        source: 'dictionary',
-        sourceName: 'Merriam Webster Intermediate dictionary',
-        difficulty: 'B2',
-        createdByUserId,
-      })
-    }
-  }
-  await Definition.bulkCreate([...definitionEntities], { transaction })
+  // saves the words and definitions
+  const { insertedWords } = await saveWordsAndDefinitions(
+    targetWords,
+    fetchedDefinitions,
+    'dictionary',
+    'Merriam Webster Intermediate dictionary',
+    createdByUserId,
+    transaction
+  )
 
   return {
     insertedWords,
     existingWords,
     allWords: [...insertedWords, ...existingWords],
     notFoundWords,
+  }
+}
+
+export const saveWordsAndDefinitions = async (
+  targetWords: string[],
+  definitions: ExtractedDefinition[][],
+  source: 'dictionary' | 'user',
+  sourceName: 'Merriam Webster Intermediate dictionary' | undefined,
+  createdByUserId: string,
+  transaction: Transaction
+) => {
+  const defsOrWordsNotProvided =
+    !targetWords || targetWords.length === 0 || !definitions || definitions.length === 0
+  if (defsOrWordsNotProvided) {
+    return {
+      existingWords: [],
+      insertedWords: [],
+      allWords: [],
+    }
+  }
+
+  // inserts the words into the database
+  const existingWords = await Word.findAll({
+    where: {
+      text: targetWords,
+    },
+    transaction,
+  })
+  const existingWordsList = existingWords.map(word => word.text)
+  const wordsToInsert = targetWords.filter(word => !existingWordsList.includes(word))
+
+  const insertedWords =
+    wordsToInsert.length > 0
+      ? await Word.bulkCreate([...wordsToInsert.map(word => ({ text: word }))], {
+          transaction,
+        })
+      : []
+
+  // inserts the definitions into the database
+  const allWords = [...existingWords, ...insertedWords]
+  const definitionsToInsert: Record<string, unknown>[] = []
+
+  for (const bunchOfDefs of definitions) {
+    // one word can have many definitions here
+    const wordUuid = allWords.find(word => word.text === bunchOfDefs[0].word)?.id
+    if (!wordUuid) {
+      throw new Error('Failed to get the word associated with a definition')
+    }
+
+    for (const def of bunchOfDefs) {
+      definitionsToInsert.push({
+        wordId: wordUuid,
+        text: def.text,
+        partOfSpeech: def.partOfSpeech,
+        labels: def.labels,
+        syllabifiedWord: def.syllabifiedWord,
+        offensive: def.offensive,
+        source,
+        sourceName,
+        difficulty: 'B2',
+        createdByUserId,
+      })
+    }
+  }
+  if (definitionsToInsert.length > 0) {
+    await Definition.bulkCreate([...definitionsToInsert], { transaction })
+  }
+
+  return {
+    existingWords,
+    insertedWords,
+    allWords,
   }
 }

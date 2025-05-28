@@ -3,6 +3,7 @@ import {
   AddCardToDeckRequest,
   GetCardByIdRequest,
   EditCardToDeckRequest,
+  ExtractedDefinition,
 } from '../types'
 import { Response } from 'express'
 import { getErrorObject, handleError } from '../utils'
@@ -12,6 +13,7 @@ import {
   getDeckById,
   getCardByIdWithDeckAndDefinitions,
   getCardById,
+  editCard,
 } from '../services'
 
 export const getAllCardsByDeckIdController = async (
@@ -94,7 +96,7 @@ export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Re
 
 export const editCardController = async (req: EditCardToDeckRequest, res: Response) => {
   const { cardId, deckId } = req.params
-  // const { sentence, targetWords, definitions } = req.body
+  const { sentence, targetWords, definitions } = req.body
   const userId = req.authedUser?.id
 
   if (!userId) {
@@ -102,12 +104,21 @@ export const editCardController = async (req: EditCardToDeckRequest, res: Respon
   }
 
   // checks if the user is allowed to do the action
-  const card = await getCardById(cardId, ['createdByUserId'])
+  const card = await getCardById(cardId, ['createdByUserId', 'deckId'])
   if (!card || card.deckId != deckId) {
     return res.status(404).json(getErrorObject('Card not found'))
   }
   if (card.createdByUserId !== userId) {
     return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
   }
-  throw new Error('Not implemented')
+
+  await editCard(
+    cardId,
+    userId,
+    sentence,
+    targetWords,
+    definitions as unknown as ExtractedDefinition[][] | undefined
+  )
+  const updatedCard = await getCardByIdWithDeckAndDefinitions(cardId)
+  return res.status(200).json(updatedCard)
 }

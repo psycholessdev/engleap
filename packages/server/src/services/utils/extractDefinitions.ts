@@ -60,6 +60,7 @@ export function extractDefinitions(
         if (text) {
           definitions.push({
             id: entry.meta.id,
+            word,
             text,
             partOfSpeech,
             syllabifiedWord,
@@ -74,7 +75,7 @@ export function extractDefinitions(
   }
 
   return {
-    id: definitions[0]?.id || '',
+    id: word,
     found: true,
     extractedDefinitions: definitions,
     similarWords: [],

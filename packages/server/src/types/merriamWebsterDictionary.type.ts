@@ -6,7 +6,8 @@ export interface DictionaryServiceResult {
 }
 
 export type ExtractedDefinition = {
-  id: string
+  word: string // exact name in local db
+  id: string // what word this definition for
   text: string
   partOfSpeech: string
   syllabifiedWord: string
