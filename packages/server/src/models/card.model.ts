@@ -28,7 +28,7 @@ export class Card extends Model {
   deck!: NonAttribute<Deck>
 
   @ForeignKey(() => Deck)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   deckId!: string
 
   @Column({ type: DataType.TEXT })

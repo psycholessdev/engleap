@@ -24,7 +24,7 @@ export class UserDeck extends Model {
   userId!: string
 
   @ForeignKey(() => Deck)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   deckId!: string
 
   @CreatedAt

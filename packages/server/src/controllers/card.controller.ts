@@ -3,6 +3,7 @@ import {
   AddCardToDeckRequest,
   GetCardByIdRequest,
   EditCardToDeckRequest,
+  DeleteCardByIdRequest,
 } from '../types'
 import { Response } from 'express'
 import { getErrorObject, handleError } from '../utils'
@@ -13,7 +14,9 @@ import {
   getCardByIdWithDeckAndDefinitions,
   getCardById,
   editCard,
+  deleteCardById,
 } from '../services'
+import { getRequestUserId } from './utils'
 
 export const getAllCardsByDeckIdController = async (
   req: GetAllCardsByDeckIdRequest,
@@ -22,11 +25,7 @@ export const getAllCardsByDeckIdController = async (
   try {
     const { offset, limit } = req.query
     const { deckId } = req.params
-    const userId = req.authedUser?.id
-
-    if (!userId) {
-      return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
-    }
+    const userId = getRequestUserId(req)
 
     const deck = await getDeckById(deckId, ['id', 'creatorId', 'isPublic'])
     if (!deck) {
@@ -45,32 +44,49 @@ export const getAllCardsByDeckIdController = async (
 }
 
 export const getCardByIdController = async (req: GetCardByIdRequest, res: Response) => {
-  const { deckId, cardId } = req.params
-  const userId = req.authedUser?.id
+  try {
+    const { cardId } = req.params
+    const userId = getRequestUserId(req)
 
-  if (!userId) {
-    return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
+    const card = await getCardByIdWithDeckAndDefinitions(cardId)
+    if (!card) {
+      return res.status(404).json(getErrorObject('Card not found'))
+    }
+    if (card.deck.creatorId !== userId && !card.deck.isPublic) {
+      return res.status(403).json(getErrorObject('You do not have the right to see this card'))
+    }
+    return res.status(200).json(card)
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to retrieve the card')
   }
+}
 
-  const card = await getCardByIdWithDeckAndDefinitions(cardId)
-  if (!card || card.deck?.id != deckId) {
-    return res.status(404).json(getErrorObject('Card not found'))
+export const deleteCardController = async (req: DeleteCardByIdRequest, res: Response) => {
+  try {
+    const { cardId } = req.params
+    const userId = getRequestUserId(req)
+
+    // checks if the user is allowed to do the action
+    const card = await getCardById(cardId, ['createdByUserId'])
+    if (!card) {
+      return res.status(404).json(getErrorObject('Card not found'))
+    }
+    if (card.createdByUserId !== userId) {
+      return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
+    }
+
+    await deleteCardById(cardId)
+    return res.status(200).json({ success: true })
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to delete the card')
   }
-  if (card.deck.creatorId !== userId && !card.deck.isPublic) {
-    return res.status(403).json(getErrorObject('You do not have the right to see this card'))
-  }
-  return res.status(200).json(card)
 }
 
 export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Response) => {
   try {
     const { sentence, targetWords, definitions } = req.body
     const { deckId } = req.params
-    const userId = req.authedUser?.id
-
-    if (!userId) {
-      return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
-    }
+    const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
     const deck = await getDeckById(deckId, ['creatorId'])
@@ -100,24 +116,25 @@ export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Re
 }
 
 export const editCardController = async (req: EditCardToDeckRequest, res: Response) => {
-  const { cardId, deckId } = req.params
-  const { sentence, targetWords, definitions } = req.body
-  const userId = req.authedUser?.id
+  try {
+    const { cardId } = req.params
+    const { sentence, targetWords, definitions } = req.body
+    const userId = getRequestUserId(req)
 
-  if (!userId) {
-    return res.status(500).json(getErrorObject('Internal error: Failed to get userId'))
-  }
+    // checks if the user is allowed to do the action
+    const card = await getCardById(cardId, ['createdByUserId'])
+    if (!card) {
+      return res.status(404).json(getErrorObject('Card not found'))
+    }
+    if (card.createdByUserId !== userId) {
+      return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
+    }
 
-  // checks if the user is allowed to do the action
-  const card = await getCardById(cardId, ['createdByUserId', 'deckId'])
-  if (!card || card.deckId != deckId) {
-    return res.status(404).json(getErrorObject('Card not found'))
-  }
-  if (card.createdByUserId !== userId) {
-    return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
-  }
+    await editCard(cardId, userId, sentence, targetWords, definitions)
 
-  await editCard(cardId, userId, sentence, targetWords, definitions)
-  const updatedCard = await getCardByIdWithDeckAndDefinitions(cardId)
-  return res.status(200).json(updatedCard)
+    const updatedCard = await getCardByIdWithDeckAndDefinitions(cardId)
+    return res.status(200).json(updatedCard)
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to edit the card')
+  }
 }

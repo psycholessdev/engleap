@@ -24,7 +24,7 @@ export class Definition extends Model {
   word!: NonAttribute<Word>
 
   @ForeignKey(() => Word)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   wordId!: string
 
   @Column({ allowNull: false })
@@ -62,6 +62,6 @@ export class Definition extends Model {
   user?: NonAttribute<User>
 
   @ForeignKey(() => User)
-  @Column({ type: DataType.UUID, allowNull: true })
+  @Column({ type: DataType.UUID, allowNull: true, onDelete: 'SET NULL' })
   createdByUserId?: string
 }

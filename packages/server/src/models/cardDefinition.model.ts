@@ -28,13 +28,13 @@ export class CardDefinition extends Model {
   cardTargetWord!: NonAttribute<CardTargetWord>
 
   @ForeignKey(() => CardTargetWord)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   cardTargetWordId!: string
 
   @BelongsTo(() => Definition, 'definitionId')
   definition!: NonAttribute<Definition>
 
   @ForeignKey(() => Definition)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   definitionId!: string
 }

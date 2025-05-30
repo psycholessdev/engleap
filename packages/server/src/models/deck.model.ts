@@ -30,7 +30,7 @@ export class Deck extends Model {
   creator!: NonAttribute<User>
 
   @ForeignKey(() => User)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: true })
   creatorId!: string
 
   @Default(true)

@@ -51,6 +51,14 @@ export const getCardByIdWithDeckAndDefinitions = async (cardId: string) => {
   })
 }
 
+export const deleteCardById = async (cardId: string) => {
+  return await Card.destroy({
+    where: {
+      id: cardId,
+    },
+  })
+}
+
 // creates a cards and related words, fetches and creates definitions and connections between them
 export const addCard = async (
   deckId: string,
@@ -110,11 +118,11 @@ export const createCardDefinitions = async (
   transaction: Transaction
 ) => {
   // fetches and creates words and their definitions if they do not exist yet
-  const { insertedWords: autoCreatedWords, notFoundWords } = await createAutoMeanings(
-    userId,
-    targetWords,
-    transaction
-  )
+  const {
+    insertedWords: autoCreatedWords,
+    notFoundWords,
+    existingWords,
+  } = await createAutoMeanings(userId, targetWords, transaction)
 
   // saves user-defined definitions
   const { insertedWords: userCreatedWords, insertedDefinitions: userInsertedDefinitions } =
@@ -129,11 +137,13 @@ export const createCardDefinitions = async (
 
   // infers all words and excludes repetitions
   const allWords: Word[] = []
-  for (const word of [...autoCreatedWords, ...userCreatedWords]) {
+  for (const word of [...autoCreatedWords, ...userCreatedWords, ...existingWords]) {
     if (!allWords.includes(word)) {
       allWords.push(word)
     }
   }
+  console.log('allWords length')
+  console.log(allWords.length)
 
   // connects all created and existing words (target words) with the card
   const cardTargetWords = await CardTargetWord.bulkCreate(

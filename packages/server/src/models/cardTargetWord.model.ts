@@ -26,11 +26,11 @@ export class CardTargetWord extends Model {
   override id!: string
 
   @ForeignKey(() => Card)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   cardId!: string
 
   @ForeignKey(() => Word)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   wordId!: string
 
   @HasMany(() => CardDefinition, 'cardTargetWordId')

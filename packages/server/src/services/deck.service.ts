@@ -9,6 +9,12 @@ export const createDeck = async (
   return await Deck.create({ title, description, creatorId, isPublic })
 }
 
+export const deleteDeck = async (id: string) => {
+  await Deck.destroy({
+    where: { id },
+  })
+}
+
 export const getDeckById = async (id: string, attributes = ['id']) => {
   return await Deck.findByPk(id, { attributes })
 }
