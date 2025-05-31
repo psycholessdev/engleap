@@ -1,7 +1,7 @@
 import express from 'express'
 import { validateRequestData } from '../middlewares'
 import {
-  getAllCardsByDeckIdSchema,
+  paginationQueryUtilizedSchema,
   addCardToDeckSchema,
   editCardToDeckSchema,
   cardIdParamUtilizedSchema,
@@ -21,7 +21,7 @@ const router = express.Router()
 router.get(
   '/deck/:deckId',
   validateRequestData(deckIdParamUtilizedSchema, 'params'),
-  validateRequestData(getAllCardsByDeckIdSchema, 'query'),
+  validateRequestData(paginationQueryUtilizedSchema, 'query'),
   getAllCardsByDeckIdController as unknown as express.RequestHandler
 )
 

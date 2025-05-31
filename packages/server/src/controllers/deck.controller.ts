@@ -1,8 +1,20 @@
 import { Response } from 'express'
-import { CreateDeckRequest, DeleteDeckRequest } from '../types'
-import { createDeck, deleteDeck, getDeckById } from '../services'
+import { CreateDeckRequest, DeleteDeckRequest, GetAllDecksRequest } from '../types'
+import { createDeck, deleteDeck, getDeckById, getDecksByUserId } from '../services'
 import { getErrorObject, handleError } from '../utils'
 import { getRequestUserId } from './utils'
+
+export const getAllDecksController = async (req: GetAllDecksRequest, res: Response) => {
+  try {
+    const { offset, limit } = req.query
+    const userId = getRequestUserId(req)
+
+    const decks = await getDecksByUserId(userId, offset, limit)
+    return res.status(200).json(decks)
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to get decks')
+  }
+}
 
 export const createDeckController = async (req: CreateDeckRequest, res: Response) => {
   try {
@@ -22,12 +34,12 @@ export const deleteDeckController = async (req: DeleteDeckRequest, res: Response
     const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
-    const deck = await getDeckById(deckId)
+    const deck = await getDeckById(deckId, ['id', 'creatorId'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }
     if (deck.creatorId !== userId) {
-      return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
+      return res.status(403).json(getErrorObject('You do not have the right to delete this deck'))
     }
 
     await deleteDeck(deckId)

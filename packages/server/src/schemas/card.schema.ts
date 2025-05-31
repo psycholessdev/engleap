@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import xss from 'xss'
-import { deckIdParamUtilizedSchema } from './deck.schema'
+import { uuidUtilizedSchema } from './utils'
 
 export const extractedDefinitionSchema = z.strictObject({
   id: z
@@ -218,11 +218,5 @@ export const editCardToDeckSchema = z
 
 // :cardId param check
 export const cardIdParamUtilizedSchema = z.strictObject({
-  cardId: z
-    .string({ message: 'cardId should be a valid uuid' })
-    .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i, {
-      message: 'deckId should be a valid uuid',
-    }),
+  cardId: uuidUtilizedSchema,
 })
-
-export const cardIdDeckIdScheme = cardIdParamUtilizedSchema.merge(deckIdParamUtilizedSchema)

@@ -11,7 +11,7 @@ import {
   addCard,
   getCardsByDeckId,
   getDeckById,
-  getCardByIdWithDeckAndDefinitions,
+  getCardByIdWithWords,
   getCardById,
   editCard,
   deleteCardById,
@@ -48,7 +48,7 @@ export const getCardByIdController = async (req: GetCardByIdRequest, res: Respon
     const { cardId } = req.params
     const userId = getRequestUserId(req)
 
-    const card = await getCardByIdWithDeckAndDefinitions(cardId)
+    const card = await getCardByIdWithWords(cardId)
     if (!card) {
       return res.status(404).json(getErrorObject('Card not found'))
     }
@@ -132,7 +132,7 @@ export const editCardController = async (req: EditCardToDeckRequest, res: Respon
 
     await editCard(cardId, userId, sentence, targetWords, definitions)
 
-    const updatedCard = await getCardByIdWithDeckAndDefinitions(cardId)
+    const updatedCard = await getCardByIdWithWords(cardId)
     return res.status(200).json(updatedCard)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to edit the card')

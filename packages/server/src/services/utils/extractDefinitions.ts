@@ -18,7 +18,7 @@ export function extractDefinitions(
   if (!isMerriamWebsterEntry(entries)) {
     // not found
     return {
-      id: word,
+      word: word,
       found: false,
       extractedDefinitions: [],
       similarWords: entries,
@@ -75,7 +75,7 @@ export function extractDefinitions(
   }
 
   return {
-    id: word,
+    word: word,
     found: true,
     extractedDefinitions: definitions,
     similarWords: [],

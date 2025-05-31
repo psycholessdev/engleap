@@ -1,6 +1,6 @@
-import { Card, Definition, Word, CardTargetWord, Deck, CardDefinition } from '../models'
+import { Card, Word, CardTargetWord, CardDefinition } from '../models'
 import { sequelize } from '../../db'
-import { createAutoMeanings, saveWordsAndDefinitions } from '../services'
+import { ensureWordsInDictionary, upsertWordsAndDefinitions } from '../services'
 import { ExtractedDefinition } from '../types'
 import { Transaction } from 'sequelize'
 
@@ -18,7 +18,6 @@ export const getCardsByDeckId = async (deckId: string, offset = 0, limit = 10) =
           {
             model: Word,
             attributes: ['id', 'text'],
-            include: [Definition],
           },
         ],
       },
@@ -30,7 +29,7 @@ export const getCardById = async (cardId: string, attributes?: string[]) => {
   return await Card.findByPk(cardId, { attributes })
 }
 
-export const getCardByIdWithDeckAndDefinitions = async (cardId: string) => {
+export const getCardByIdWithWords = async (cardId: string) => {
   return await Card.findByPk(cardId, {
     include: [
       {
@@ -40,12 +39,8 @@ export const getCardByIdWithDeckAndDefinitions = async (cardId: string) => {
           {
             model: Word,
             attributes: ['id', 'text'],
-            include: [Definition],
           },
         ],
-      },
-      {
-        model: Deck,
       },
     ],
   })
@@ -70,7 +65,7 @@ export const addCard = async (
   return await sequelize.transaction(async transaction => {
     const createdCard = await Card.create({ deckId, sentence, createdByUserId }, { transaction })
 
-    const { notFoundWords } = await createCardDefinitions(
+    const { notFoundWords } = await linkDefinitionsToCard(
       createdCard.id,
       createdByUserId,
       targetWords,
@@ -103,66 +98,59 @@ export const editCard = async (
     }
 
     if (targetWords) {
-      await createCardDefinitions(cardId, userId, targetWords, definitions || [], transaction)
+      await linkDefinitionsToCard(cardId, userId, targetWords, definitions || [], transaction)
     }
   })
 }
 
-// creates words, auto and user-defined definitions
-// and connects them to the card
-export const createCardDefinitions = async (
+// Creates words, auto and user-defined definitions and connects them to the card
+// user-defined definitions are connected to the card explicitly (through CardDefinition),
+// while dic definitions are connected to the card implicitly
+export const linkDefinitionsToCard = async (
   cardId: string,
-  userId: string,
+  createdByUserId: string,
   targetWords: string[],
   definitions: ExtractedDefinition[][],
   transaction: Transaction
 ) => {
-  // fetches and creates words and their definitions if they do not exist yet
-  const {
-    insertedWords: autoCreatedWords,
-    notFoundWords,
-    existingWords,
-  } = await createAutoMeanings(userId, targetWords, transaction)
+  // Auto (dictionary) path: try to fetch+persist missing from Merriam-Webster
+  const dictResult = await ensureWordsInDictionary(createdByUserId, targetWords, transaction)
 
-  // saves user-defined definitions
-  const { insertedWords: userCreatedWords, insertedDefinitions: userInsertedDefinitions } =
-    await saveWordsAndDefinitions(
-      targetWords || [],
-      definitions || [],
-      'user',
-      undefined,
-      userId,
-      transaction
-    )
-
-  // infers all words and excludes repetitions
-  const allWords: Word[] = []
-  for (const word of [...autoCreatedWords, ...userCreatedWords, ...existingWords]) {
-    if (!allWords.includes(word)) {
-      allWords.push(word)
-    }
-  }
-  console.log('allWords length')
-  console.log(allWords.length)
-
-  // connects all created and existing words (target words) with the card
-  const cardTargetWords = await CardTargetWord.bulkCreate(
-    [...allWords.map(targetWord => ({ cardId, wordId: targetWord.id }))],
-    { transaction }
+  // User‐provided definitions: persist them
+  const userPersisted = await upsertWordsAndDefinitions(
+    targetWords || [],
+    definitions || [],
+    'user',
+    undefined,
+    createdByUserId,
+    transaction
   )
 
-  // prioritizes user-defined definitions
-  const cardDefinitionEntities: { cardTargetWordId: string; definitionId: string }[] = []
+  // Build union of all Word[] without duplicates
+  const uniqueWordMap: Record<string, Word> = {}
+  for (const w of [...dictResult.persistedWords, ...userPersisted.allWords]) {
+    uniqueWordMap[w.id] = w
+  }
+  const allWords = Object.values(uniqueWordMap)
 
-  for (const def of userInsertedDefinitions) {
-    const cardTargetWord = cardTargetWords.find(item => item.wordId == def.wordId)
+  // connects all created and existing words (target words) with the card
+  const ctwRecords = allWords.map(w => ({ cardId, wordId: w.id }))
+  const cardTargetWordRows = await CardTargetWord.bulkCreate(ctwRecords, { transaction })
 
-    if (cardTargetWord) {
-      cardDefinitionEntities.push({ cardTargetWordId: cardTargetWord.id, definitionId: def.id })
+  // Attach user definitions first
+  const cardDefinitionRows: Array<{ cardTargetWordId: string; definitionId: string }> = []
+
+  // For each user definition, find the right CardTargetWord row, then link
+  for (const def of userPersisted.insertedDefinitions) {
+    const ctw = cardTargetWordRows.find(r => r.wordId == def.wordId)
+    if (ctw) {
+      cardDefinitionRows.push({ cardTargetWordId: ctw.id, definitionId: def.id })
     }
   }
 
-  await CardDefinition.bulkCreate(cardDefinitionEntities, { transaction })
+  if (cardDefinitionRows.length > 0) {
+    await CardDefinition.bulkCreate(cardDefinitionRows, { transaction })
+  }
 
-  return { notFoundWords }
+  return { notFoundWords: dictResult.notFoundWords }
 }

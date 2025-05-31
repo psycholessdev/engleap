@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
 import express from 'express'
-import { authRoutes, deckRoutes, cardRoutes } from './src/routes'
+import { authRoutes, deckRoutes, cardRoutes, definitionRoutes } from './src/routes'
 import { connectDB } from './db'
 import { checkAuth, finalMiddleware } from './src/middlewares'
 import cookieParser from 'cookie-parser'
@@ -37,6 +37,7 @@ app.use(checkAuth)
 app.use('/auth', authRoutes)
 app.use('/decks', deckRoutes)
 app.use('/cards', cardRoutes)
+app.use('/definitions', definitionRoutes)
 
 app.use(finalMiddleware)
 
