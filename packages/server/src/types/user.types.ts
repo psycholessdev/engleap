@@ -1,10 +1,18 @@
 import type { Request } from 'express'
 import type { AnyObject } from './utils.types'
 import { z } from 'zod'
-import { credentialsAuthSchema, createAccountSchema } from '../schemas'
+import {
+  credentialsAuthSchema,
+  createAccountSchema,
+  changeFollowStatusDeckSchema,
+} from '../schemas'
 
-export type credentialsAuthData = z.infer<typeof credentialsAuthSchema>
-export type credentialsAuthRequest = Request<AnyObject, AnyObject, credentialsAuthData>
+export type CredentialsAuthData = z.infer<typeof credentialsAuthSchema>
+export type CredentialsAuthRequest = Request<AnyObject, AnyObject, CredentialsAuthData>
 
-export type createAccountData = z.infer<typeof createAccountSchema>
-export type createAccountRequest = Request<AnyObject, AnyObject, createAccountData>
+export type CreateAccountData = z.infer<typeof createAccountSchema>
+export type CreateAccountRequest = Request<AnyObject, AnyObject, CreateAccountData>
+
+export type changeFollowStatusDeckData = z.infer<typeof changeFollowStatusDeckSchema>
+export type FollowDeckRequest = Request<AnyObject, AnyObject, changeFollowStatusDeckData>
+export type UnfollowDeckRequest = Request<AnyObject, AnyObject, changeFollowStatusDeckData>

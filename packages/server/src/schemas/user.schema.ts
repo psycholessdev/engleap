@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import xss from 'xss'
+import { uuidUtilizedSchema } from './utils'
 
 export const credentialsAuthSchema = z.strictObject({
   email: z
@@ -30,4 +31,8 @@ export const createAccountSchema = z.strictObject({
   proficiencyLevel: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], {
     message: 'You should provide a valid proficiencyLevel',
   }),
+})
+
+export const changeFollowStatusDeckSchema = z.strictObject({
+  deckId: uuidUtilizedSchema,
 })

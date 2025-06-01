@@ -2,7 +2,14 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
 import express from 'express'
-import { authRoutes, deckRoutes, cardRoutes, definitionRoutes, wordRoutes } from './src/routes'
+import {
+  authRoutes,
+  deckRoutes,
+  cardRoutes,
+  definitionRoutes,
+  wordRoutes,
+  userRoutes,
+} from './src/routes'
 import { connectDB } from './db'
 import { checkAuth, notFoundMiddleware } from './src/middlewares'
 import cookieParser from 'cookie-parser'
@@ -34,6 +41,7 @@ app.use(cookieParser())
 app.use(checkAuth)
 
 app.use('/auth', authRoutes)
+app.use('/user', userRoutes)
 app.use('/decks', deckRoutes)
 app.use('/cards', cardRoutes)
 app.use('/words', wordRoutes)

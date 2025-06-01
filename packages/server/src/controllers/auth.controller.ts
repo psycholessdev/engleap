@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import { getUserByCredentials, getUserByEmail, getUserByUsername, createUser } from '../services'
-import { credentialsAuthRequest, createAccountRequest } from '../types'
+import { CredentialsAuthRequest, CreateAccountRequest } from '../types'
 import md5 from 'md5'
 import { getErrorObject, handleError } from '../utils'
 import { setAuthCookie, deleteAuthCookie } from './utils'
 
-export const credentialsAuthController = async (req: credentialsAuthRequest, res: Response) => {
+export const credentialsAuthController = async (req: CredentialsAuthRequest, res: Response) => {
   try {
     if (req.authedUser) {
       return res
@@ -29,7 +29,7 @@ export const credentialsAuthController = async (req: credentialsAuthRequest, res
   }
 }
 
-export const createAccountController = async (req: createAccountRequest, res: Response) => {
+export const createAccountController = async (req: CreateAccountRequest, res: Response) => {
   try {
     if (req.authedUser) {
       return res
