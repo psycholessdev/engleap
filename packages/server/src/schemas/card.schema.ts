@@ -2,78 +2,87 @@ import { z } from 'zod'
 import xss from 'xss'
 import { uuidUtilizedSchema } from './utils'
 
-export const extractedDefinitionSchema = z.strictObject({
-  id: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(1)
-    .max(200)
-    .transform(val => xss(val)),
+export const extractedDefinitionSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .min(1)
+      .max(200)
+      .transform(val => xss(val)),
 
-  word: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(1)
-    .max(200)
-    .transform(val => xss(val)),
+    word: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .min(1)
+      .max(200)
+      .transform(val => xss(val)),
 
-  text: z
-    .string()
-    .trim()
-    .min(1)
-    .max(4000)
-    .transform(val => xss(val)),
+    text: z
+      .string()
+      .trim()
+      .min(1)
+      .max(4000)
+      .transform(val => xss(val)),
 
-  partOfSpeech: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(1)
-    .max(30)
-    .transform(val => xss(val)),
+    partOfSpeech: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .min(1)
+      .max(30)
+      .transform(val => xss(val)),
 
-  syllabifiedWord: z
-    .string()
-    .trim()
-    .min(1)
-    .max(200)
-    .transform(val => xss(val)),
+    syllabifiedWord: z
+      .string()
+      .trim()
+      .min(1)
+      .max(200)
+      .transform(val => xss(val)),
 
-  pronunciationAudioUrl: z
-    .string()
-    .trim()
-    .min(1)
-    .max(2048)
-    .transform(val => xss(val))
-    .optional(),
+    pronunciationAudioUrl: z
+      .string()
+      .trim()
+      .min(1)
+      .max(2048)
+      .transform(val => xss(val))
+      .optional(),
 
-  offensive: z.boolean().default(false),
+    offensive: z.boolean().default(false),
 
-  labels: z
-    .array(
-      z
-        .string()
-        .trim()
-        .toLowerCase()
-        .min(1)
-        .max(30)
-        .transform(val => xss(val))
-    )
-    .default([]),
+    labels: z
+      .array(
+        z
+          .string()
+          .trim()
+          .toLowerCase()
+          .min(1)
+          .max(30)
+          .transform(val => xss(val))
+      )
+      .default([]),
 
-  stems: z
-    .array(
-      z
-        .string()
-        .trim()
-        .min(1)
-        .max(30)
-        .transform(val => xss(val))
-    )
-    .default([]),
-})
+    stems: z
+      .array(
+        z
+          .string()
+          .trim()
+          .min(1)
+          .max(30)
+          .transform(val => xss(val))
+      )
+      .default([]),
+  })
+  .refine(
+    ({ word, syllabifiedWord }) => {
+      // check if syllabifiedWord matches the original
+      const parsedSyllabifiedWord: string[] = syllabifiedWord.split('*')
+      return word === parsedSyllabifiedWord.join('')
+    },
+    { message: 'syllabifiedWord should match the original word' }
+  )
 
 const userProvidedDefinitions = z
   .array(z.array(extractedDefinitionSchema).min(1).max(10))

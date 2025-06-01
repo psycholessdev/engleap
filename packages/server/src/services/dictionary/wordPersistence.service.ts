@@ -39,7 +39,7 @@ export const upsertWordsAndDefinitions = async (
         })
       : []
 
-  // inserts the definitions into the database
+  // create easy-to-access text=>Word mapping
   const allWords = [...existingWords, ...insertedWords]
   const allWordsByText: Record<string, Word> = {}
   for (const w of allWords) {
@@ -58,6 +58,20 @@ export const upsertWordsAndDefinitions = async (
     }
 
     for (const def of defsOfOneWord) {
+      // check if this definition is already defined
+      const fetchedDefinition = await Definition.findOne({
+        where: {
+          wordId: wordObj.id,
+          text: def.text,
+          partOfSpeech: def.partOfSpeech,
+          createdByUserId,
+        },
+        attributes: ['id'],
+      })
+      if (fetchedDefinition) {
+        continue
+      }
+
       definitionsToInsert.push({
         wordId: wordObj.id,
         text: def.text,

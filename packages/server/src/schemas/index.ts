@@ -1,5 +1,5 @@
 export * from './user.schema'
 export * from './deck.schema'
 export * from './card.schema'
-export * from './definition.schema'
+export * from './word.schema'
 export { paginationQueryUtilizedSchema } from './utils'

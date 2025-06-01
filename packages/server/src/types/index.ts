@@ -1,5 +1,6 @@
 export * from './user.types'
 export * from './deck.types'
 export * from './card.types'
+export * from './word.types'
 export * from './definitions.types'
 export * from './merriamWebsterDictionary.type'

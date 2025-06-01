@@ -6,6 +6,7 @@ export const getDefinitionsByWord = async (word: string) => {
     where: {
       text: { [Op.substring]: word },
     },
+    limit: 20,
     attributes: ['id'],
   })
   if (foundWords.length === 0) {
@@ -15,5 +16,17 @@ export const getDefinitionsByWord = async (word: string) => {
   const wordIdTexts = foundWords.map(w => w.id)
   return await Definition.findAll({
     where: { wordId: wordIdTexts },
+    limit: 20,
+    attributes: [
+      'id',
+      'wordId',
+      'text',
+      'partOfSpeech',
+      'labels',
+      'syllabifiedWord',
+      'offensive',
+      'source',
+      'sourceName',
+    ],
   })
 }
