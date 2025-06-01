@@ -52,7 +52,8 @@ export const getCardByIdController = async (req: GetCardByIdRequest, res: Respon
     if (!card) {
       return res.status(404).json(getErrorObject('Card not found'))
     }
-    if (card.deck.creatorId !== userId && !card.deck.isPublic) {
+    const deck = await getDeckById(card.deckId, ['creatorId', 'isPublic'])
+    if (!deck || (deck.creatorId !== userId && !deck.isPublic)) {
       return res.status(403).json(getErrorObject('You do not have the right to see this card'))
     }
     return res.status(200).json(card)
@@ -98,7 +99,7 @@ export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Re
     }
 
     // creates a cards and related words, fetches and creates definitions and connections between them
-    const { createdCard, notFoundWords } = await addCard(
+    const { createdCard, notFoundWords, inserted } = await addCard(
       deckId,
       sentence,
       userId,
@@ -109,6 +110,7 @@ export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Re
     return res.status(201).json({
       card: createdCard,
       notFoundWords,
+      inserted,
     })
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to add card')

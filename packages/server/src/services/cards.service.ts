@@ -63,7 +63,10 @@ export const addCard = async (
   definitions?: ExtractedDefinition[][]
 ) => {
   return await sequelize.transaction(async transaction => {
-    const createdCard = await Card.create({ deckId, sentence, createdByUserId }, { transaction })
+    const [createdCard, inserted] = await Card.findOrCreate({
+      where: { deckId, sentence, createdByUserId },
+      transaction,
+    })
 
     const { notFoundWords } = await linkDefinitionsToCard(
       createdCard.id,
@@ -73,7 +76,7 @@ export const addCard = async (
       transaction
     )
 
-    return { createdCard, notFoundWords }
+    return { createdCard, notFoundWords, inserted }
   })
 }
 
@@ -133,23 +136,28 @@ export const linkDefinitionsToCard = async (
   }
   const allWords = Object.values(uniqueWordMap)
 
-  // connects all created and existing words (target words) with the card
+  // links all created and existing words (target words) with the card
+  // if they weren't before
   const ctwRecords = allWords.map(w => ({ cardId, wordId: w.id }))
-  const cardTargetWordRows = await CardTargetWord.bulkCreate(ctwRecords, { transaction })
+  const cardTargetWordRows: CardTargetWord[] = []
+  for (const ctwRec of ctwRecords) {
+    const [row] = await CardTargetWord.findOrCreate({
+      where: ctwRec,
+      transaction,
+    })
+    cardTargetWordRows.push(row)
+  }
 
-  // Attach user definitions first
-  const cardDefinitionRows: Array<{ cardTargetWordId: string; definitionId: string }> = []
-
-  // For each user definition, find the right CardTargetWord row, then link
+  // For each user definition, find the right CardTargetWord row,
+  // then link them if they weren't before
   for (const def of userPersisted.insertedDefinitions) {
     const ctw = cardTargetWordRows.find(r => r.wordId == def.wordId)
     if (ctw) {
-      cardDefinitionRows.push({ cardTargetWordId: ctw.id, definitionId: def.id })
+      await CardDefinition.findOrCreate({
+        where: { cardTargetWordId: ctw.id, definitionId: def.id },
+        transaction,
+      })
     }
-  }
-
-  if (cardDefinitionRows.length > 0) {
-    await CardDefinition.bulkCreate(cardDefinitionRows, { transaction })
   }
 
   return { notFoundWords: dictResult.notFoundWords }

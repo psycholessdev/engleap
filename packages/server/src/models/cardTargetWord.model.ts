@@ -8,6 +8,7 @@ import {
   PrimaryKey,
   Default,
   BelongsTo,
+  Unique,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { Card } from './card.model'
@@ -26,10 +27,12 @@ export class CardTargetWord extends Model {
   override id!: string
 
   @ForeignKey(() => Card)
+  @Unique('card_word_unique')
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   cardId!: string
 
   @ForeignKey(() => Word)
+  @Unique('card_word_unique')
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   wordId!: string
 

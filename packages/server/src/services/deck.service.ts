@@ -22,7 +22,15 @@ export const createDeck = async (
   creatorId: string,
   isPublic: boolean
 ) => {
-  return await Deck.create({ title, description, creatorId, isPublic })
+  const [deck, created] = await Deck.findOrCreate({
+    where: { title, description, creatorId, isPublic },
+  })
+
+  if (created) {
+    await UserDeck.create({ userId: creatorId, deckId: deck.id })
+  }
+
+  return deck
 }
 
 export const deleteDeck = async (id: string) => {

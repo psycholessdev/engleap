@@ -7,6 +7,7 @@ import {
   PrimaryKey,
   Default,
   CreatedAt,
+  Unique,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { User } from './user.model'
@@ -20,10 +21,12 @@ export class UserDeck extends Model {
   override id!: string
 
   @ForeignKey(() => User)
+  @Unique('user_deck_unique')
   @Column({ type: DataType.UUID, allowNull: false })
   userId!: string
 
   @ForeignKey(() => Deck)
+  @Unique('user_deck_unique')
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   deckId!: string
 

@@ -27,7 +27,7 @@ export class Definition extends Model {
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   wordId!: string
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, type: DataType.TEXT })
   text!: string
 
   @Column({ allowNull: false })
@@ -50,7 +50,7 @@ export class Definition extends Model {
   @Column({ allowNull: true })
   sourceName?: string
 
-  @Column({ type: DataType.ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'), allowNull: false })
+  @Column({ type: DataType.ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'), allowNull: true })
   difficulty?: string
 
   // only show user defs once you’ve vetted them

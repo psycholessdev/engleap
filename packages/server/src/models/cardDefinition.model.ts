@@ -7,6 +7,7 @@ import {
   BelongsTo,
   PrimaryKey,
   Default,
+  Unique,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { CardTargetWord } from './cardTargetWord.model'
@@ -28,6 +29,7 @@ export class CardDefinition extends Model {
   cardTargetWord!: NonAttribute<CardTargetWord>
 
   @ForeignKey(() => CardTargetWord)
+  @Unique('cardTargetWord_definition_unique')
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   cardTargetWordId!: string
 
@@ -35,6 +37,7 @@ export class CardDefinition extends Model {
   definition!: NonAttribute<Definition>
 
   @ForeignKey(() => Definition)
+  @Unique('cardTargetWord_definition_unique')
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   definitionId!: string
 }

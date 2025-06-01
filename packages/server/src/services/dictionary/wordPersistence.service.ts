@@ -34,9 +34,12 @@ export const upsertWordsAndDefinitions = async (
   const textsToInsert = targetWords.filter(word => !existingTexts.includes(word))
   const insertedWords =
     textsToInsert.length > 0
-      ? await Word.bulkCreate([...textsToInsert.map(word => ({ text: word }))], {
-          transaction,
-        })
+      ? await Word.bulkCreate(
+          textsToInsert.map(word => ({ text: word })),
+          {
+            transaction,
+          }
+        )
       : []
 
   // create easy-to-access text=>Word mapping
@@ -67,6 +70,7 @@ export const upsertWordsAndDefinitions = async (
           createdByUserId,
         },
         attributes: ['id'],
+        transaction,
       })
       if (fetchedDefinition) {
         continue
