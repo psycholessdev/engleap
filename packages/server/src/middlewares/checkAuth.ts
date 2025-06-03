@@ -25,7 +25,7 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
       }
     }
 
-    if (req.path.startsWith('/auth') || req.authedUser) {
+    if (req.path.startsWith('/api/auth') || req.authedUser) {
       return next()
     } else {
       return res.status(403).json(getErrorObject('Unauthorized'))

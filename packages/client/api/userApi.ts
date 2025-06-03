@@ -8,6 +8,6 @@ interface GetUserResponse {
 }
 
 export const getUser = async (): Promise<GetUserResponse> => {
-  const res = await $axios.get('/')
+  const res = await $axios.get('/user')
   return res.data
 }

@@ -40,12 +40,12 @@ app.use(cookieParser())
 
 app.use(checkAuth)
 
-app.use('/auth', authRoutes)
-app.use('/user', userRoutes)
-app.use('/decks', deckRoutes)
-app.use('/cards', cardRoutes)
-app.use('/words', wordRoutes)
-app.use('/definitions', definitionRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/user', userRoutes)
+app.use('/api/decks', deckRoutes)
+app.use('/api/cards', cardRoutes)
+app.use('/api/words', wordRoutes)
+app.use('/api/definitions', definitionRoutes)
 
 app.use(notFoundMiddleware)
 

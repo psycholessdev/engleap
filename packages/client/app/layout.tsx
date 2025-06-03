@@ -5,6 +5,8 @@ import './globals.css'
 import Header from '@/components/Header'
 import Navbar from '@/components/Navbar'
 import { AuthProvider } from '@/hooks/useAuth'
+import { getBackendUrl } from '@/utils'
+import RootElement from '@/components/RootElement'
 
 const ubuntu = Ubuntu({
   variable: '--font-ubuntu',
@@ -23,12 +25,6 @@ export const viewport: Viewport = {
   themeColor: '#050E00',
 }
 
-const serverPort = Number(process.env.SERVER_PORT || 3001)
-const apiServerUrl =
-  process.env.NODE_ENV === 'development'
-    ? `http://localhost:${serverPort}/api`
-    : `${process.env.ORIGIN_PROD_URL}/api`
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,15 +33,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${ubuntu.variable} antialiased`}>
-        <script dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${apiServerUrl}';` }} />
+        <script
+          dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${getBackendUrl()}';` }}
+        />
 
-        <main className="w-full min-h-screen h-auto box-border flex flex-col items-center justify-center gap-5 pt-[90px] pl-[90px]">
-          <AuthProvider>
+        <AuthProvider>
+          <RootElement>
             <Header />
             <Navbar />
             <div className="w-[90%] h-auto">{children}</div>
-          </AuthProvider>
-        </main>
+          </RootElement>
+        </AuthProvider>
       </body>
     </html>
   )
