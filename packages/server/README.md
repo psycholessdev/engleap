@@ -247,6 +247,17 @@ Word[]
 
 ### User API
 
+#### Get User
+
+- **URL:** `/user`
+- **Method:** `GET`
+
+**Response:** `200 OK`
+
+```
+User
+```
+
 #### Follow Deck
 
 - **URL:** `/user/decks`

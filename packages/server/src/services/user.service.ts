@@ -32,6 +32,13 @@ export const getUserByUsername = async (username: string, attributes = ['id']) =
   })
 }
 
+export const getUserById = async (id: string, attributes = ['id']) => {
+  return await User.findOne({
+    where: { id },
+    attributes,
+  })
+}
+
 export const createUser = async (
   username: string,
   email: string,
