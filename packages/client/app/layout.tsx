@@ -22,15 +22,23 @@ export const viewport: Viewport = {
   themeColor: '#050E00',
 }
 
+const serverPort = Number(process.env.SERVER_PORT || 3001)
+const apiServerUrl =
+  process.env.NODE_ENV === 'development'
+    ? `http://localhost:${serverPort}/api`
+    : `${process.env.ORIGIN_PROD_URL}/api`
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${ubuntu.variable} antialiased`}>
-        <main className="w-full h-auto box-border flex flex-col items-center justify-center gap-5 pt-[90px] pl-[90px]">
+        <script dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${apiServerUrl}';` }} />
+
+        <main className="w-full min-h-screen h-auto box-border flex flex-col items-center justify-center gap-5 pt-[90px] pl-[90px]">
           <Header />
           <Navbar />
           <div className="w-[90%] h-auto">{children}</div>

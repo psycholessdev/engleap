@@ -1,6 +1,7 @@
 ## API Handlers
 
 Base URL
+
 ```
 http://localhost:3001/api
 ```
@@ -29,7 +30,6 @@ Request's body
 }
 ```
 
-
 #### Sign up
 
 - **URL:** `/signup`
@@ -54,14 +54,12 @@ Request's body
 }
 ```
 
-
 #### Log out
 
 - **URL:** `/logout`
 - **Method:** `POST`
 
 **Response:** `200 OK`
-
 
 ### Card API
 
@@ -93,14 +91,12 @@ URL query
 Card[]
 ```
 
-
 #### Get Card by id (uuid)
 
 - **URL:** `/cards/:cardId`
 - **Method:** `GET`
 
 **Response:** `200 OK`
-
 
 #### Create a Card
 
@@ -118,6 +114,7 @@ Request's body
 ```
 
 UserDefinition schema
+
 ```json
 {
   "id": "string",
@@ -142,7 +139,6 @@ UserDefinition schema
 }
 ```
 
-
 #### Edit Card
 
 - **URL:** `/cards/:cardId`
@@ -163,7 +159,6 @@ Request's body
 ```
 Card
 ```
-
 
 #### Delete Card by id (uuid)
 
@@ -194,7 +189,6 @@ URL query
 Deck[]
 ```
 
-
 #### Create a Deck
 
 - **URL:** `/decks`
@@ -216,14 +210,12 @@ Request's body
 Deck
 ```
 
-
 #### Delete Deck by id (uuid)
 
 - **URL:** `/decks/:deckId`
 - **Method:** `DELETE`
 
 **Response:** `200 OK`
-
 
 ### Definition API
 
@@ -237,7 +229,6 @@ Deck
 ```
 Definition[]
 ```
-
 
 ### Word API
 
@@ -253,7 +244,6 @@ Get all words that match the provided
 ```
 Word[]
 ```
-
 
 ### User API
 
@@ -271,7 +261,6 @@ Request's body
 ```
 
 **Response:** `200 OK`
-
 
 #### Unfollow Deck
 

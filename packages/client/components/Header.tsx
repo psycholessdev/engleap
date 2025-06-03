@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { IconUserCircle } from '@tabler/icons-react'
 
 const Header = () => {
   return (
@@ -18,7 +19,9 @@ const Header = () => {
           <h3 className="text-el-primary text-2xl ml-7 select-none">EngLeap</h3>
         </Link>
       </div>
-      <Button size="default">Log in</Button>
+      <Button variant="outline" size="sm">
+        <IconUserCircle /> Log in
+      </Button>
     </header>
   )
 }
