@@ -4,6 +4,7 @@ import { Ubuntu } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Navbar from '@/components/Navbar'
+import { AuthProvider } from '@/hooks/useAuth'
 
 const ubuntu = Ubuntu({
   variable: '--font-ubuntu',
@@ -39,9 +40,11 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${apiServerUrl}';` }} />
 
         <main className="w-full min-h-screen h-auto box-border flex flex-col items-center justify-center gap-5 pt-[90px] pl-[90px]">
-          <Header />
-          <Navbar />
-          <div className="w-[90%] h-auto">{children}</div>
+          <AuthProvider>
+            <Header />
+            <Navbar />
+            <div className="w-[90%] h-auto">{children}</div>
+          </AuthProvider>
         </main>
       </body>
     </html>

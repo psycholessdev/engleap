@@ -1,33 +1,35 @@
 'use client'
 import React, { createContext, useContext, useMemo, useEffect, useState } from 'react'
-import { userLogOut, userSignIn, userSignUp, type UserSignInData, type UserSignUpData } from '@/api'
+import {
+  userLogOut,
+  userSignIn,
+  userSignUp,
+  getUser,
+  type UserSignInData,
+  type UserSignUpData,
+} from '@/api'
 import { useRouter } from 'next/navigation'
 
 type AuthContextType = {
   isLogged: boolean
   loading: boolean
-  login: (data: UserSignInData, origin: string) => Promise<void>
+  signIn: (data: UserSignInData) => Promise<boolean>
+  signUp: (data: UserSignUpData) => Promise<boolean>
   logout: () => Promise<void>
-  signUp: (data: UserSignUpData) => Promise<void | unknown>
 }
 
 const AuthContext = createContext<AuthContextType>({
   isLogged: false,
   loading: true,
-  login: async () => Promise.resolve(),
+  signIn: async () => Promise.resolve(false),
+  signUp: async () => Promise.resolve(false),
   logout: async () => Promise.resolve(),
-  signUp: async () => Promise.resolve(),
 })
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-
-  const getUser = async () => {
-    // const user = await checkIfAuthed()
-    // dispatch(setUser(user))
-  }
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -45,25 +47,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus()
   }, [])
 
-  const login = async (data: UserSignInData) => {
+  const signIn = async (data: UserSignInData) => {
     try {
+      setLoading(true)
       await userSignIn(data)
       await getUser()
       setIsLogged(true)
       router.push('/decks')
+      return true
     } catch (error) {
       console.log(`login error: ${error}`)
+      return false
+    } finally {
+      setLoading(false)
     }
   }
 
   const signUp = async (data: UserSignUpData) => {
     try {
+      setLoading(true)
       await userSignUp(data)
       await getUser()
       setIsLogged(true)
       router.push('/decks')
+      return true
     } catch (error) {
       console.log(`sign up error: ${error}`)
+      return false
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -82,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loading,
       isLogged,
       signUp,
-      login,
+      signIn,
       logout,
     }),
     [isLogged, loading]

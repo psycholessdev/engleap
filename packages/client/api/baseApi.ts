@@ -1,3 +1,4 @@
+'use client'
 import axios from 'axios'
 
 declare global {
@@ -7,11 +8,16 @@ declare global {
 }
 
 const getApiUrl = () => {
-  if (window.__API_URL__) {
-    return window.__API_URL__
+  if (typeof window !== 'undefined') {
+    if (window.__API_URL__) {
+      return window.__API_URL__
+    }
+    // fallback for dev
+    return `http://${window.location.hostname}:3001/api`
   }
-  // fallback for dev
-  return `http://${window.location.hostname}:3001/api`
+
+  // fallback for non-browser execution
+  return `http://localhost:3001/api`
 }
 
 export const API_URL = getApiUrl()
