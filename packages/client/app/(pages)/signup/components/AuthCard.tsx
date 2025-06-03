@@ -9,49 +9,70 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { type UserSignInData } from '@/api'
+import { type UserSignUpData } from '@/api'
 import { useAuth } from '@/hooks/useAuth'
-import { Loader2Icon } from 'lucide-react'
 import FormInputError from '@/components/FormInputError'
 import FailureAlert from '@/components/FailureAlert'
 
 const schema = z.strictObject({
+  username: z
+    .string()
+    .trim()
+    .min(3, { message: 'Username should be at least 3 characters' })
+    .max(18, { message: 'Username should be at much 18 characters' }),
   email: z.string({ message: 'Email is required' }).email({ message: 'Email is invalid' }),
   password: z
     .string({ message: 'Password is required' })
     .min(5, { message: 'Password must be at least 5 characters' }),
+  proficiencyLevel: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], {
+    message: 'Proficiency Level is required',
+  }),
 })
 
-type SignInData = z.infer<typeof schema>
+type SignUpData = z.infer<typeof schema>
 
 const AuthCard = () => {
   const [failure, setFailure] = useState('')
-  const { signIn, loading } = useAuth()
+  const { signUp, loading } = useAuth()
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<SignInData>({ resolver: zodResolver(schema) })
+    setValue,
+  } = useForm<SignUpData>({ resolver: zodResolver(schema) })
 
-  const onSubmit = async (data: UserSignInData) => {
+  const onSubmit = async (data: UserSignUpData) => {
     // requesting after zod validation has passed
     setFailure('')
-    const { success, reason } = await signIn(data)
+    const { success, reason } = await signUp(data)
 
-    if (success) {
-      reset()
-    }
+    if (success) reset()
     if (reason) {
       setFailure(reason)
     }
+  }
+
+  const handleSelectChange = (value: string) => {
+    // it's custom select that not handled by useForm by default
+    // instead, I created hidden input passed to useForm
+    // and its value changes when the custom select
+    setValue('proficiencyLevel', value)
   }
 
   return (
@@ -64,17 +85,29 @@ const AuthCard = () => {
         height={70}
       />
       <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
-        <CardDescription>Enter your email below to login to your account</CardDescription>
+        <CardTitle>Create your EngLeap account</CardTitle>
+        <CardDescription>Your journey to fluency is about to begin!</CardDescription>
         <CardAction>
           <Button variant="link" asChild>
-            <Link href="/signup">Sign Up</Link>
+            <Link href="/signin">Sign In</Link>
           </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="lynn"
+                disabled={loading}
+                required
+                {...register('username')}
+              />
+              <FormInputError error={errors.username} />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -98,6 +131,26 @@ const AuthCard = () => {
               />
               <FormInputError error={errors.password} />
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="proficiencyLevel">Your Proficiency level</Label>
+              <Input id="proficiencyLevel" type="text" hidden {...register('proficiencyLevel')} />
+
+              {/* custom Select is not handled by useForm by default */}
+              <Select disabled={loading} onValueChange={handleSelectChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Proficiency level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="A1">A1 (Beginner)</SelectItem>
+                  <SelectItem value="A2">A2 (Basic)</SelectItem>
+                  <SelectItem value="B1">B1 (Intermediate)</SelectItem>
+                  <SelectItem value="B2">B2 (Upper Intermediate)</SelectItem>
+                  <SelectItem value="C1">C1 (Advanced)</SelectItem>
+                  <SelectItem value="C2">C2 (Proficient)</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormInputError error={errors.proficiencyLevel} />
+            </div>
 
             {/* General failure */}
             {failure && <FailureAlert title="Failure" message={failure} />}
@@ -109,7 +162,7 @@ const AuthCard = () => {
               </Button>
             ) : (
               <Button type="submit" className="w-full">
-                Log in
+                Create Account
               </Button>
             )}
           </div>

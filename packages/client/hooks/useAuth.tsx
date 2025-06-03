@@ -9,20 +9,23 @@ import {
   type UserSignUpData,
 } from '@/api'
 import { useRouter } from 'next/navigation'
+import { useNotifications } from '@/hooks/useNotifications'
+
+type AuthenticateResult = { success: boolean; reason?: string }
 
 type AuthContextType = {
   isLogged: boolean
   loading: boolean
-  signIn: (data: UserSignInData) => Promise<boolean>
-  signUp: (data: UserSignUpData) => Promise<boolean>
+  signIn: (data: UserSignInData) => Promise<AuthenticateResult>
+  signUp: (data: UserSignUpData) => Promise<AuthenticateResult>
   logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   isLogged: false,
   loading: true,
-  signIn: async () => Promise.resolve(false),
-  signUp: async () => Promise.resolve(false),
+  signIn: async () => Promise.resolve({ success: false }),
+  signUp: async () => Promise.resolve({ success: false }),
   logout: async () => Promise.resolve(),
 })
 
@@ -30,14 +33,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLogged, setIsLogged] = useState(false)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const { alert } = useNotifications()
 
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
         await getUser()
         setIsLogged(true)
-      } catch (error) {
-        console.log(`auth error: ${error}`)
+      } catch (error: AxiosError) {
+        if (!error.response) {
+          alert('Authentication failed', 'Check your internet connection', 'failure')
+        }
         setIsLogged(false)
       } finally {
         setLoading(false)
@@ -51,13 +57,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true)
       await userSignIn(data)
-      await getUser()
+      const user = await getUser()
       setIsLogged(true)
       router.push('/decks')
-      return true
-    } catch (error) {
-      console.log(`login error: ${error}`)
-      return false
+      alert('Successfully logged in', `Welcome, ${user.username}`, 'success')
+      return { success: true }
+    } catch (error: AxiosError) {
+      let reason = 'Check your credentials'
+      if (error.response) {
+        if (error.response.data?.reason) {
+          reason = error.response.data.reason
+        }
+      } else {
+        reason = 'Check your internet connection'
+        console.log(`sign in error: ${error}`)
+      }
+
+      alert('Failed to sign in', reason, 'failure')
+      return { success: false, reason }
     } finally {
       setLoading(false)
     }
@@ -67,13 +84,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true)
       await userSignUp(data)
-      await getUser()
+      const user = await getUser()
       setIsLogged(true)
       router.push('/decks')
-      return true
-    } catch (error) {
-      console.log(`sign up error: ${error}`)
-      return false
+      alert('Successfully signed up', `Welcome back, ${user.username}`, 'success')
+      return { success: true }
+    } catch (error: AxiosError) {
+      let reason = 'Check your credentials'
+      if (error.response) {
+        if (error.response.data?.reason) {
+          reason = error.response.data.reason
+        }
+      } else {
+        reason = 'Check your internet connection'
+        console.log(`sign up error: ${error}`)
+      }
+
+      alert('Failed to sign up', reason, 'failure')
+      return { success: false, reason }
     } finally {
       setLoading(false)
     }
@@ -84,6 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await userLogOut()
       setIsLogged(false)
       router.push('/signin')
+      alert('Successfully logged out', 'Hope we see you again!', 'success')
     } catch (error) {
       console.log(`logout error: ${error}`)
     }

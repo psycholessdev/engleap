@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar'
 import { AuthProvider } from '@/hooks/useAuth'
 import { getBackendUrl } from '@/utils'
 import RootElement from '@/components/RootElement'
+import { NotificationsProvider } from '@/hooks'
 
 const ubuntu = Ubuntu({
   variable: '--font-ubuntu',
@@ -37,13 +38,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${getBackendUrl()}';` }}
         />
 
-        <AuthProvider>
-          <RootElement>
-            <Header />
-            <Navbar />
-            <div className="w-[90%] h-auto">{children}</div>
-          </RootElement>
-        </AuthProvider>
+        <NotificationsProvider>
+          <AuthProvider>
+            <RootElement>
+              <Header />
+              <Navbar />
+              <div className="w-[90%] h-auto">{children}</div>
+            </RootElement>
+          </AuthProvider>
+        </NotificationsProvider>
       </body>
     </html>
   )

@@ -1,27 +1,21 @@
 import React from 'react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { IconExclamationCircle } from '@tabler/icons-react'
 import { AnimatePresence, motion } from 'motion/react'
-import type { FieldError } from 'react-hook-form'
+import FailureAlert from '@/components/FailureAlert'
 
 interface IFormInputError {
-  error: FieldError
+  error?: { message?: string }
 }
 
 const FormInputError: React.FC<IFormInputError> = ({ error }) => {
   return (
     <AnimatePresence>
-      {error ? (
+      {error && error.message ? (
         <motion.div
           key="box"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}>
-          <Alert variant="destructive">
-            <IconExclamationCircle />
-            <AlertTitle>Recheck this field</AlertTitle>
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
+          <FailureAlert title="Recheck this field" message={error.message} />
         </motion.div>
       ) : null}
     </AnimatePresence>
