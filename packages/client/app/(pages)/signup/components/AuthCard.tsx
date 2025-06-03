@@ -44,8 +44,6 @@ const schema = z.strictObject({
   }),
 })
 
-type SignUpData = z.infer<typeof schema>
-
 const AuthCard = () => {
   const [failure, setFailure] = useState('')
   const { signUp, loading } = useAuth()
@@ -55,7 +53,7 @@ const AuthCard = () => {
     formState: { errors },
     reset,
     setValue,
-  } = useForm<SignUpData>({ resolver: zodResolver(schema) })
+  } = useForm({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: UserSignUpData) => {
     // requesting after zod validation has passed

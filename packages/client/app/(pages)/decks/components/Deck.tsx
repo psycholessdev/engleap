@@ -8,11 +8,14 @@ interface IDeck {
   cardsTotalCount: number
   cardsNewCount: number
   cardsDueCount: number
+  key?: string
 }
 
-const Deck: React.FC<IDeck> = ({ title, cardsTotalCount, cardsNewCount, cardsDueCount }) => {
+const Deck: React.FC<IDeck> = ({ title, cardsTotalCount, cardsNewCount, cardsDueCount, key }) => {
   return (
-    <div className="w-full py-5 px-3 flex justify-between rounded-2xl cursor-pointer border-b-1 border-b-el-outline last:border-b-transparent hover:bg-el-secondary-container/20">
+    <div
+      className="w-full py-5 px-3 flex justify-between rounded-2xl cursor-pointer border-b-1 border-b-el-outline last:border-b-transparent hover:bg-el-secondary-container/20"
+      key={key}>
       <div className="flex items-center gap-1">
         <span className="font-ubuntu text-2xl text-white select-none mr-3">{title}</span>
         <Badge>{cardsTotalCount} total</Badge>

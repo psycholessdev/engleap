@@ -29,8 +29,6 @@ const schema = z.strictObject({
     .min(5, { message: 'Password must be at least 5 characters' }),
 })
 
-type SignInData = z.infer<typeof schema>
-
 const AuthCard = () => {
   const [failure, setFailure] = useState('')
   const { signIn, loading } = useAuth()
@@ -39,7 +37,7 @@ const AuthCard = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<SignInData>({ resolver: zodResolver(schema) })
+  } = useForm({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: UserSignInData) => {
     // requesting after zod validation has passed

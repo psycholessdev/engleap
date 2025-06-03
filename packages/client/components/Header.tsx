@@ -1,10 +1,15 @@
+'use client'
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { IconUserCircle } from '@tabler/icons-react'
+import { IconUserCircle, IconLogout2 } from '@tabler/icons-react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/hooks'
 
 const Header = () => {
+  const { isLogged, loading, logout } = useAuth()
+
   return (
     <header className="absolute top-0 left-0 h-[90px] w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline">
       <div>
@@ -19,9 +24,20 @@ const Header = () => {
           <h3 className="text-el-primary text-2xl ml-7 select-none">EngLeap</h3>
         </Link>
       </div>
-      <Button variant="outline" size="sm">
-        <IconUserCircle /> Log in
-      </Button>
+
+      {loading && <Skeleton className="w-23 h-8 rounded-lg" />}
+      {!loading &&
+        (isLogged ? (
+          <Button variant="outline" size="sm" onClick={() => logout()}>
+            <IconLogout2 /> Log out
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/signin">
+              <IconUserCircle /> Log in
+            </Link>
+          </Button>
+        ))}
     </header>
   )
 }
