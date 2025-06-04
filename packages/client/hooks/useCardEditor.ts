@@ -3,7 +3,11 @@ import { useState } from 'react'
 import { deleteCard as deleteCardHandler } from '@/api'
 import { useNotifications } from '@/hooks/useNotifications'
 
-export const useCardEditor = () => {
+interface IUseCardEditor {
+  onDeleteCard?: (cardId: string) => void
+}
+
+export const useCardEditor = ({ onDeleteCard }: IUseCardEditor) => {
   const [loading, setLoading] = useState(false)
   const { alert } = useNotifications()
 
@@ -13,6 +17,9 @@ export const useCardEditor = () => {
 
       setLoading(true)
       await deleteCardHandler(cardId)
+      if (onDeleteCard) {
+        onDeleteCard(cardId)
+      }
       return true
     } catch (error: AxiosError) {
       if (!error.response) {

@@ -19,7 +19,7 @@ import { Loader2Icon } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCreateDeck } from '@/hooks'
+import { useDeckController } from '@/hooks'
 
 const FormSchema = z.object({
   title: z
@@ -36,7 +36,7 @@ const FormSchema = z.object({
 })
 
 const CreateDeckForm = () => {
-  const { failureMessage, loading, createDeck } = useCreateDeck()
+  const { failureMessage, loading, createDeck } = useDeckController()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

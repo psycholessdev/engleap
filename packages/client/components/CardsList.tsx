@@ -17,10 +17,22 @@ interface ICardItem {
   sentence: string
   targetWords: TargetWord[]
   showButtons?: boolean
+  onDelete?: (cardId: string) => void
 }
 
-export const CardItem: React.FC<ICardItem> = ({ sentence, targetWords, showButtons, cardId }) => {
-  const { loading, deleteCard } = useCardEditor()
+export const CardItem: React.FC<ICardItem> = ({
+  sentence,
+  targetWords,
+  showButtons,
+  cardId,
+  onDelete,
+}) => {
+  const { loading, deleteCard } = useCardEditor({ onDeleteCard: onDelete })
+  const handleDeleteCard = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    deleteCard(cardId)
+  }
+
   return (
     <div className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
       <div className="flex flex-col gap-1">
@@ -39,7 +51,7 @@ export const CardItem: React.FC<ICardItem> = ({ sentence, targetWords, showButto
           </Button>
         )}
         {showButtons && (
-          <Button variant="outline" size="sm" onClick={() => deleteCard(cardId)}>
+          <Button variant="outline" size="sm" onClick={handleDeleteCard}>
             <IconTrash />
           </Button>
         )}
@@ -69,11 +81,12 @@ interface ICardsList {
 
 const CardsList: React.FC<ICardsList> = ({ deckId }) => {
   const { userId } = useAuth()
-  const { cards } = useFetchCards(deckId)
+  const { cards, refetchCards } = useFetchCards(deckId)
+  let cardNodes: React.ReactNode | null
 
   if (cards === undefined) {
     // fetching state
-    return (
+    cardNodes = (
       <div className="flex flex-col gap-2">
         {Array(4)
           .fill(null)
@@ -82,23 +95,29 @@ const CardsList: React.FC<ICardsList> = ({ deckId }) => {
           ))}
       </div>
     )
-  }
-  if (cards === null) {
+  } else if (cards === null) {
     // idle state, fetch failed
-    return <p>Try again</p>
+    cardNodes = <p>Try again</p>
+  } else {
+    cardNodes = cards.map((card: Card) => (
+      <CardItem
+        key={card.id}
+        cardId={card.id}
+        sentence={card.sentence}
+        targetWords={card.targetWords}
+        showButtons={userId === card.createdByUserId}
+        onDelete={() => refetchCards()}
+      />
+    ))
   }
 
   return (
     <div>
-      {cards.map((card: Card) => (
-        <CardItem
-          key={card.id}
-          cardId={card.id}
-          sentence={card.sentence}
-          targetWords={card.targetWords}
-          showButtons={userId === card.createdByUserId}
-        />
-      ))}
+      <div className="flex items-center gap-3">
+        <h2 className="font-ubuntu text-2xl text-white">🚀 Cards</h2>
+        <Badge>{cards?.length || 0} items</Badge>
+      </div>
+      {cardNodes}
     </div>
   )
 }

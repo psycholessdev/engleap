@@ -1,6 +1,6 @@
 export * from './useAuth'
 export * from './useNotifications'
 export * from './useFetchDecks'
-export * from './useCreateDeck'
+export * from './useDeckController'
 export * from './useFetchCards'
 export * from './useCardEditor'

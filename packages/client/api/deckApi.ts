@@ -19,7 +19,19 @@ export interface CreateDeckRequest {
   isPublic: boolean
 }
 
-export const CreateDeck = async (data: CreateDeckRequest): Promise<Deck> => {
+export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
   const res = await $axios.post('/decks', data)
   return res.data
+}
+
+export interface ChangeFollowStatusDeckRequest {
+  deckId: string
+}
+
+export const followDeck = async (data: ChangeFollowStatusDeckRequest) => {
+  await $axios.post('/user/decks', data)
+}
+
+export const unfollowDeck = async (data: ChangeFollowStatusDeckRequest) => {
+  await $axios.delete('/user/decks', { data })
 }
