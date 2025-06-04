@@ -1,8 +1,29 @@
 import { Response } from 'express'
-import { CreateDeckRequest, DeleteDeckRequest, GetAllDecksRequest } from '../types'
-import { createDeck, deleteDeck, getDeckById, getDecksByUserId } from '../services'
+import { CreateDeckRequest, DeleteDeckRequest, GetAllDecksRequest, GetDeckRequest } from '../types'
+import { createDeck, deleteDeck, getDeckById, getDecksByUserId, getDeckStats } from '../services'
 import { getErrorObject, handleError } from '../utils'
 import { getRequestUserId } from './utils'
+
+export const getDeckController = async (req: GetDeckRequest, res: Response) => {
+  try {
+    const { deckId } = req.params
+    const userId = getRequestUserId(req)
+
+    // checks if the user is allowed to do the action
+    const deck = await getDeckById(deckId, ['id', 'title', 'description', 'creatorId', 'isPublic'])
+    if (!deck) {
+      return res.status(404).json(getErrorObject('Deck not found'))
+    }
+    if (deck.creatorId !== userId && !deck.isPublic) {
+      return res.status(403).json(getErrorObject('You do not have the right to see this deck'))
+    }
+    const stats = await getDeckStats(deckId)
+
+    return res.status(200).json({ deck, ...stats })
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to delete the deck')
+  }
+}
 
 export const getAllDecksController = async (req: GetAllDecksRequest, res: Response) => {
   try {

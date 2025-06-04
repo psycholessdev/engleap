@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useContext, useMemo, useEffect, useState } from 'react'
+import { useNotifications } from '@/hooks/useNotifications'
 import {
   userLogOut,
   userSignIn,
@@ -9,12 +10,12 @@ import {
   type UserSignUpData,
 } from '@/api'
 import { useRouter } from 'next/navigation'
-import { useNotifications } from '@/hooks/useNotifications'
 
 type AuthenticateResult = { success: boolean; reason?: string }
 
 type AuthContextType = {
   isLogged: boolean
+  userId: null | string
   loading: boolean
   signIn: (data: UserSignInData) => Promise<AuthenticateResult>
   signUp: (data: UserSignUpData) => Promise<AuthenticateResult>
@@ -23,6 +24,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   isLogged: false,
+  userId: null,
   loading: true,
   signIn: async () => Promise.resolve({ success: false }),
   signUp: async () => Promise.resolve({ success: false }),
@@ -31,6 +33,7 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false)
+  const [userId, setUserId] = useState<null | string>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const { alert } = useNotifications()
@@ -38,13 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        await getUser()
+        const user = await getUser()
         setIsLogged(true)
+        setUserId(user.id)
       } catch (error: AxiosError) {
         if (!error.response) {
           alert('Authentication failed', 'Check your internet connection', 'failure')
         }
         setIsLogged(false)
+        setUserId(null)
       } finally {
         setLoading(false)
       }
@@ -59,6 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await userSignIn(data)
       const user = await getUser()
       setIsLogged(true)
+      setUserId(user.id)
       router.push('/decks')
       alert('Successfully logged in', `Welcome, ${user.username}`, 'success')
       return { success: true }
@@ -86,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await userSignUp(data)
       const user = await getUser()
       setIsLogged(true)
+      setUserId(user.id)
       router.push('/decks')
       alert('Successfully signed up', `Welcome back, ${user.username}`, 'success')
       return { success: true }
@@ -111,6 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await userLogOut()
       setIsLogged(false)
+      setUserId(null)
       router.push('/signin')
       alert('Successfully logged out', 'Hope we see you again!', 'success')
     } catch (error) {
@@ -122,6 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     () => ({
       loading,
       isLogged,
+      userId,
       signUp,
       signIn,
       logout,

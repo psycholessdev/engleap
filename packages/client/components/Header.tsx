@@ -11,7 +11,7 @@ const Header = () => {
   const { isLogged, loading, logout } = useAuth()
 
   return (
-    <header className="absolute top-0 left-0 h-[90px] w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline">
+    <header className="fixed top-0 left-0 h-[90px] w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline">
       <div>
         <Link href="/" className="flex items-center">
           <Image

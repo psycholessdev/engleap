@@ -1,4 +1,4 @@
-import { Deck, UserDeck } from '../models'
+import { Card, Deck, UserDeck } from '../models'
 import { Op } from 'sequelize'
 
 export const getDecksByUserId = async (userId: string, offset = 0, limit = 20) => {
@@ -41,4 +41,11 @@ export const deleteDeck = async (id: string) => {
 
 export const getDeckById = async (id: string, attributes = ['id']) => {
   return await Deck.findByPk(id, { attributes })
+}
+
+export const getDeckStats = async (deckId: string) => {
+  const cardsTotal = await Card.count({ where: { deckId } })
+  const usersFollowing = await UserDeck.count({ where: { deckId } })
+
+  return { cardsTotal, usersFollowing }
 }

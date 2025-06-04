@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -18,18 +18,21 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import FormInputError from '@/components/FormInputError'
+import FailureAlert from '@/components/FailureAlert'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
+
 import Link from 'next/link'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import { type UserSignUpData } from '@/api'
-import { useAuth } from '@/hooks/useAuth'
-import FormInputError from '@/components/FormInputError'
-import FailureAlert from '@/components/FailureAlert'
 
-const schema = z.strictObject({
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useAuth } from '@/hooks/useAuth'
+
+const schema = z.object({
   username: z
     .string()
     .trim()
@@ -104,6 +107,7 @@ const AuthCard = () => {
                 required
                 {...register('username')}
               />
+              <p className="text-muted-foreground text-sm">This is your public display name.</p>
               <FormInputError error={errors.username} />
             </div>
             <div className="grid gap-2">

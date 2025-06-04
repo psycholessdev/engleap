@@ -8,8 +8,8 @@ export interface UserSignInData {
 }
 
 export const userSignIn = async (data: UserSignInData): Promise<UserSignResponse> => {
-  const req = await $axios.post('/auth/signin', data)
-  return req.data
+  const res = await $axios.post('/auth/signin', data)
+  return res.data
 }
 
 export interface UserSignUpData {
@@ -20,8 +20,8 @@ export interface UserSignUpData {
 }
 
 export const userSignUp = async (data: UserSignUpData): Promise<UserSignResponse> => {
-  const req = await $axios.post('/auth/signup', data)
-  return req.data
+  const res = await $axios.post('/auth/signup', data)
+  return res.data
 }
 
 export const userLogOut = async () => {

@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${ubuntu.variable} antialiased`}>
         <script
-          dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${getBackendUrl()}';` }}
+          dangerouslySetInnerHTML={{ __html: `window.__API_URL__ = '${getBackendUrl(true)}';` }}
         />
 
         <NotificationsProvider>
@@ -43,7 +43,7 @@ export default function RootLayout({
             <RootElement>
               <Header />
               <Navbar />
-              <div className="w-[90%] h-auto">{children}</div>
+              <div className="w-[90%] h-full">{children}</div>
             </RootElement>
           </AuthProvider>
         </NotificationsProvider>

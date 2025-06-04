@@ -167,7 +167,7 @@ Card
 
 **Response:** `200 OK`
 
-### Card API
+### Deck API
 
 #### Get my Decks
 
@@ -187,6 +187,21 @@ URL query
 
 ```
 Deck[]
+```
+
+#### Get Deck by id (uuid)
+
+- **URL:** `/decks/:deckId`
+- **Method:** `GET`
+
+**Response:** `200 OK`
+
+```json
+{
+  "deck": Deck,
+  "cardsTotal": "number",
+  "usersFollowing": "number"
+}
 ```
 
 #### Create a Deck

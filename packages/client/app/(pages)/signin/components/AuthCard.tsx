@@ -1,5 +1,4 @@
 'use client'
-import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,18 +10,21 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import Image from 'next/image'
-import Link from 'next/link'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { type UserSignInData } from '@/api'
-import { useAuth } from '@/hooks/useAuth'
-import { Loader2Icon } from 'lucide-react'
 import FormInputError from '@/components/FormInputError'
 import FailureAlert from '@/components/FailureAlert'
+import { Loader2Icon } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-const schema = z.strictObject({
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { type UserSignInData } from '@/api'
+
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useAuth } from '@/hooks/useAuth'
+
+const schema = z.object({
   email: z.string({ message: 'Email is required' }).email({ message: 'Email is invalid' }),
   password: z
     .string({ message: 'Password is required' })

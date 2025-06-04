@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import xss from 'xss'
-import { uuidUtilizedSchema } from './utils'
 
 export const credentialsAuthSchema = z.strictObject({
   email: z
@@ -34,5 +33,7 @@ export const createAccountSchema = z.strictObject({
 })
 
 export const changeFollowStatusDeckSchema = z.strictObject({
-  deckId: uuidUtilizedSchema,
+  deckId: z
+    .string({ message: 'you should provide a valid uuid' })
+    .uuid({ message: 'deckId should be a valid uuid' }),
 })

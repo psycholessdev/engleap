@@ -2,19 +2,22 @@ import { getBackendUrl, generateAuthHeaders } from '@/utils'
 
 const backendUrl = getBackendUrl()
 
-export const getIsAuthed = async () => {
+export const getDeck = async (deckId: string) => {
   const headers = await generateAuthHeaders()
 
-  if (!headers) return false
-
+  if (!headers) return null
   try {
-    const res = await fetch(`${backendUrl}/user`, {
+    const res = await fetch(`${backendUrl}/decks/${deckId}`, {
       cache: 'no-cache',
       headers,
     })
-    return res.ok
+    const data = await res.json()
+    if (res.ok) {
+      return data
+    }
+    return null
   } catch (error) {
     console.error(error)
-    return false
+    return null
   }
 }

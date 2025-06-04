@@ -1,12 +1,13 @@
 'use client'
-import React, { createContext, useContext, useState } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AnimatePresence, motion } from 'motion/react'
 import {
   IconExclamationCircle,
   IconRosetteDiscountCheck,
   IconAlertCircle,
 } from '@tabler/icons-react'
+
+import React, { createContext, useContext, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 
 type NotificationType = 'success' | 'failure' | 'warning'
 type NotificationsContextType = {
@@ -23,7 +24,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
 
-  const alert = (title: string, message: string, type: NotificationType) => {
+  const alert = (title: string, message: string, type: NotificationType = 'success') => {
     setTitle(title)
     setMessage(message)
     setType(type)

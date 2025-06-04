@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import xss from 'xss'
-import { uuidUtilizedSchema } from './utils'
 
 export const extractedDefinitionSchema = z
   .strictObject({
@@ -227,5 +226,7 @@ export const editCardToDeckSchema = z
 
 // :cardId param check
 export const cardIdParamUtilizedSchema = z.strictObject({
-  cardId: uuidUtilizedSchema,
+  cardId: z
+    .string({ message: 'you should provide a valid uuid' })
+    .uuid({ message: 'cardId should be a valid uuid' }),
 })

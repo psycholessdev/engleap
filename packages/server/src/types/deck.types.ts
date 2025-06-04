@@ -10,4 +10,5 @@ export type GetAllDecksRequest = Request<AnyObject, AnyObject, AnyObject, GetAll
 export type CreateDeckData = z.infer<typeof createDeckSchema>
 export type CreateDeckRequest = Request<AnyObject, AnyObject, CreateDeckData>
 
+export type GetDeckRequest = Request<DeckIdParamUtilizedData>
 export type DeleteDeckRequest = Request<DeckIdParamUtilizedData>
