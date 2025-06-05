@@ -19,6 +19,8 @@ export const createDeckSchema = z.strictObject({
   isPublic: z.coerce.boolean().default(true),
 })
 
+export const editDeckSchema = createDeckSchema.partial()
+
 // :deckId param check
 export const deckIdParamUtilizedSchema = z.strictObject({
   deckId: z

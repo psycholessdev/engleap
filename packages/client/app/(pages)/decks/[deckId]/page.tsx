@@ -6,7 +6,8 @@ import DeckHead from '@/app/(pages)/decks/[deckId]/components/DeckHead'
 import CardsList from '@/components/CardsList'
 
 export default async function Home({ params }: { params: Promise<{ deckId: string }> }) {
-  if (!(await getIsAuthed())) {
+  const userId = await getIsAuthed()
+  if (!userId) {
     redirect('/signin')
   }
   const { deckId } = await params
@@ -20,15 +21,17 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
     <>
       <DeckHead
         deckId={deckId}
-        creatorId={responseData.deck.creatorId}
+        showEditButtons={userId === responseData.deck.creatorId}
         title={responseData.deck.title}
+        description={responseData.deck.description}
         isPublic={responseData.deck.isPublic}
         cardsTotal={responseData.cardsTotal}
         usersFollowing={responseData.usersFollowing}
+        followingDefault={responseData.isUserFollowing}
       />
       <p className="font-ubuntu my-5 text-white text-lg">{responseData.deck.description}</p>
 
-      <CardsList deckId={deckId} />
+      <CardsList deckId={deckId} showButtons={userId === responseData.deck.creatorId} />
     </>
   )
 }

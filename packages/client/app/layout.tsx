@@ -1,12 +1,13 @@
 import React from 'react'
-import type { Metadata, Viewport } from 'next'
-import { Ubuntu } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Navbar from '@/components/Navbar'
-import { AuthProvider } from '@/hooks/useAuth'
-import { getBackendUrl } from '@/utils'
 import RootElement from '@/components/RootElement'
+import { Ubuntu } from 'next/font/google'
+
+import type { Metadata, Viewport } from 'next'
+import { getBackendUrl } from '@/utils'
+import { AuthProvider } from '@/hooks/useAuth'
 import { NotificationsProvider } from '@/hooks'
 
 const ubuntu = Ubuntu({

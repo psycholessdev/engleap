@@ -4,13 +4,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import AddCardButton from './AddCardButton'
 import { IconEdit, IconTrash } from '@tabler/icons-react'
 import { Loader2Icon } from 'lucide-react'
 
 import { type Card } from '@/api'
 import { type TargetWord } from '@/api'
 
-import { useAuth, useCardEditor, useFetchCards } from '@/hooks'
+import { useCardEditor, useFetchCards } from '@/hooks'
+import { useRouter } from 'next/navigation'
 
 interface ICardItem {
   cardId: string
@@ -79,8 +82,8 @@ interface ICardsList {
   showButtons?: boolean
 }
 
-const CardsList: React.FC<ICardsList> = ({ deckId }) => {
-  const { userId } = useAuth()
+const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
+  const router = useRouter()
   const { cards, refetchCards } = useFetchCards(deckId)
   let cardNodes: React.ReactNode | null
 
@@ -105,18 +108,20 @@ const CardsList: React.FC<ICardsList> = ({ deckId }) => {
         cardId={card.id}
         sentence={card.sentence}
         targetWords={card.targetWords}
-        showButtons={userId === card.createdByUserId}
+        showButtons={showButtons}
         onDelete={() => refetchCards()}
       />
     ))
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-start gap-3">
       <div className="flex items-center gap-3">
         <h2 className="font-ubuntu text-2xl text-white">🚀 Cards</h2>
         <Badge>{cards?.length || 0} items</Badge>
       </div>
+      <Input id="search" name="search" placeholder="Search Cards" />
+      <AddCardButton onClick={() => router.push(`/decks/${deckId}/addCard`)} />
       {cardNodes}
     </div>
   )

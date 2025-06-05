@@ -33,6 +33,21 @@ export const createDeck = async (
   return deck
 }
 
+export const updateDeck = async (
+  id: string,
+  title?: string,
+  description?: string,
+  isPublic?: boolean
+) => {
+  await Deck.update(
+    { title, description, isPublic },
+    {
+      where: { id },
+    }
+  )
+  return await Deck.findByPk(id)
+}
+
 export const deleteDeck = async (id: string) => {
   await Deck.destroy({
     where: { id },
@@ -43,9 +58,17 @@ export const getDeckById = async (id: string, attributes = ['id']) => {
   return await Deck.findByPk(id, { attributes })
 }
 
-export const getDeckStats = async (deckId: string) => {
+export const getDeckStats = async (deckId: string, userId?: string) => {
   const cardsTotal = await Card.count({ where: { deckId } })
   const usersFollowing = await UserDeck.count({ where: { deckId } })
+  let isUserFollowing = false
+  if (userId) {
+    const found = await UserDeck.findOne({
+      where: { deckId, userId },
+      attributes: ['id'],
+    })
+    isUserFollowing = !!found
+  }
 
-  return { cardsTotal, usersFollowing }
+  return { cardsTotal, usersFollowing, isUserFollowing }
 }

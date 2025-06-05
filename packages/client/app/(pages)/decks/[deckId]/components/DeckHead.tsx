@@ -2,18 +2,21 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { IconOctagonPlus, IconCancel, IconEdit } from '@tabler/icons-react'
+import { IconOctagonPlus, IconCancel } from '@tabler/icons-react'
 import { Loader2Icon } from 'lucide-react'
+import DeckEditor from './DeckEditor'
 
-import { useAuth, useDeckController } from '@/hooks'
+import { useDeckController } from '@/hooks'
 
 interface IDeckHead {
   deckId: string
   title: string
+  description: string
+  followingDefault: boolean
   isPublic: boolean
   cardsTotal: string
   usersFollowing: string
-  creatorId: string
+  showEditButtons: boolean
 }
 
 const DeckHead: React.FC<IDeckHead> = ({
@@ -22,10 +25,11 @@ const DeckHead: React.FC<IDeckHead> = ({
   usersFollowing,
   cardsTotal,
   deckId,
-  creatorId,
+  showEditButtons,
+  followingDefault,
+  description,
 }) => {
-  const { userId } = useAuth()
-  const [following, setFollowing] = useState(true)
+  const [following, setFollowing] = useState(followingDefault)
   const { loading, followDeck, unfollowDeck } = useDeckController()
 
   const handleFollowClick = () => {
@@ -48,10 +52,13 @@ const DeckHead: React.FC<IDeckHead> = ({
     <div className="w-full h-60 p-5 mt-5 bg-el-secondary-container rounded-2xl flex flex-col justify-between">
       <div className="self-end flex items-center gap-2">
         {/* Edit button */}
-        {userId === creatorId && (
-          <Button size="lg" variant="secondary">
-            <IconEdit /> Edit
-          </Button>
+        {showEditButtons && (
+          <DeckEditor
+            deckId={deckId}
+            defaultTitle={title}
+            defaultDescription={description}
+            defaultIsPublic={isPublic}
+          />
         )}
 
         {/* Follow button */}

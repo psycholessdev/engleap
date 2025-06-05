@@ -19,8 +19,15 @@ export interface CreateDeckRequest {
   isPublic: boolean
 }
 
+type EditDeckRequest = Partial<CreateDeckRequest>
+
 export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
   const res = await $axios.post('/decks', data)
+  return res.data
+}
+
+export const editDeck = async (deckId: string, data: EditDeckRequest): Promise<Deck> => {
+  const res = await $axios.put(`/decks/${deckId}`, data)
   return res.data
 }
 

@@ -20,31 +20,15 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDeckController } from '@/hooks'
-
-const FormSchema = z.object({
-  title: z
-    .string({ message: 'title is required' })
-    .min(2, { message: 'title should be at least 2 characters' })
-    .max(160, { message: 'title should be at much 160 characters' }),
-
-  description: z
-    .string()
-    .max(4000, { message: 'description should be at much 4000 characters' })
-    .optional(),
-
-  isPublic: z.boolean().default(true),
-})
+import { createDeckSchema } from '@/schema'
 
 const CreateDeckForm = () => {
   const { failureMessage, loading, createDeck } = useDeckController()
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      username: '',
-    },
+  const form = useForm<z.infer<typeof createDeckSchema>>({
+    resolver: zodResolver(createDeckSchema),
   })
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof createDeckSchema>) => {
     // requesting after zod validation has passed
     const success = await createDeck(data)
     if (success) form.reset()
@@ -109,7 +93,7 @@ const CreateDeckForm = () => {
                 defaultChecked={true}
                 onCheckedChange={handleSwitchChange}
               />
-              <Label htmlFor="isPublicSwitch-mode">Public Deck</Label>
+              <Label htmlFor="isPublicSwitch">Public Deck</Label>
             </div>
             <FormDescription>
               Public Decks are searchable via public search. Anyone will be able to find and study

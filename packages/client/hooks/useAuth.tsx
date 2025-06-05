@@ -47,6 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (error: AxiosError) {
         if (!error.response) {
           alert('Authentication failed', 'Check your internet connection', 'failure')
+          router.refresh()
         }
         setIsLogged(false)
         setUserId(null)
@@ -65,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const user = await getUser()
       setIsLogged(true)
       setUserId(user.id)
-      router.push('/decks')
+      router.refresh()
       alert('Successfully logged in', `Welcome, ${user.username}`, 'success')
       return { success: true }
     } catch (error: AxiosError) {
@@ -93,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const user = await getUser()
       setIsLogged(true)
       setUserId(user.id)
-      router.push('/decks')
+      router.refresh()
       alert('Successfully signed up', `Welcome back, ${user.username}`, 'success')
       return { success: true }
     } catch (error: AxiosError) {
@@ -119,7 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await userLogOut()
       setIsLogged(false)
       setUserId(null)
-      router.push('/signin')
+      router.refresh()
       alert('Successfully logged out', 'Hope we see you again!', 'success')
     } catch (error) {
       console.log(`logout error: ${error}`)

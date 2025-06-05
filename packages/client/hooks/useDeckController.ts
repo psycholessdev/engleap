@@ -4,10 +4,12 @@ import { useRouter } from 'next/navigation'
 import { useNotifications } from '@/hooks'
 import {
   createDeck as createDeckHandler,
+  editDeck as editDeckHandler,
   followDeck as followDeckHandler,
   unfollowDeck as unfollowDeckHandler,
   type ChangeFollowStatusDeckRequest,
   type CreateDeckRequest,
+  type EditDeckRequest,
 } from '@/api'
 
 export const useDeckController = () => {
@@ -36,6 +38,30 @@ export const useDeckController = () => {
         setFailureMessage('Internet connection error')
       }
       return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const editDeck = async (deckId: string, data: EditDeckRequest) => {
+    setFailureMessage('')
+
+    try {
+      if (loading) return false
+
+      setLoading(true)
+      const editedDeck = await editDeckHandler(deckId, data)
+      alert('Success', 'The changes were saved')
+      return editedDeck
+    } catch (error: AxiosError) {
+      if (error.response) {
+        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
+        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
+      } else {
+        alert('Failure', 'Internet connection error', 'failure')
+        setFailureMessage('Internet connection error')
+      }
+      return null
     } finally {
       setLoading(false)
     }
@@ -89,5 +115,5 @@ export const useDeckController = () => {
     }
   }
 
-  return { failureMessage, loading, createDeck, followDeck, unfollowDeck }
+  return { failureMessage, loading, createDeck, editDeck, followDeck, unfollowDeck }
 }

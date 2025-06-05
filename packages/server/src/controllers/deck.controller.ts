@@ -1,6 +1,19 @@
 import { Response } from 'express'
-import { CreateDeckRequest, DeleteDeckRequest, GetAllDecksRequest, GetDeckRequest } from '../types'
-import { createDeck, deleteDeck, getDeckById, getDecksByUserId, getDeckStats } from '../services'
+import {
+  CreateDeckRequest,
+  DeleteDeckRequest,
+  GetAllDecksRequest,
+  GetDeckRequest,
+  EditDeckRequest,
+} from '../types'
+import {
+  createDeck,
+  deleteDeck,
+  getDeckById,
+  getDecksByUserId,
+  getDeckStats,
+  updateDeck,
+} from '../services'
 import { getErrorObject, handleError } from '../utils'
 import { getRequestUserId } from './utils'
 
@@ -17,7 +30,7 @@ export const getDeckController = async (req: GetDeckRequest, res: Response) => {
     if (deck.creatorId !== userId && !deck.isPublic) {
       return res.status(403).json(getErrorObject('You do not have the right to see this deck'))
     }
-    const stats = await getDeckStats(deckId)
+    const stats = await getDeckStats(deckId, userId)
 
     return res.status(200).json({ deck, ...stats })
   } catch (error) {
@@ -46,6 +59,28 @@ export const createDeckController = async (req: CreateDeckRequest, res: Response
     return res.status(201).json(createdDeck)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to create deck')
+  }
+}
+
+export const editDeckController = async (req: EditDeckRequest, res: Response) => {
+  try {
+    const { deckId } = req.params
+    const { title, description, isPublic } = req.body
+    const userId = getRequestUserId(req)
+
+    // checks if the user is allowed to do the action
+    const deck = await getDeckById(deckId, ['id', 'creatorId'])
+    if (!deck) {
+      return res.status(404).json(getErrorObject('Deck not found'))
+    }
+    if (deck.creatorId !== userId) {
+      return res.status(403).json(getErrorObject('You do not have the right to delete this deck'))
+    }
+
+    const updatedDeck = await updateDeck(deckId, title, description, isPublic)
+    return res.status(200).json(updatedDeck)
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to delete the deck')
   }
 }
 

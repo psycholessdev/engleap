@@ -200,7 +200,8 @@ Deck[]
 {
   "deck": Deck,
   "cardsTotal": "number",
-  "usersFollowing": "number"
+  "usersFollowing": "number",
+  "isUserFollowing": "boolean"
 }
 ```
 
@@ -220,6 +221,27 @@ Request's body
 ```
 
 **Response:** `201 Created`
+
+```
+Deck
+```
+
+#### Update Deck
+
+- **URL:** `/decks`
+- **Method:** `PUT`
+
+Request's body
+
+```json
+{
+  "title": "string", // optional
+  "description": "string", // optional
+  "isPublic": "boolean" // optional
+}
+```
+
+**Response:** `200 OK`
 
 ```
 Deck
