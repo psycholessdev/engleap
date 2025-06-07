@@ -24,3 +24,13 @@ export const getCardsByDeckId = async (decKId: string): Promise<Card[]> => {
 export const deleteCard = async (cardId: string) => {
   return await $axios.delete(`/cards/${cardId}`)
 }
+
+export interface CreateCardRequest {
+  sentence: string
+  targetWords: string[]
+}
+
+export const createCard = async (deckId: string, data: CreateCardRequest) => {
+  const res = await $axios.post(`cards/deck/${deckId}`, data)
+  return res.data
+}

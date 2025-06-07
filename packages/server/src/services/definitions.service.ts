@@ -1,4 +1,4 @@
-import { Definition, Word } from '../models'
+import { CardTargetWord, Definition, Word } from '../models'
 import { Op } from 'sequelize'
 
 export const getDefinitionsByWord = async (word: string) => {
@@ -16,6 +16,30 @@ export const getDefinitionsByWord = async (word: string) => {
   const wordIdTexts = foundWords.map(w => w.id)
   return await Definition.findAll({
     where: { wordId: wordIdTexts },
+    limit: 20,
+    attributes: [
+      'id',
+      'wordId',
+      'text',
+      'partOfSpeech',
+      'labels',
+      'syllabifiedWord',
+      'offensive',
+      'source',
+      'sourceName',
+    ],
+  })
+}
+
+export const getDefinitionsForCard = async (cardId: string) => {
+  const ctws = await CardTargetWord.findAll({
+    where: { cardId },
+    attributes: ['wordId'],
+  })
+  const wordIds = ctws.map(ctw => ctw.wordId)
+
+  return await Definition.findAll({
+    where: { wordId: wordIds },
     limit: 20,
     attributes: [
       'id',

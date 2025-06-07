@@ -1,3 +1,6 @@
 export * from './getBackendUrl'
 export * from './getIsAuthed'
 export * from './generateAuthHeaders'
+export * from './generateTargetWords'
+export * from './convertRawTargetWords'
+export * from './deepCompare'

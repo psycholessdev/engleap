@@ -34,12 +34,7 @@ const schema = z.object({
 const AuthCard = () => {
   const [failure, setFailure] = useState('')
   const { signIn, loading } = useAuth()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({ resolver: zodResolver(schema) })
+  const form = useForm({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: UserSignInData) => {
     // requesting after zod validation has passed
@@ -47,7 +42,7 @@ const AuthCard = () => {
     const { success, reason } = await signIn(data)
 
     if (success) {
-      reset()
+      form.reset()
     }
     if (reason) {
       setFailure(reason)
@@ -73,7 +68,7 @@ const AuthCard = () => {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -83,9 +78,9 @@ const AuthCard = () => {
                 placeholder="lynn@gmail.com"
                 disabled={loading}
                 required
-                {...register('email')}
+                {...form.register('email')}
               />
-              <FormInputError error={errors.email} />
+              <FormInputError error={form.errors.email} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
@@ -94,9 +89,9 @@ const AuthCard = () => {
                 type="password"
                 disabled={loading}
                 required
-                {...register('password')}
+                {...form.register('password')}
               />
-              <FormInputError error={errors.password} />
+              <FormInputError error={form.errors.password} />
             </div>
 
             {/* General failure */}

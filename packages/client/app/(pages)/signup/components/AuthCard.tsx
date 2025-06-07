@@ -50,20 +50,14 @@ const schema = z.object({
 const AuthCard = () => {
   const [failure, setFailure] = useState('')
   const { signUp, loading } = useAuth()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    setValue,
-  } = useForm({ resolver: zodResolver(schema) })
+  const form = useForm({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: UserSignUpData) => {
     // requesting after zod validation has passed
     setFailure('')
     const { success, reason } = await signUp(data)
 
-    if (success) reset()
+    if (success) form.reset()
     if (reason) {
       setFailure(reason)
     }
@@ -73,7 +67,7 @@ const AuthCard = () => {
     // it's custom select that not handled by useForm by default
     // instead, I created hidden input passed to useForm
     // and its value changes when the custom select
-    setValue('proficiencyLevel', value)
+    form.setValue('proficiencyLevel', value)
   }
 
   return (
@@ -95,7 +89,7 @@ const AuthCard = () => {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="username">Username</Label>
@@ -105,10 +99,10 @@ const AuthCard = () => {
                 placeholder="lynn"
                 disabled={loading}
                 required
-                {...register('username')}
+                {...form.register('username')}
               />
               <p className="text-muted-foreground text-sm">This is your public display name.</p>
-              <FormInputError error={errors.username} />
+              <FormInputError error={form.errors.username} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -118,9 +112,9 @@ const AuthCard = () => {
                 placeholder="lynn@gmail.com"
                 disabled={loading}
                 required
-                {...register('email')}
+                {...form.register('email')}
               />
-              <FormInputError error={errors.email} />
+              <FormInputError error={form.errors.email} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
@@ -129,13 +123,18 @@ const AuthCard = () => {
                 type="password"
                 disabled={loading}
                 required
-                {...register('password')}
+                {...form.register('password')}
               />
-              <FormInputError error={errors.password} />
+              <FormInputError error={form.errors.password} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="proficiencyLevel">Your Proficiency level</Label>
-              <Input id="proficiencyLevel" type="text" hidden {...register('proficiencyLevel')} />
+              <Input
+                id="proficiencyLevel"
+                type="text"
+                hidden
+                {...form.register('proficiencyLevel')}
+              />
 
               {/* custom Select is not handled by useForm by default */}
               <Select disabled={loading} onValueChange={handleSelectChange}>
@@ -151,7 +150,7 @@ const AuthCard = () => {
                   <SelectItem value="C2">C2 (Proficient)</SelectItem>
                 </SelectContent>
               </Select>
-              <FormInputError error={errors.proficiencyLevel} />
+              <FormInputError error={form.errors.proficiencyLevel} />
             </div>
 
             {/* General failure */}

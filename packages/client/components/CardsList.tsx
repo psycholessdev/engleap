@@ -121,7 +121,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
         <Badge>{cards?.length || 0} items</Badge>
       </div>
       <Input id="search" name="search" placeholder="Search Cards" />
-      <AddCardButton onClick={() => router.push(`/decks/${deckId}/addCard`)} />
+      {showButtons && <AddCardButton onClick={() => router.push(`/decks/${deckId}/card`)} />}
       {cardNodes}
     </div>
   )

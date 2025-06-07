@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const createDeckSchema = z.object({
+export const createDeckFormSchema = z.object({
   title: z
     .string({ message: 'title is required' })
     .min(2, { message: 'title should be at least 2 characters' })
@@ -14,4 +14,4 @@ export const createDeckSchema = z.object({
   isPublic: z.boolean().default(true),
 })
 
-export const editDeckSchema = createDeckSchema.partial()
+export const editDeckSchema = createDeckFormSchema.partial()

@@ -20,15 +20,15 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDeckController } from '@/hooks'
-import { createDeckSchema } from '@/schema'
+import { createDeckFormSchema } from '@/schema'
 
 const CreateDeckForm = () => {
   const { failureMessage, loading, createDeck } = useDeckController()
-  const form = useForm<z.infer<typeof createDeckSchema>>({
-    resolver: zodResolver(createDeckSchema),
+  const form = useForm<z.infer<typeof createDeckFormSchema>>({
+    resolver: zodResolver(createDeckFormSchema),
   })
 
-  const onSubmit = async (data: z.infer<typeof createDeckSchema>) => {
+  const onSubmit = async (data: z.infer<typeof createDeckFormSchema>) => {
     // requesting after zod validation has passed
     const success = await createDeck(data)
     if (success) form.reset()
