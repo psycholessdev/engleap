@@ -101,6 +101,22 @@ export const editCard = async (
     }
 
     if (targetWords) {
+      // Syncs targetWords
+      // deleted CTWs get deleted
+      const cardTargetWords = await CardTargetWord.findAll({
+        where: { cardId },
+        attributes: ['id'],
+        include: [Word],
+        transaction,
+      })
+      const cardTargetWordsIdsToDelete = cardTargetWords
+        .filter(ctw => !targetWords.includes(ctw.word.text))
+        .map(ctw => ctw.id)
+      await CardTargetWord.destroy({
+        where: { id: cardTargetWordsIdsToDelete },
+        transaction,
+      })
+
       await linkDefinitionsToCard(cardId, userId, targetWords, definitions || [], transaction)
     }
   })

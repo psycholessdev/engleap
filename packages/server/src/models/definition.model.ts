@@ -27,6 +27,9 @@ export class Definition extends Model {
   @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   wordId!: string
 
+  @Column({ type: DataType.STRING, allowNull: true })
+  audio?: string
+
   @Column({ allowNull: false, type: DataType.TEXT })
   text!: string
 

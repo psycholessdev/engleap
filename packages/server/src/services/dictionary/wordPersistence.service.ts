@@ -78,6 +78,7 @@ export const upsertWordsAndDefinitions = async (
 
       definitionsToInsert.push({
         wordId: wordObj.id,
+        audio: def.pronunciationAudioUrl,
         text: def.text,
         partOfSpeech: def.partOfSpeech,
         labels: def.labels,

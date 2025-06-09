@@ -50,7 +50,11 @@ export const useCardController = () => {
       setLoading(true)
       const card = await editCardHandler(cardId, data)
       alert('Success', 'The changes were saved.')
+
+      // TODO refetch definitions in DefinitionList component and do not update the whole page
       router.refresh()
+      location.reload() // it's a temporary fix
+
       return card
     } catch (error: AxiosError) {
       console.log(error)

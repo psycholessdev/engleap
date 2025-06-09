@@ -20,6 +20,7 @@ export const getDefinitionsByWord = async (word: string) => {
     attributes: [
       'id',
       'wordId',
+      'audio',
       'text',
       'partOfSpeech',
       'labels',
@@ -44,6 +45,7 @@ export const getDefinitionsForCard = async (cardId: string) => {
     attributes: [
       'id',
       'wordId',
+      'audio',
       'text',
       'partOfSpeech',
       'labels',
