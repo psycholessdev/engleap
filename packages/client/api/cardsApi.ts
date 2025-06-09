@@ -31,6 +31,13 @@ export interface CreateCardRequest {
 }
 
 export const createCard = async (deckId: string, data: CreateCardRequest) => {
-  const res = await $axios.post(`cards/deck/${deckId}`, data)
+  const res = await $axios.post(`/cards/deck/${deckId}`, data)
+  return res.data
+}
+
+export type EditCardRequest = Partial<CreateCardRequest>
+
+export const editCard = async (cardId: string, data: EditCardRequest) => {
+  const res = await $axios.put(`/cards/${cardId}`, data)
   return res.data
 }

@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +17,7 @@ import { useCardEditor, useFetchCards } from '@/hooks'
 import { useRouter } from 'next/navigation'
 
 interface ICardItem {
+  deckId: string
   cardId: string
   sentence: string
   targetWords: TargetWord[]
@@ -28,16 +30,20 @@ export const CardItem: React.FC<ICardItem> = ({
   targetWords,
   showButtons,
   cardId,
+  deckId,
   onDelete,
 }) => {
   const { loading, deleteCard } = useCardEditor({ onDeleteCard: onDelete })
   const handleDeleteCard = (e: React.MouseEvent) => {
     e.stopPropagation()
+    e.preventDefault()
     deleteCard(cardId)
   }
 
   return (
-    <div className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
+    <Link
+      href={`/decks/${deckId}/card/${cardId}`}
+      className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
       <div className="flex flex-col gap-1">
         <Label className="text-white text-lg">{sentence}</Label>
         <div className="flex items-center gap-1">
@@ -59,7 +65,7 @@ export const CardItem: React.FC<ICardItem> = ({
           </Button>
         )}
       </div>
-    </div>
+    </Link>
   )
 }
 
@@ -106,6 +112,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
       <CardItem
         key={card.id}
         cardId={card.id}
+        deckId={deckId}
         sentence={card.sentence}
         targetWords={card.targetWords}
         showButtons={showButtons}

@@ -2,7 +2,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useNotifications } from '@/hooks'
-import { createCard as createCardHandler, type CreateCardRequest } from '@/api'
+import {
+  createCard as createCardHandler,
+  editCard as editCardHandler,
+  type CreateCardRequest,
+  type EditCardRequest,
+} from '@/api'
 
 export const useCardController = () => {
   const router = useRouter()
@@ -36,5 +41,31 @@ export const useCardController = () => {
     }
   }
 
-  return { loading, failureMessage, createCard }
+  const editCard = async (cardId: string, data: EditCardRequest) => {
+    setFailureMessage('')
+
+    try {
+      if (loading) return false
+
+      setLoading(true)
+      const card = await editCardHandler(cardId, data)
+      alert('Success', 'The changes were saved.')
+      router.refresh()
+      return card
+    } catch (error: AxiosError) {
+      console.log(error)
+      if (error.response) {
+        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
+        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
+      } else {
+        alert('Failure', 'Internet connection error', 'failure')
+        setFailureMessage('Internet connection error')
+      }
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { loading, failureMessage, createCard, editCard }
 }

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Toggle } from '@/components/ui/toggle'
 import { Button } from '@/components/ui/button'
 import FormInputError from '@/components/FormInputError'
+import DefinitionList from '@/components/DefinitionList'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { generateTargetWords, convertRawTargetWords, deepCompare } from '@/utils'
@@ -15,7 +16,7 @@ import { useForm } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCardController } from '@/hooks'
-import { type Card, type CreateCardRequest } from '@/api'
+import { type Card, type CreateCardRequest, type EditCardRequest } from '@/api'
 import { z } from 'zod'
 
 interface IAddCardForm {
@@ -24,7 +25,7 @@ interface IAddCardForm {
 }
 
 const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
-  const { loading, failureMessage, createCard } = useCardController()
+  const { loading, failureMessage, createCard, editCard } = useCardController()
   const [targetWordsToSelect, setTargetWordsToSelect] = useState<string[]>([])
   const [selectedTargetWords, setSelectedTargetWords] = useState<string[]>(
     convertRawTargetWords(cardToEdit?.targetWords || [])
@@ -43,16 +44,28 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       data.userSpecifiedTargetWords && data.userSpecifiedTargetWords.length > 0
         ? data.userSpecifiedTargetWords.split(',')
         : []
-    const reqData: CreateCardRequest = {
-      ...data,
-      targetWords: [...data.targetWords, ...userSpecifiedTargetWords],
-    }
-    delete reqData.userSpecifiedTargetWords
 
     if (cardToEdit) {
       // editing mode
+      const targetWords =
+        data.targetWords.length > 0 || userSpecifiedTargetWords.length > 0
+          ? [...data.targetWords, ...userSpecifiedTargetWords]
+          : undefined
+      const reqData: EditCardRequest = {
+        ...data,
+        targetWords,
+      }
+      delete reqData.userSpecifiedTargetWords
+
+      await editCard(cardToEdit.id, reqData)
     } else {
       // creating mode
+      const reqData: CreateCardRequest = {
+        ...data,
+        targetWords: [...data.targetWords, ...userSpecifiedTargetWords],
+      }
+      delete reqData.userSpecifiedTargetWords
+
       const result = await createCard(deckId, reqData)
 
       if (result) {
@@ -105,7 +118,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
     })
 
     return () => callback()
-  }, [form.subscribe])
+  }, [form, form.subscribe, updateTargetWords])
 
   useEffect(() => {
     if (cardToEdit) {
@@ -125,7 +138,13 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       form.setValue('targetWords', selectableTargetWords)
       form.setValue('userSpecifiedTargetWords', userSpecifiedTargetWords.join(', '))
     }
-  }, [cardToEdit])
+  }, [form, cardToEdit])
+
+  const selectedWordsCount =
+    selectedTargetWords.length +
+    (form.getValues().userSpecifiedTargetWords
+      ? form.getValues().userSpecifiedTargetWords.split(',').length
+      : 0)
 
   return (
     <div>
@@ -190,20 +209,27 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
           </div>
         )}
 
-        <div className="grid gap-2">
+        <div className="grid gap-2 w-full">
           <div className="flex items-center gap-2">
             <h2 className="font-ubuntu text-lg text-white">📓 Definitions block</h2>
-            <Badge>{selectedTargetWords.length} words selected</Badge>
+            <Badge>{selectedWordsCount} words selected</Badge>
           </div>
-          {form.getValues().sentence && selectedTargetWords.length === 0 && (
+          {form.getValues().sentence && selectedWordsCount === 0 && (
             <Alert variant="destructive">
               <IconBulb />
               <AlertTitle>Choose the target word (or a few) to generate the definitions</AlertTitle>
             </Alert>
           )}
+          {cardToEdit && <DefinitionList cardId={cardToEdit.id} />}
         </div>
 
-        <Button type="submit">{cardToEdit ? 'Save changes' : 'Generate Definitions'}</Button>
+        <Button type="submit">{cardToEdit ? '💾 Save changes' : '💡 Generate Definitions'}</Button>
+        {!cardToEdit && (
+          <p className="text-muted-foreground text-sm">
+            You can create your own definitions if you want. Just click &apos;Generate
+            Definitions&apos; and you will be able to add your own!
+          </p>
+        )}
       </form>
     </div>
   )

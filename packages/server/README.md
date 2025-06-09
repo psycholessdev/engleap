@@ -254,7 +254,18 @@ Deck
 
 **Response:** `200 OK`
 
-### Definition API
+### DefinitionList API
+
+#### Get definitions for a Card
+
+- **URL:** `/definitions/card/:cardId`
+- **Method:** `GET`
+
+**Response:** `200 OK`
+
+```
+DefinitionList[]
+```
 
 #### Get definitions by a word
 
@@ -264,7 +275,7 @@ Deck
 **Response:** `200 OK`
 
 ```
-Definition[]
+DefinitionList[]
 ```
 
 ### Word API
