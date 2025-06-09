@@ -25,6 +25,9 @@ export class Deck extends Model {
   @Column({ type: DataType.TEXT })
   description!: string
 
+  @Column({ type: DataType.UUID, allowNull: true })
+  copiedFrom?: string
+
   // only this user can edit
   @BelongsTo(() => User, 'creatorId')
   creator!: NonAttribute<User>
