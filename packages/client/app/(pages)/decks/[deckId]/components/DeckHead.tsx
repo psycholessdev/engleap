@@ -85,7 +85,7 @@ const DeckHead: React.FC<IDeckHead> = ({
             {isPublic ? 'public' : 'private'}
           </Badge>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
           <Badge variant="secondary">{cardsTotal} cards</Badge>
           <Badge variant="secondary">{usersFollowing} people use it</Badge>
         </div>

@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import AddCardButton from './AddCardButton'
+import AddButtonGhost from './AddButtonGhost'
 import { IconEdit, IconTrash } from '@tabler/icons-react'
 import { Loader2Icon } from 'lucide-react'
 
@@ -128,7 +128,9 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
         <Badge>{cards?.length || 0} items</Badge>
       </div>
       <Input id="search" name="search" placeholder="Search Cards" />
-      {showButtons && <AddCardButton onClick={() => router.push(`/decks/${deckId}/card`)} />}
+      {showButtons && (
+        <AddButtonGhost text="Add Card" onClick={() => router.push(`/decks/${deckId}/card`)} />
+      )}
       {cardNodes}
     </div>
   )

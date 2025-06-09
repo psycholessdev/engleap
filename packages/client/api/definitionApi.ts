@@ -3,6 +3,7 @@ import { $axios } from '@/api/baseApi'
 export interface Definition {
   id: string
   wordId: string
+  audio?: string
   text: string
   partOfSpeech: string
   labels: string[]

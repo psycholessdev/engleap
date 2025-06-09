@@ -7,6 +7,7 @@ import { IconBulb } from '@tabler/icons-react'
 import { Badge } from '@/components/ui/badge'
 import { Toggle } from '@/components/ui/toggle'
 import { Button } from '@/components/ui/button'
+import AddButtonGhost from '@/components/AddButtonGhost'
 import FormInputError from '@/components/FormInputError'
 import DefinitionList from '@/components/DefinitionList'
 
@@ -209,7 +210,19 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
           </div>
         )}
 
-        <div className="grid gap-2 w-full">
+        <div className="flex flex-col items-start gap-2 w-full">
+          <div className="mb-4 flex flex-col items-start gap-2">
+            <Button disabled={loading || selectedWordsCount === 0} type="submit">
+              {cardToEdit ? '💾 Save changes' : '💡 Generate Definitions'}
+            </Button>
+            {!cardToEdit && (
+              <p className="text-muted-foreground text-sm">
+                You can create your own definitions if you want. Just click &apos;Generate
+                Definitions&apos; and you will be able to add your own in the Edit mode!
+              </p>
+            )}
+          </div>
+
           <div className="flex items-center gap-2">
             <h2 className="font-ubuntu text-lg text-white">📓 Definitions block</h2>
             <Badge>{selectedWordsCount} words selected</Badge>
@@ -220,16 +233,10 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
               <AlertTitle>Choose the target word (or a few) to generate the definitions</AlertTitle>
             </Alert>
           )}
+
+          <AddButtonGhost text="Add custom definition" />
           {cardToEdit && <DefinitionList cardId={cardToEdit.id} />}
         </div>
-
-        <Button type="submit">{cardToEdit ? '💾 Save changes' : '💡 Generate Definitions'}</Button>
-        {!cardToEdit && (
-          <p className="text-muted-foreground text-sm">
-            You can create your own definitions if you want. Just click &apos;Generate
-            Definitions&apos; and you will be able to add your own!
-          </p>
-        )}
       </form>
     </div>
   )
