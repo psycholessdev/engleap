@@ -2,6 +2,7 @@ import { Transaction } from 'sequelize'
 import { Word } from '../../models'
 import { fetchMerriamWebsterIntermediateDefinitions } from './dictionaryAdapter.service'
 import { upsertWordsAndDefinitions } from './wordPersistence.service'
+import { ExtractedDefinition } from '../../types'
 
 export const ensureWordsInDictionary = async (
   createdByUserId: string,
@@ -33,7 +34,12 @@ export const ensureWordsInDictionary = async (
   const notFoundWords = externalDictionaryResult.filter(r => !r.found).map(r => r.word)
 
   // For foundResults, extract arrays of definitions
-  const definitionsList = foundResults.map(r => r.extractedDefinitions)
+  const definitionsRaw = foundResults.map(r => r.extractedDefinitions)
+  const definitionsList: ExtractedDefinition[] = []
+  for (const bunchOfDefs of definitionsRaw) {
+    definitionsList.push(...bunchOfDefs)
+  }
+
   // the word texts in the same order
   const foundTexts = foundResults.map(r => r.word)
 

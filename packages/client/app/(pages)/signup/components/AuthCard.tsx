@@ -102,7 +102,7 @@ const AuthCard = () => {
                 {...form.register('username')}
               />
               <p className="text-muted-foreground text-sm">This is your public display name.</p>
-              <FormInputError error={form.errors.username} />
+              <FormInputError error={form.formState.errors?.username} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -114,7 +114,7 @@ const AuthCard = () => {
                 required
                 {...form.register('email')}
               />
-              <FormInputError error={form.errors.email} />
+              <FormInputError error={form.formState.errors?.email} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
@@ -125,7 +125,7 @@ const AuthCard = () => {
                 required
                 {...form.register('password')}
               />
-              <FormInputError error={form.errors.password} />
+              <FormInputError error={form.formState.errors?.password} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="proficiencyLevel">Your Proficiency level</Label>
@@ -150,7 +150,7 @@ const AuthCard = () => {
                   <SelectItem value="C2">C2 (Proficient)</SelectItem>
                 </SelectContent>
               </Select>
-              <FormInputError error={form.errors.proficiencyLevel} />
+              <FormInputError error={form.formState.errors?.proficiencyLevel} />
             </div>
 
             {/* General failure */}

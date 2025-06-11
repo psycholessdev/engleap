@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertTitle } from '@/components/ui/alert'
@@ -7,9 +7,10 @@ import { IconBulb } from '@tabler/icons-react'
 import { Badge } from '@/components/ui/badge'
 import { Toggle } from '@/components/ui/toggle'
 import { Button } from '@/components/ui/button'
-import AddButtonGhost from '@/components/AddButtonGhost'
+import DefinitionEditorModal from '@/components/DefinitionEditorModal'
 import FormInputError from '@/components/FormInputError'
 import DefinitionList from '@/components/DefinitionList'
+import AddButtonGhost from '@/components/AddButtonGhost'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { generateTargetWords, convertRawTargetWords, deepCompare } from '@/utils'
@@ -26,6 +27,7 @@ interface IAddCardForm {
 }
 
 const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
+  const modalOpenBtnRef = useRef<HTMLButtonElement>(null)
   const { loading, failureMessage, createCard, editCard } = useCardController()
   const [targetWordsToSelect, setTargetWordsToSelect] = useState<string[]>([])
   const [selectedTargetWords, setSelectedTargetWords] = useState<string[]>(
@@ -234,10 +236,24 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
             </Alert>
           )}
 
-          <AddButtonGhost text="Add custom definition" />
+          {cardToEdit && (
+            <AddButtonGhost
+              text="Add custom definition"
+              onClick={() => modalOpenBtnRef?.current?.click()}
+            />
+          )}
           {cardToEdit && <DefinitionList cardId={cardToEdit.id} />}
         </div>
       </form>
+
+      {cardToEdit && (
+        <DefinitionEditorModal
+          openBtnRef={modalOpenBtnRef}
+          cardId={cardToEdit.id}
+          sentence={cardToEdit.sentence}
+          selectedTargetWords={selectedTargetWords}
+        />
+      )}
     </div>
   )
 }

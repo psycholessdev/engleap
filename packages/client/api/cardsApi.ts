@@ -16,6 +16,18 @@ export interface TargetWord {
   }
 }
 
+export interface Definition {
+  id: string
+  word: string
+  text: string
+  partOfSpeech: string
+  syllabifiedWord: string
+  pronunciationAudioUrl?: string
+  offensive?: boolean
+  labels?: string[]
+  stems?: string[]
+}
+
 export const getCardsByDeckId = async (decKId: string): Promise<Card[]> => {
   const res = await $axios.get(`/cards/deck/${decKId}`)
   return res.data
@@ -28,6 +40,7 @@ export const deleteCard = async (cardId: string) => {
 export interface CreateCardRequest {
   sentence: string
   targetWords: string[]
+  definitions?: Definition[]
 }
 
 export const createCard = async (deckId: string, data: CreateCardRequest) => {

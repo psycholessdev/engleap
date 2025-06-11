@@ -25,7 +25,7 @@ const SpeakerButton: React.FC<ISpeakerButton> = ({ audioUrl }) => {
     return () => {
       if (audio) {
         audio.remove()
-        setAudio(undefined)
+        setAudio(null)
       }
     }
   }, [])
@@ -72,6 +72,7 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({ definition }) => {
       <span className="font-ubuntu">{definition.partOfSpeech}</span>
       <div className="flex items-center gap-1">
         {definition.offensive && <Badge variant="destructive">Offensive</Badge>}
+        {definition.source === 'user' && <Badge variant="secondary">User-defined</Badge>}
         {definition.labels.map((l, i) => (
           <Badge variant="secondary" key={i}>
             {l}

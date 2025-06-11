@@ -13,7 +13,7 @@ import { Loader2Icon } from 'lucide-react'
 import { type Card } from '@/api'
 import { type TargetWord } from '@/api'
 
-import { useCardEditor, useFetchCards } from '@/hooks'
+import { useCardController, useFetchCards } from '@/hooks'
 import { useRouter } from 'next/navigation'
 
 interface ICardItem {
@@ -33,11 +33,15 @@ export const CardItem: React.FC<ICardItem> = ({
   deckId,
   onDelete,
 }) => {
-  const { loading, deleteCard } = useCardEditor({ onDeleteCard: onDelete })
+  const { loading, deleteCard } = useCardController()
   const handleDeleteCard = (e: React.MouseEvent) => {
     e.stopPropagation()
     e.preventDefault()
-    deleteCard(cardId)
+    deleteCard(cardId).then(() => {
+      if (onDelete) {
+        onDelete(cardId)
+      }
+    })
   }
 
   return (

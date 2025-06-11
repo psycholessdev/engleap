@@ -75,18 +75,15 @@ export const extractedDefinitionSchema = z
       .default([]),
   })
   .refine(
-    ({ word, syllabifiedWord }) => {
+    ({ id, syllabifiedWord }) => {
       // check if syllabifiedWord matches the original
       const parsedSyllabifiedWord: string[] = syllabifiedWord.split('*')
-      return word === parsedSyllabifiedWord.join('')
+      return id === parsedSyllabifiedWord.join('')
     },
     { message: 'syllabifiedWord should match the original word' }
   )
 
-const userProvidedDefinitions = z
-  .array(z.array(extractedDefinitionSchema).min(1).max(10))
-  .min(1)
-  .max(15)
+const userProvidedDefinitions = z.array(extractedDefinitionSchema).min(1).max(15)
 
 export const addCardToDeckSchema = z
   .strictObject({
@@ -207,7 +204,7 @@ export const editCardToDeckSchema = z
           // targetWords should be provided
           return false
         }
-        const wordsLowercase = definitions.map(def => def[0].word.toLowerCase())
+        const wordsLowercase = definitions.map(def => def.word.toLowerCase())
         for (const word of wordsLowercase) {
           if (!targetWords.includes(word)) {
             // unrecognized definition

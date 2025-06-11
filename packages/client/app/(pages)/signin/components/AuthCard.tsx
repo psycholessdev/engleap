@@ -80,7 +80,7 @@ const AuthCard = () => {
                 required
                 {...form.register('email')}
               />
-              <FormInputError error={form.errors.email} />
+              <FormInputError error={form.formState.errors?.email} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
@@ -91,7 +91,7 @@ const AuthCard = () => {
                 required
                 {...form.register('password')}
               />
-              <FormInputError error={form.errors.password} />
+              <FormInputError error={form.formState.errors?.password} />
             </div>
 
             {/* General failure */}

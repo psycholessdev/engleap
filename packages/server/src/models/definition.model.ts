@@ -30,6 +30,9 @@ export class Definition extends Model {
   @Column({ type: DataType.STRING, allowNull: true })
   audio?: string
 
+  @Column({ allowNull: false })
+  preciseWord!: string
+
   @Column({ allowNull: false, type: DataType.TEXT })
   text!: string
 

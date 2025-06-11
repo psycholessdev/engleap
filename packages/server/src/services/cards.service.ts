@@ -60,7 +60,7 @@ export const addCard = async (
   sentence: string,
   createdByUserId: string,
   targetWords: string[],
-  definitions?: ExtractedDefinition[][]
+  definitions?: ExtractedDefinition[]
 ) => {
   return await sequelize.transaction(async transaction => {
     const [createdCard, inserted] = await Card.findOrCreate({
@@ -85,7 +85,7 @@ export const editCard = async (
   userId: string,
   sentence: string | undefined,
   targetWords: string[] | undefined,
-  definitions?: ExtractedDefinition[][]
+  definitions?: ExtractedDefinition[]
 ) => {
   return await sequelize.transaction(async transaction => {
     if (sentence) {
@@ -129,7 +129,7 @@ export const linkDefinitionsToCard = async (
   cardId: string,
   createdByUserId: string,
   targetWords: string[],
-  definitions: ExtractedDefinition[][],
+  definitions: ExtractedDefinition[],
   transaction: Transaction
 ) => {
   // Auto (dictionary) path: try to fetch+persist missing from Merriam-Webster

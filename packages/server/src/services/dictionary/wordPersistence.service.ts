@@ -4,7 +4,7 @@ import { Definition, Word } from '../../models'
 
 export const upsertWordsAndDefinitions = async (
   targetWords: string[],
-  definitions: ExtractedDefinition[][],
+  definitions: ExtractedDefinition[],
   source: 'dictionary' | 'user',
   sourceName: 'Merriam Webster Intermediate dictionary' | undefined,
   createdByUserId: string,
@@ -52,44 +52,42 @@ export const upsertWordsAndDefinitions = async (
   // Builds payload for Definition rows
   const definitionsToInsert: Record<string, unknown>[] = []
 
-  for (const defsOfOneWord of definitions) {
-    // defsOfOneWord is an array of ExtractedDefinition
-    const wordText = defsOfOneWord[0]?.word
+  for (const def of definitions) {
+    const wordText = def.word
     const wordObj = allWordsByText[wordText]
     if (!wordObj) {
       throw new Error('Failed to get the word associated with a definition')
     }
 
-    for (const def of defsOfOneWord) {
-      // check if this definition is already defined
-      const fetchedDefinition = await Definition.findOne({
-        where: {
-          wordId: wordObj.id,
-          text: def.text,
-          partOfSpeech: def.partOfSpeech,
-          createdByUserId,
-        },
-        attributes: ['id'],
-        transaction,
-      })
-      if (fetchedDefinition) {
-        continue
-      }
-
-      definitionsToInsert.push({
+    // check if this definition is already defined
+    const fetchedDefinition = await Definition.findOne({
+      where: {
         wordId: wordObj.id,
-        audio: def.pronunciationAudioUrl,
         text: def.text,
         partOfSpeech: def.partOfSpeech,
-        labels: def.labels,
-        syllabifiedWord: def.syllabifiedWord,
-        offensive: def.offensive,
-        source,
-        sourceName,
-        difficulty: 'B2',
         createdByUserId,
-      })
+      },
+      attributes: ['id'],
+      transaction,
+    })
+    if (fetchedDefinition) {
+      continue
     }
+
+    definitionsToInsert.push({
+      wordId: wordObj.id,
+      audio: def.pronunciationAudioUrl,
+      text: def.text,
+      partOfSpeech: def.partOfSpeech,
+      labels: def.labels,
+      preciseWord: def.id,
+      syllabifiedWord: def.syllabifiedWord,
+      offensive: def.offensive,
+      source,
+      sourceName,
+      difficulty: 'B2',
+      createdByUserId,
+    })
   }
 
   const insertedDefinitions =
