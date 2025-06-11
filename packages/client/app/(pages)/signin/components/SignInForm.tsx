@@ -16,37 +16,23 @@ import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { z } from 'zod'
+import { signInSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type UserSignInData } from '@/api'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '@/hooks/useAuth'
 
-const schema = z.object({
-  email: z.string({ message: 'Email is required' }).email({ message: 'Email is invalid' }),
-  password: z
-    .string({ message: 'Password is required' })
-    .min(5, { message: 'Password must be at least 5 characters' }),
-})
-
-const AuthCard = () => {
-  const [failure, setFailure] = useState('')
-  const { signIn, loading } = useAuth()
-  const form = useForm({ resolver: zodResolver(schema) })
+const SignInForm = () => {
+  const { signIn, isLoading, failureMessage } = useAuth()
+  const form = useForm({ resolver: zodResolver(signInSchema) })
 
   const onSubmit = async (data: UserSignInData) => {
     // requesting after zod validation has passed
-    setFailure('')
-    const { success, reason } = await signIn(data)
+    const { success } = await signIn(data)
 
-    if (success) {
-      form.reset()
-    }
-    if (reason) {
-      setFailure(reason)
-    }
+    if (success) form.reset()
   }
 
   return (
@@ -76,7 +62,7 @@ const AuthCard = () => {
                 id="email"
                 type="email"
                 placeholder="lynn@gmail.com"
-                disabled={loading}
+                disabled={isLoading}
                 required
                 {...form.register('email')}
               />
@@ -87,7 +73,7 @@ const AuthCard = () => {
               <Input
                 id="password"
                 type="password"
-                disabled={loading}
+                disabled={isLoading}
                 required
                 {...form.register('password')}
               />
@@ -95,9 +81,9 @@ const AuthCard = () => {
             </div>
 
             {/* General failure */}
-            {failure && <FailureAlert title="Failure" message={failure} />}
+            {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
 
-            {loading ? (
+            {isLoading ? (
               <Button className="w-full" disabled>
                 <Loader2Icon className="animate-spin" />
                 Please wait
@@ -113,4 +99,4 @@ const AuthCard = () => {
     </Card>
   )
 }
-export default AuthCard
+export default SignInForm

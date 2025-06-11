@@ -112,6 +112,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
     // idle state, fetch failed
     cardNodes = <p>Try again</p>
   } else {
+    console.log(cards)
     cardNodes = cards.map((card: Card) => (
       <CardItem
         key={card.id}

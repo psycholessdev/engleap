@@ -23,12 +23,12 @@ const SpeakerButton: React.FC<ISpeakerButton> = ({ audioUrl }) => {
     setAudio(new Audio(audioUrl))
 
     return () => {
-      if (audio) {
-        audio.remove()
-        setAudio(null)
-      }
+      setAudio(val => {
+        if (val) val.remove()
+        return null
+      })
     }
-  }, [])
+  }, [audioUrl])
   return (
     <button
       type="button"

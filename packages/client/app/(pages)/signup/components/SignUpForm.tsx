@@ -22,45 +22,25 @@ import FormInputError from '@/components/FormInputError'
 import FailureAlert from '@/components/FailureAlert'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
-
 import Link from 'next/link'
-import { z } from 'zod'
+
+import { signupSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type UserSignUpData } from '@/api'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '@/hooks/useAuth'
 
-const schema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(3, { message: 'Username should be at least 3 characters' })
-    .max(18, { message: 'Username should be at much 18 characters' }),
-  email: z.string({ message: 'Email is required' }).email({ message: 'Email is invalid' }),
-  password: z
-    .string({ message: 'Password is required' })
-    .min(5, { message: 'Password must be at least 5 characters' }),
-  proficiencyLevel: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], {
-    message: 'Proficiency Level is required',
-  }),
-})
-
-const AuthCard = () => {
-  const [failure, setFailure] = useState('')
-  const { signUp, loading } = useAuth()
-  const form = useForm({ resolver: zodResolver(schema) })
+const SignUpForm = () => {
+  const { signUp, isLoading, failureMessage } = useAuth()
+  const form = useForm({ resolver: zodResolver(signupSchema) })
 
   const onSubmit = async (data: UserSignUpData) => {
     // requesting after zod validation has passed
-    setFailure('')
-    const { success, reason } = await signUp(data)
+    const { success } = await signUp(data)
 
     if (success) form.reset()
-    if (reason) {
-      setFailure(reason)
-    }
   }
 
   const handleSelectChange = (value: string) => {
@@ -97,7 +77,7 @@ const AuthCard = () => {
                 id="username"
                 type="text"
                 placeholder="lynn"
-                disabled={loading}
+                disabled={isLoading}
                 required
                 {...form.register('username')}
               />
@@ -110,7 +90,7 @@ const AuthCard = () => {
                 id="email"
                 type="email"
                 placeholder="lynn@gmail.com"
-                disabled={loading}
+                disabled={isLoading}
                 required
                 {...form.register('email')}
               />
@@ -121,7 +101,7 @@ const AuthCard = () => {
               <Input
                 id="password"
                 type="password"
-                disabled={loading}
+                disabled={isLoading}
                 required
                 {...form.register('password')}
               />
@@ -137,7 +117,7 @@ const AuthCard = () => {
               />
 
               {/* custom Select is not handled by useForm by default */}
-              <Select disabled={loading} onValueChange={handleSelectChange}>
+              <Select disabled={isLoading} onValueChange={handleSelectChange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Proficiency level" />
                 </SelectTrigger>
@@ -154,9 +134,9 @@ const AuthCard = () => {
             </div>
 
             {/* General failure */}
-            {failure && <FailureAlert title="Failure" message={failure} />}
+            {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
 
-            {loading ? (
+            {isLoading ? (
               <Button className="w-full" disabled>
                 <Loader2Icon className="animate-spin" />
                 Please wait
@@ -172,4 +152,4 @@ const AuthCard = () => {
     </Card>
   )
 }
-export default AuthCard
+export default SignUpForm

@@ -10,22 +10,25 @@ import {
   type UserSignUpData,
 } from '@/api'
 import { useRouter } from 'next/navigation'
+import { useAxiosErrorHandler } from '@/hooks'
 
 type AuthenticateResult = { success: boolean; reason?: string }
 
 type AuthContextType = {
   isLogged: boolean
   userId: null | string
-  loading: boolean
+  isLoading: boolean
   signIn: (data: UserSignInData) => Promise<AuthenticateResult>
   signUp: (data: UserSignUpData) => Promise<AuthenticateResult>
+  failureMessage: string
   logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   isLogged: false,
   userId: null,
-  loading: true,
+  isLoading: true,
+  failureMessage: '',
   signIn: async () => Promise.resolve({ success: false }),
   signUp: async () => Promise.resolve({ success: false }),
   logout: async () => Promise.resolve(),
@@ -34,25 +37,26 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false)
   const [userId, setUserId] = useState<null | string>(null)
-  const [loading, setLoading] = useState(true)
+  const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
   const router = useRouter()
   const { alert } = useNotifications()
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      try {
-        const user = await getUser()
+      const user = await handleAxios(
+        async () => {
+          return await getUser()
+        },
+        { errorMessage: 'Authentication failed' }
+      )
+
+      if (user) {
         setIsLogged(true)
         setUserId(user.id)
-      } catch (error: AxiosError) {
-        if (!error.response) {
-          alert('Authentication failed', 'Check your internet connection', 'failure')
-          router.refresh()
-        }
+      } else {
         setIsLogged(false)
         setUserId(null)
-      } finally {
-        setLoading(false)
+        router.refresh()
       }
     }
 
@@ -60,83 +64,68 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   const signIn = async (data: UserSignInData) => {
-    try {
-      setLoading(true)
-      await userSignIn(data)
-      const user = await getUser()
-      setIsLogged(true)
+    const user = await handleAxios(
+      async () => {
+        return await userSignIn(data)
+      },
+      { errorMessage: 'Failed to sign in' }
+    )
+
+    if (user) {
       setUserId(user.id)
       router.refresh()
       alert('Successfully logged in', `Welcome, ${user.username}`, 'success')
-      return { success: true }
-    } catch (error: AxiosError) {
-      let reason = 'Check your credentials'
-      if (error.response) {
-        if (error.response.data?.reason) {
-          reason = error.response.data.reason
-        }
-      } else {
-        reason = 'Check your internet connection'
-        console.log(`sign in error: ${error}`)
-      }
-
-      alert('Failed to sign in', reason, 'failure')
-      return { success: false, reason }
-    } finally {
-      setLoading(false)
     }
+
+    return { success: !!user }
   }
 
   const signUp = async (data: UserSignUpData) => {
-    try {
-      setLoading(true)
-      await userSignUp(data)
-      const user = await getUser()
+    const user = await handleAxios(
+      async () => {
+        await userSignUp(data)
+        return await getUser()
+      },
+      { errorMessage: 'Failed to sign up' }
+    )
+
+    if (user) {
       setIsLogged(true)
       setUserId(user.id)
       router.refresh()
       alert('Successfully signed up', `Welcome back, ${user.username}`, 'success')
-      return { success: true }
-    } catch (error: AxiosError) {
-      let reason = 'Check your credentials'
-      if (error.response) {
-        if (error.response.data?.reason) {
-          reason = error.response.data.reason
-        }
-      } else {
-        reason = 'Check your internet connection'
-        console.log(`sign up error: ${error}`)
-      }
-
-      alert('Failed to sign up', reason, 'failure')
-      return { success: false, reason }
-    } finally {
-      setLoading(false)
     }
+    return { success: !!user }
   }
 
   const logout = async () => {
-    try {
-      await userLogOut()
+    const success = await handleAxios(
+      async () => {
+        await userLogOut()
+        return true
+      },
+      { errorMessage: 'logout error' }
+    )
+
+    if (success) {
       setIsLogged(false)
       setUserId(null)
       router.refresh()
       alert('Successfully logged out', 'Hope we see you again!', 'success')
-    } catch (error) {
-      console.log(`logout error: ${error}`)
     }
   }
 
   const value = useMemo(
     () => ({
-      loading,
+      isLoading,
       isLogged,
       userId,
       signUp,
       signIn,
+      failureMessage,
       logout,
     }),
-    [isLogged, loading]
+    [isLogged, failureMessage]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

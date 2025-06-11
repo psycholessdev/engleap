@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks'
 
 const Header = () => {
-  const { isLogged, loading, logout } = useAuth()
+  const { isLogged, isLoading, logout } = useAuth()
 
   return (
     <header className="fixed top-0 left-0 h-[90px] w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline">
@@ -25,8 +25,8 @@ const Header = () => {
         </Link>
       </div>
 
-      {loading && <Skeleton className="w-23 h-8 rounded-lg" />}
-      {!loading &&
+      {isLoading && <Skeleton className="w-23 h-8 rounded-lg" />}
+      {!isLoading &&
         (isLogged ? (
           <Button variant="outline" size="sm" onClick={() => logout()}>
             <IconLogout2 /> Log out

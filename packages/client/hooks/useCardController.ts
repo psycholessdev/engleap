@@ -1,7 +1,6 @@
 'use client'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useNotifications } from '@/hooks'
+import { useAxiosErrorHandler, useNotifications } from '@/hooks'
 import {
   createCard as createCardHandler,
   editCard as editCardHandler,
@@ -12,63 +11,39 @@ import type { CreateCardRequest, EditCardRequest, Card, Definition } from '@/api
 export const useCardController = () => {
   const router = useRouter()
   const { alert } = useNotifications()
-  const [failureMessage, setFailureMessage] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
 
   const createCard = async (deckId: string, data: CreateCardRequest) => {
-    setFailureMessage('')
+    const creationDetails = await handleAxios(
+      async () => {
+        return await createCardHandler(deckId, data)
+      },
+      { errorMessage: 'Failed to create Card' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      const creationDetails = await createCardHandler(deckId, data)
+    if (creationDetails) {
       alert('Success', 'The Card was successfully created.')
       router.push(`/decks/${deckId}/card/${creationDetails.card.id}`)
-      return creationDetails
-    } catch (error: AxiosError) {
-      console.log(error)
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return null
-    } finally {
-      setLoading(false)
     }
+    return creationDetails
   }
 
   const editCard = async (cardId: string, data: EditCardRequest): Promise<Card | null> => {
-    setFailureMessage('')
+    const card = await handleAxios(
+      async () => {
+        return await editCardHandler(cardId, data)
+      },
+      { errorMessage: 'Failed to edit Card' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      const card = await editCardHandler(cardId, data)
+    if (card) {
       alert('Success', 'The changes were saved.')
 
       // TODO refetch definitions in DefinitionList component and do not update the whole page
       router.refresh()
       location.reload() // it's a temporary fix
-
-      return card
-    } catch (error: AxiosError) {
-      console.log(error)
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return null
-    } finally {
-      setLoading(false)
     }
+    return card
   }
 
   const addCustomDefinition = async (
@@ -77,62 +52,33 @@ export const useCardController = () => {
     targetWords: string[],
     def: Definition
   ) => {
-    setFailureMessage('')
+    const card = await handleAxios(
+      async () => {
+        return await editCardHandler(cardId, { sentence, targetWords, definitions: [def] })
+      },
+      { errorMessage: 'Failed to add custom Definition' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-
-      const card = await editCardHandler(cardId, { sentence, targetWords, definitions: [def] })
+    if (card) {
       alert('Success', 'The changes were saved.')
       // TODO refetch definitions in DefinitionList component and do not update the whole page
       router.refresh()
       location.reload() // it's a temporary fix
-
-      return card
-    } catch (error: AxiosError) {
-      console.log(error)
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return null
-    } finally {
-      setLoading(false)
     }
+    return card
   }
 
   const deleteCard = async (cardId: string) => {
-    setFailureMessage('')
+    const success = await handleAxios(
+      async () => {
+        await deleteCardHandler(cardId)
+        return true
+      },
+      { errorMessage: 'Card does not exist or you do not have the right to delete it' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      await deleteCardHandler(cardId)
-      return true
-    } catch (error: AxiosError) {
-      console.log(error)
-      if (error.response) {
-        alert('Failed to delete card', 'Check your internet connection', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert(
-          'Failed to delete card',
-          'Card does not exist or you do not have the right to delete it.',
-          'failure'
-        )
-        setFailureMessage('Internet connection error')
-      }
-      return false
-    } finally {
-      setLoading(false)
-    }
+    return !!success
   }
 
-  return { loading, failureMessage, createCard, editCard, addCustomDefinition, deleteCard }
+  return { isLoading, failureMessage, createCard, editCard, addCustomDefinition, deleteCard }
 }

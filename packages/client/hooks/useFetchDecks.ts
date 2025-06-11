@@ -1,19 +1,22 @@
 'use client'
 import React, { useEffect } from 'react'
 import { getMyDecks, type Deck } from '@/api'
+import { useAxiosErrorHandler } from '@/hooks'
 
 export const useFetchDecks = () => {
+  const { handleAxios } = useAxiosErrorHandler()
   const [decks, setDecks] = React.useState<Deck[] | undefined | null>(undefined)
 
   useEffect(() => {
     const fetchDecks = async () => {
-      try {
-        const decks = await getMyDecks()
-        setDecks(decks)
-      } catch (error) {
-        console.error(error)
-        setDecks(null)
-      }
+      const decks = await handleAxios(
+        async () => {
+          return await getMyDecks()
+        },
+        { showAlert: false }
+      )
+
+      setDecks(decks)
     }
 
     if (decks === undefined) {

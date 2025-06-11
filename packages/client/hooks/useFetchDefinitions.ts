@@ -1,19 +1,22 @@
 'use client'
 import React, { useEffect } from 'react'
 import { getDefinitionsForCard, type Definition } from '@/api'
+import { useAxiosErrorHandler } from '@/hooks'
 
 export const useFetchDefinitions = (cardId: string) => {
+  const { handleAxios } = useAxiosErrorHandler()
   const [definitions, setDefinitions] = React.useState<Definition[] | undefined | null>(undefined)
 
   useEffect(() => {
     const fetchDefinitions = async () => {
-      try {
-        const definitions = await getDefinitionsForCard(cardId)
-        setDefinitions(definitions)
-      } catch (error) {
-        console.error(error)
-        setDefinitions(null)
-      }
+      const definitions = await handleAxios(
+        async () => {
+          return await getDefinitionsForCard(cardId)
+        },
+        { showAlert: false }
+      )
+
+      setDefinitions(definitions)
     }
 
     if (definitions === undefined) {

@@ -1,7 +1,6 @@
 'use client'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useNotifications } from '@/hooks'
+import { useNotifications, useAxiosErrorHandler } from '@/hooks'
 import {
   createDeck as createDeckHandler,
   editDeck as editDeckHandler,
@@ -15,105 +14,67 @@ import {
 export const useDeckController = () => {
   const router = useRouter()
   const { alert } = useNotifications()
-  const [failureMessage, setFailureMessage] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
 
   const createDeck = async (data: CreateDeckRequest) => {
-    setFailureMessage('')
+    const isSuccess = await handleAxios(
+      async () => {
+        await createDeckHandler(data)
+        return true
+      },
+      { errorMessage: 'Failed to create Deck' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      await createDeckHandler(data)
+    if (isSuccess) {
       alert('Success', 'Your Deck was successfully created.')
       router.push('/decks')
-      return true
-    } catch (error: AxiosError) {
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return false
-    } finally {
-      setLoading(false)
     }
+    return !!isSuccess
   }
 
   const editDeck = async (deckId: string, data: EditDeckRequest) => {
-    setFailureMessage('')
+    const editedDeck = await handleAxios(
+      async () => {
+        return await editDeckHandler(deckId, data)
+      },
+      { errorMessage: 'Failed to edit Deck' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      const editedDeck = await editDeckHandler(deckId, data)
+    if (editedDeck) {
       alert('Success', 'The changes were saved')
-      return editedDeck
-    } catch (error: AxiosError) {
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return null
-    } finally {
-      setLoading(false)
     }
+    return editedDeck
   }
 
   const followDeck = async (data: ChangeFollowStatusDeckRequest) => {
-    setFailureMessage('')
+    const isSuccess = await handleAxios(
+      async () => {
+        await followDeckHandler(data)
+        return true
+      },
+      { errorMessage: 'Failed to follow Deck' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      await followDeckHandler(data)
+    if (isSuccess) {
       alert('Success', 'Now you are following the Deck')
-      return true
-    } catch (error: AxiosError) {
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return false
-    } finally {
-      setLoading(false)
     }
+    return !!isSuccess
   }
 
   const unfollowDeck = async (data: ChangeFollowStatusDeckRequest) => {
-    setFailureMessage('')
+    const isSuccess = await handleAxios(
+      async () => {
+        await unfollowDeckHandler(data)
+        return true
+      },
+      { errorMessage: 'Failed to unfollow Deck' }
+    )
 
-    try {
-      if (loading) return false
-
-      setLoading(true)
-      await unfollowDeckHandler(data)
+    if (isSuccess) {
       alert('Success', 'You are no longer following the Deck')
-      return true
-    } catch (error: AxiosError) {
-      if (error.response) {
-        alert('Error', error.response?.reason || 'Unexpected error occurred', 'failure')
-        setFailureMessage(error.response?.reason || 'Unexpected error occurred')
-      } else {
-        alert('Failure', 'Internet connection error', 'failure')
-        setFailureMessage('Internet connection error')
-      }
-      return false
-    } finally {
-      setLoading(false)
     }
+    return !!isSuccess
   }
 
-  return { failureMessage, loading, createDeck, editDeck, followDeck, unfollowDeck }
+  return { failureMessage, isLoading, createDeck, editDeck, followDeck, unfollowDeck }
 }

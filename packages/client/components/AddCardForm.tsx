@@ -28,7 +28,7 @@ interface IAddCardForm {
 
 const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
   const modalOpenBtnRef = useRef<HTMLButtonElement>(null)
-  const { loading, failureMessage, createCard, editCard } = useCardController()
+  const { isLoading, failureMessage, createCard, editCard } = useCardController()
   const [targetWordsToSelect, setTargetWordsToSelect] = useState<string[]>([])
   const [selectedTargetWords, setSelectedTargetWords] = useState<string[]>(
     convertRawTargetWords(cardToEdit?.targetWords || [])
@@ -165,7 +165,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
             name="sentence"
             placeholder="I was fascinated how quickly she solved the issue"
             className="w-full"
-            disabled={loading}
+            disabled={isLoading}
             {...form.register('sentence')}
           />
           <FormInputError error={form.formState.errors.sentence} />
@@ -191,7 +191,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
                   variant="outline"
                   className="cursor-pointer"
                   key={i}
-                  disabled={loading}>
+                  disabled={isLoading}>
                   {w}
                 </Toggle>
               ))}
@@ -204,7 +204,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
               name="userSpecifiedTargetWords"
               placeholder="fascinated, quickly"
               className="w-full"
-              disabled={loading}
+              disabled={isLoading}
               {...form.register('userSpecifiedTargetWords')}
             />
             <p className="text-muted-foreground text-sm">Comma separated</p>
@@ -214,7 +214,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
 
         <div className="flex flex-col items-start gap-2 w-full">
           <div className="mb-4 flex flex-col items-start gap-2">
-            <Button disabled={loading || selectedWordsCount === 0} type="submit">
+            <Button disabled={isLoading || selectedWordsCount === 0} type="submit">
               {cardToEdit ? '💾 Save changes' : '💡 Generate Definitions'}
             </Button>
             {!cardToEdit && (

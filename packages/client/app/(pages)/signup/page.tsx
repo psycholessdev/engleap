@@ -1,5 +1,5 @@
 import React from 'react'
-import AuthCard from './components/AuthCard'
+import SignUpForm from './components/SignUpForm'
 import { getIsAuthed } from '@/utils'
 import { redirect } from 'next/navigation'
 
@@ -10,7 +10,7 @@ export default async function Home() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <AuthCard />
+      <SignUpForm />
     </div>
   )
 }

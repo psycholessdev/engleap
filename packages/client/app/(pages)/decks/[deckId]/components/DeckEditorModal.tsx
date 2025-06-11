@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
   Dialog,
@@ -9,11 +9,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { IconEdit } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import FormInputError from '@/components/FormInputError'
 
@@ -27,22 +25,25 @@ import { Loader2Icon } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
 
-interface IDeckEditor {
+interface IDeckEditorModal {
   deckId: string
   defaultTitle: string
   defaultDescription: string
   defaultIsPublic: boolean
+  opened: boolean
+  onCloseSignal: () => void
 }
 
-const DeckEditor: React.FC<IDeckEditor> = ({
+const DeckEditorModal: React.FC<IDeckEditorModal> = ({
   deckId,
   defaultTitle,
   defaultDescription,
   defaultIsPublic,
+  opened,
+  onCloseSignal,
 }) => {
   const router = useRouter()
-  const [modalOpen, setModalOpen] = useState(false)
-  const { failureMessage, loading, editDeck } = useDeckController()
+  const { failureMessage, isLoading, editDeck } = useDeckController()
   const form = useForm<z.infer<typeof editDeckSchema>>({
     resolver: zodResolver(editDeckSchema),
   })
@@ -55,7 +56,7 @@ const DeckEditor: React.FC<IDeckEditor> = ({
       form.setValue('description', editedDeck.description)
       form.setValue('isPublic', editedDeck.isPublic)
 
-      setModalOpen(false)
+      onCloseSignal()
       router.refresh()
     }
   }
@@ -65,12 +66,7 @@ const DeckEditor: React.FC<IDeckEditor> = ({
   }
 
   return (
-    <Dialog open={modalOpen}>
-      <DialogTrigger asChild>
-        <Button size="lg" variant="secondary" onClick={() => setModalOpen(true)}>
-          <IconEdit /> Edit
-        </Button>
-      </DialogTrigger>
+    <Dialog open={opened}>
       <DialogContent className="sm:max-w-[425px]">
         <form className="contents" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
@@ -110,7 +106,7 @@ const DeckEditor: React.FC<IDeckEditor> = ({
               <div className="flex items-center space-x-2">
                 <Switch
                   id="isPublicSwitch"
-                  disabled={loading}
+                  disabled={isLoading}
                   defaultChecked={defaultIsPublic}
                   onCheckedChange={handleSwitchChange}
                 />
@@ -123,13 +119,13 @@ const DeckEditor: React.FC<IDeckEditor> = ({
           {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
 
           <DialogFooter>
-            <DialogClose disabled={loading} asChild>
-              <Button disabled={loading} variant="outline" onClick={() => setModalOpen(false)}>
+            <DialogClose disabled={isLoading} asChild>
+              <Button disabled={isLoading} variant="outline" onClick={onCloseSignal}>
                 Cancel
               </Button>
             </DialogClose>
 
-            {loading ? (
+            {isLoading ? (
               <Button disabled>
                 <Loader2Icon className="animate-spin" />
                 Saving
@@ -143,4 +139,4 @@ const DeckEditor: React.FC<IDeckEditor> = ({
     </Dialog>
   )
 }
-export default DeckEditor
+export default DeckEditorModal

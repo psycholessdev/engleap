@@ -23,7 +23,7 @@ import { useDeckController } from '@/hooks'
 import { createDeckFormSchema } from '@/schema'
 
 const CreateDeckForm = () => {
-  const { failureMessage, loading, createDeck } = useDeckController()
+  const { failureMessage, isLoading, createDeck } = useDeckController()
   const form = useForm<z.infer<typeof createDeckFormSchema>>({
     resolver: zodResolver(createDeckFormSchema),
   })
@@ -49,7 +49,7 @@ const CreateDeckForm = () => {
               <FormItem>
                 <FormLabel>Name Your Deck</FormLabel>
                 <FormControl>
-                  <Input placeholder="B2 Law Terms" disabled={loading} {...field} />
+                  <Input placeholder="B2 Law Terms" disabled={isLoading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,7 +64,7 @@ const CreateDeckForm = () => {
                 <FormControl>
                   <Input
                     placeholder="Most used terms regarding casual US Law"
-                    disabled={loading}
+                    disabled={isLoading}
                     {...field}
                   />
                 </FormControl>
@@ -89,7 +89,7 @@ const CreateDeckForm = () => {
             <div className="flex items-center space-x-2">
               <Switch
                 id="isPublicSwitch"
-                disabled={loading}
+                disabled={isLoading}
                 defaultChecked={true}
                 onCheckedChange={handleSwitchChange}
               />
@@ -104,7 +104,7 @@ const CreateDeckForm = () => {
           {/* General failure */}
           {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
 
-          {loading ? (
+          {isLoading ? (
             <Button disabled>
               <Loader2Icon className="animate-spin" />
               Please wait
