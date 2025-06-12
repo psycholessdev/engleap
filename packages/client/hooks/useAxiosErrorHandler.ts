@@ -6,12 +6,13 @@ interface HandleAxiosOptions {
   errorTitle?: string
   errorMessage?: string
   showAlert?: boolean
+  createFailureMessage?: boolean
 }
 
 export const useAxiosErrorHandler = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [failureMessage, setFailureMessage] = useState('')
-  const { alert } = useNotifications()
+  const alert = useNotifications()
 
   const handleAxios = async <T>(
     callback: () => Promise<T | null>,
@@ -21,6 +22,7 @@ export const useAxiosErrorHandler = () => {
       errorTitle = 'Request Failed',
       errorMessage = 'Unexpected error occurred',
       showAlert = true,
+      createFailureMessage = true,
     } = options || {}
 
     try {
@@ -36,10 +38,14 @@ export const useAxiosErrorHandler = () => {
       }
 
       console.log(error)
+
       if (showAlert) {
         alert(errorTitle, reason, 'failure')
       }
-      setFailureMessage(reason)
+      if (createFailureMessage) {
+        setFailureMessage(reason)
+      }
+
       return null
     } finally {
       setIsLoading(false)

@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -25,15 +27,85 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import FormInputError from '@/components/FormInputError'
 import AddButtonGhost from '@/components/AddButtonGhost'
+import FailureAlert from '@/components/FailureAlert'
 import { Loader2Icon } from 'lucide-react'
+import { AlertCircleIcon } from 'lucide-react'
 
 import { addCustomDefinitionSchema } from '@/schema'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCardController } from '@/hooks'
-import FailureAlert from '@/components/FailureAlert'
 import { useRouter } from 'next/navigation'
+import { syllabify } from '@/utils'
+
+import { partOfSpeechDefs, type PartOfSpeechDef } from '@/app/consts'
+
+const PartOfSpeechSuggestionCard: React.FC<{ value: PartOfSpeechDef }> = ({ value }) => {
+  return (
+    <Alert>
+      <AlertCircleIcon />
+      <AlertTitle>{value.name}</AlertTitle>
+      <AlertDescription>
+        <span className="text-white">{value.text}</span>
+        <span>{value.sentenceExample}</span>
+        <div className="flex flex-wrap items-center gap-1">
+          {value.examples.map((e, i) => (
+            <Badge variant="outline" key={i}>
+              {e}
+            </Badge>
+          ))}
+        </div>
+      </AlertDescription>
+    </Alert>
+  )
+}
+
+const PartOfSpeechSelector: React.FC<{
+  disabled: boolean
+  onValueChange: (val: string) => void
+}> = ({ disabled, onValueChange }) => {
+  return (
+    <Select disabled={disabled} onValueChange={onValueChange}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select Part of speech" />
+      </SelectTrigger>
+      <SelectContent className="z-[8620]">
+        <SelectItem value="noun">noun</SelectItem>
+        <SelectItem value="pronoun">pronoun</SelectItem>
+        <SelectItem value="verb">verb</SelectItem>
+        <SelectItem value="adjective">adjective</SelectItem>
+        <SelectItem value="adverb">adverb</SelectItem>
+        <SelectItem value="phrasalVerb">phrasal verb</SelectItem>
+        <SelectItem value="idiom">idiom</SelectItem>
+        <SelectItem value="preposition">preposition</SelectItem>
+        <SelectItem value="conjunction">conjunction</SelectItem>
+        <SelectItem value="interjection">interjection</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+
+const TargetWordSelector: React.FC<{
+  disabled: boolean
+  onValueChange: (val: string) => void
+  selectedTargetWords: string[]
+}> = ({ disabled, onValueChange, selectedTargetWords }) => {
+  return (
+    <Select id="word" disabled={disabled} onValueChange={onValueChange}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select Target Word" />
+      </SelectTrigger>
+      <SelectContent className="z-[8620]">
+        {selectedTargetWords.map(stw => (
+          <SelectItem value={stw} key={stw}>
+            {stw}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
 
 interface IDefinitionEditorModal {
   cardId: string
@@ -49,6 +121,8 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
   openBtnRef,
 }) => {
   const router = useRouter()
+  const [syllableInfo, setSyllableInfo] = useState<PartOfSpeechDef | null>(null)
+  const [idAutofilled, setIdAutofilled] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const { loading, failureMessage, addCustomDefinition } = useCardController()
   const form = useForm<z.infer<typeof addCustomDefinitionSchema>>({
@@ -57,7 +131,6 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
       offensive: false,
     },
   })
-  console.log(form.formState.errors)
 
   const onSubmit = async (data: z.infer<typeof addCustomDefinitionSchema>) => {
     // requesting after zod validation has passed
@@ -79,6 +152,17 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
 
   const handleSelectPartOfSpeechChange = (value: string) => {
     form.setValue('partOfSpeech', value)
+    setSyllableInfo(partOfSpeechDefs[value])
+  }
+
+  const handleGenerateSyllabifiedWord = () => {
+    const id = form.getValues().id
+    if (!id) return
+
+    syllabify(id).then(text => {
+      form.setValue('syllabifiedWord', text)
+      form.setFocus('syllabifiedWord')
+    })
   }
 
   useEffect(() => {
@@ -91,6 +175,8 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
   useEffect(() => {
     if (!modalOpen) {
       form.reset()
+      setIdAutofilled(false)
+      setSyllableInfo(null)
     }
   }, [modalOpen, form])
 
@@ -101,14 +187,16 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
         touchedFields: true,
       },
       callback: ({ values }) => {
-        if (values.word && !values.id) {
+        if (!idAutofilled && values.word && !values.id) {
+          setIdAutofilled(true)
           form.setValue('id', values.word)
+          form.setFocus('id')
         }
       },
     })
 
     return () => callback()
-  }, [form, form.subscribe])
+  }, [form, form.subscribe, idAutofilled])
 
   return (
     <Dialog open={modalOpen}>
@@ -122,57 +210,43 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
           <DialogHeader>
             <DialogTitle>Add custom definition</DialogTitle>
             <DialogDescription>
-              Add your custom definitions so you can better remember them. Maybe you found a better
-              explanation than in the dictionary, or just want to simplify the existing ones.
-              Whatever the case, it a great way to strengthen you memory!
+              Write your own definition to help you remember the word better. Maybe you found a
+              simpler explanation or one that makes more sense to you. Either way, it&apos;s a great
+              way to strengthen your memory!
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="word">Target Word this definition for</Label>
+              <Label htmlFor="word">Target Word for this Definition</Label>
 
               {/* custom Select is not handled by useForm by default */}
-              <Select id="word" disabled={loading} onValueChange={handleSelectTargetWordChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select Target Word" />
-                </SelectTrigger>
-                <SelectContent className="z-[8620]">
-                  {selectedTargetWords.map(stw => (
-                    <SelectItem value={stw} key={stw}>
-                      {stw}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <TargetWordSelector
+                disabled={loading}
+                selectedTargetWords={selectedTargetWords}
+                onValueChange={handleSelectTargetWordChange}
+              />
               <FormInputError error={form.formState.errors.word} />
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="id">The word this definition for</Label>
+              <Label htmlFor="id">Exact Word for this Definition</Label>
               <Input id="id" name="id" disabled={loading} {...form.register('id')} />
+              <p className="text-muted-foreground text-sm">
+                Example: if the Target Word is “Ducks,” the exact word might be “Duck.”
+              </p>
               <FormInputError error={form.formState.errors.id} />
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="partOfSpeech">Part of speech</Label>
 
-              <Select disabled={loading} onValueChange={handleSelectPartOfSpeechChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select Part of speech" />
-                </SelectTrigger>
-                <SelectContent className="z-[8620]">
-                  <SelectItem value="noun">noun</SelectItem>
-                  <SelectItem value="pronoun">pronoun</SelectItem>
-                  <SelectItem value="verb">verb</SelectItem>
-                  <SelectItem value="adjective">adjective</SelectItem>
-                  <SelectItem value="adverb">adverb</SelectItem>
-                  <SelectItem value="phrasal-verb">phrasal-verb</SelectItem>
-                  <SelectItem value="idiom">idiom</SelectItem>
-                  <SelectItem value="preposition">preposition</SelectItem>
-                  <SelectItem value="conjunction">conjunction</SelectItem>
-                  <SelectItem value="interjection">interjection</SelectItem>
-                </SelectContent>
-              </Select>
+              <PartOfSpeechSelector
+                disabled={loading}
+                onValueChange={handleSelectPartOfSpeechChange}
+              />
+
+              {syllableInfo && <PartOfSpeechSuggestionCard value={syllableInfo} />}
+
               <FormInputError error={form.formState.errors.partOfSpeech} />
             </div>
 
@@ -192,7 +266,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
               <FormInputError error={form.formState.errors.text} />
             </div>
 
-            <div className="grid gap-3">
+            <div className="grid gap-3 items-start">
               <Label htmlFor="syllabifiedWord">Syllabified word</Label>
               <Input
                 id="syllabifiedWord"
@@ -201,6 +275,13 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
                 disabled={loading}
                 {...form.register('syllabifiedWord')}
               />
+              <Button disabled={loading} type="button" onClick={handleGenerateSyllabifiedWord}>
+                💡 Generate Syllabified Word (not always accurate)
+              </Button>
+              <p className="text-muted-foreground text-sm">
+                Automatic syllable generation may be incorrect. Double-check to ensure correct
+                pronunciation.
+              </p>
               <FormInputError error={form.formState.errors.syllabifiedWord} />
             </div>
           </div>

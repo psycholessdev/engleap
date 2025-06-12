@@ -46,7 +46,7 @@ const SignInForm = () => {
       />
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
-        <CardDescription>Enter your email below to login to your account</CardDescription>
+        <CardDescription>Enter your email and password to log in.</CardDescription>
         <CardAction>
           <Button variant="link" asChild>
             <Link href="/signup">Sign Up</Link>

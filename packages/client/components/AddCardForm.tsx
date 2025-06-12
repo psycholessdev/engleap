@@ -21,6 +21,29 @@ import { useCardController } from '@/hooks'
 import { type Card, type CreateCardRequest, type EditCardRequest } from '@/api'
 import { z } from 'zod'
 
+const TargetWordsPicker: React.FC<{
+  disabled: boolean
+  targetWordsToSelect: string[]
+  selectedTargetWords: string[]
+  onTargetWordClick: (word: string) => void
+}> = ({ targetWordsToSelect, selectedTargetWords, onTargetWordClick, disabled }) => {
+  return (
+    <>
+      {targetWordsToSelect.map((w, i) => (
+        <Toggle
+          pressed={selectedTargetWords.includes(w)}
+          onPressedChange={() => onTargetWordClick(w)}
+          variant="outline"
+          className="cursor-pointer"
+          key={i}
+          disabled={disabled}>
+          {w}
+        </Toggle>
+      ))}
+    </>
+  )
+}
+
 interface IAddCardForm {
   deckId: string
   cardToEdit?: Card // if specified, editing mode is enabled
@@ -54,22 +77,22 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
         data.targetWords.length > 0 || userSpecifiedTargetWords.length > 0
           ? [...data.targetWords, ...userSpecifiedTargetWords]
           : undefined
-      const reqData: EditCardRequest = {
+      const requestData: EditCardRequest = {
         ...data,
         targetWords,
       }
-      delete reqData.userSpecifiedTargetWords
+      delete requestData.userSpecifiedTargetWords
 
-      await editCard(cardToEdit.id, reqData)
+      await editCard(cardToEdit.id, requestData)
     } else {
       // creating mode
-      const reqData: CreateCardRequest = {
+      const requestData: CreateCardRequest = {
         ...data,
         targetWords: [...data.targetWords, ...userSpecifiedTargetWords],
       }
-      delete reqData.userSpecifiedTargetWords
+      delete requestData.userSpecifiedTargetWords
 
-      const result = await createCard(deckId, reqData)
+      const result = await createCard(deckId, requestData)
 
       if (result) {
         setSelectedTargetWords([])
@@ -148,6 +171,12 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
     (form.getValues().userSpecifiedTargetWords
       ? form.getValues().userSpecifiedTargetWords.split(',').length
       : 0)
+  const allTargetWords: string[] = [
+    ...selectedTargetWords,
+    ...(form.getValues().userSpecifiedTargetWords
+      ? form.getValues().userSpecifiedTargetWords.split(',')
+      : []),
+  ]
 
   return (
     <div>
@@ -160,7 +189,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
         <div className="grid gap-2">
           <FormInputError error={failureMessage} />
 
-          <h2 className="font-ubuntu text-lg text-white">Sentence with the target word(s)</h2>
+          <h2 className="font-ubuntu text-lg text-white">Sentence containing the target word(s)</h2>
           <Textarea
             name="sentence"
             placeholder="I was fascinated how quickly she solved the issue"
@@ -182,22 +211,17 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
 
         {form.getValues().sentence && (
           <div className="grid gap-2">
-            <h2 className="font-ubuntu text-lg text-white">🧩 Select the target word (or a few)</h2>
+            <h2 className="font-ubuntu text-lg text-white">🧩 Select the target word(s)</h2>
             <div className="flex flex-wrap gap-1">
-              {targetWordsToSelect.map((w, i) => (
-                <Toggle
-                  pressed={selectedTargetWords.includes(w)}
-                  onPressedChange={() => handleTargetWordClick(w)}
-                  variant="outline"
-                  className="cursor-pointer"
-                  key={i}
-                  disabled={isLoading}>
-                  {w}
-                </Toggle>
-              ))}
+              <TargetWordsPicker
+                disabled={isLoading}
+                selectedTargetWords={selectedTargetWords}
+                targetWordsToSelect={targetWordsToSelect}
+                onTargetWordClick={handleTargetWordClick}
+              />
             </div>
             <h2 className="font-ubuntu text-lg text-white">
-              Or type it manually if we failed to infer it properly
+              Or type them manually if we didn’t detect them correctly
             </h2>
             <Input
               type="text"
@@ -207,7 +231,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
               disabled={isLoading}
               {...form.register('userSpecifiedTargetWords')}
             />
-            <p className="text-muted-foreground text-sm">Comma separated</p>
+            <p className="text-muted-foreground text-sm">Separate multiple words with commas.</p>
             <FormInputError error={form.formState.errors.userSpecifiedTargetWords} />
           </div>
         )}
@@ -251,7 +275,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
           openBtnRef={modalOpenBtnRef}
           cardId={cardToEdit.id}
           sentence={cardToEdit.sentence}
-          selectedTargetWords={selectedTargetWords}
+          selectedTargetWords={allTargetWords}
         />
       )}
     </div>

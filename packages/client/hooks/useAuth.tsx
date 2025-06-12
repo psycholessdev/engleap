@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userId, setUserId] = useState<null | string>(null)
   const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
   const router = useRouter()
-  const { alert } = useNotifications()
+  const alert = useNotifications()
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -47,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         async () => {
           return await getUser()
         },
-        { errorMessage: 'Authentication failed' }
+        { showAlert: false, createFailureMessage: false }
       )
 
       if (user) {

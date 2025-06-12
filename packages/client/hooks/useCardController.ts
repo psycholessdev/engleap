@@ -10,7 +10,7 @@ import type { CreateCardRequest, EditCardRequest, Card, Definition } from '@/api
 
 export const useCardController = () => {
   const router = useRouter()
-  const { alert } = useNotifications()
+  const alert = useNotifications()
   const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
 
   const createCard = async (deckId: string, data: CreateCardRequest) => {

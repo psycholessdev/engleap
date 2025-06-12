@@ -32,6 +32,27 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '@/hooks/useAuth'
 
+const ProficiencyLevelPicker: React.FC<{ disabled: boolean; onSelect: (val: string) => void }> = ({
+  disabled,
+  onSelect,
+}) => {
+  return (
+    <Select disabled={disabled} onValueChange={onSelect}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Proficiency level" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="A1">A1 (Beginner)</SelectItem>
+        <SelectItem value="A2">A2 (Basic)</SelectItem>
+        <SelectItem value="B1">B1 (Intermediate)</SelectItem>
+        <SelectItem value="B2">B2 (Upper Intermediate)</SelectItem>
+        <SelectItem value="C1">C1 (Advanced)</SelectItem>
+        <SelectItem value="C2">C2 (Proficient)</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+
 const SignUpForm = () => {
   const { signUp, isLoading, failureMessage } = useAuth()
   const form = useForm({ resolver: zodResolver(signupSchema) })
@@ -61,7 +82,7 @@ const SignUpForm = () => {
       />
       <CardHeader>
         <CardTitle>Create your EngLeap account</CardTitle>
-        <CardDescription>Your journey to fluency is about to begin!</CardDescription>
+        <CardDescription>Your journey to fluency starts now!</CardDescription>
         <CardAction>
           <Button variant="link" asChild>
             <Link href="/signin">Sign In</Link>
@@ -117,19 +138,8 @@ const SignUpForm = () => {
               />
 
               {/* custom Select is not handled by useForm by default */}
-              <Select disabled={isLoading} onValueChange={handleSelectChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Proficiency level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="A1">A1 (Beginner)</SelectItem>
-                  <SelectItem value="A2">A2 (Basic)</SelectItem>
-                  <SelectItem value="B1">B1 (Intermediate)</SelectItem>
-                  <SelectItem value="B2">B2 (Upper Intermediate)</SelectItem>
-                  <SelectItem value="C1">C1 (Advanced)</SelectItem>
-                  <SelectItem value="C2">C2 (Proficient)</SelectItem>
-                </SelectContent>
-              </Select>
+              <ProficiencyLevelPicker disabled={isLoading} onSelect={handleSelectChange} />
+
               <FormInputError error={form.formState.errors?.proficiencyLevel} />
             </div>
 

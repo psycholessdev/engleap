@@ -77,7 +77,6 @@ const CreateDeckForm = () => {
             name="isPublic"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>isPublic</FormLabel>
                 <FormControl>
                   <Input type="checkbox" {...field} hidden />
                 </FormControl>
@@ -93,11 +92,11 @@ const CreateDeckForm = () => {
                 defaultChecked={true}
                 onCheckedChange={handleSwitchChange}
               />
-              <Label htmlFor="isPublicSwitch">Public Deck</Label>
+              <Label htmlFor="isPublicSwitch">Make Public</Label>
             </div>
             <FormDescription>
-              Public Decks are searchable via public search. Anyone will be able to find and study
-              it. You will be able to copy the share link to this Deck after creation is finished.
+              Public decks can be found via search and shared with others. You’ll get a shareable
+              link after creation.
             </FormDescription>
           </div>
 

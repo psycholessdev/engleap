@@ -10,13 +10,9 @@ import React, { createContext, useContext, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
 type NotificationType = 'success' | 'failure' | 'warning'
-type NotificationsContextType = {
-  alert: (title: string, message: string, type: NotificationType) => void
-}
+type NotificationsContextType = (title: string, message: string, type: NotificationType) => void
 
-const NotificationsContext = createContext<NotificationsContextType>({
-  alert: () => null,
-})
+const NotificationsContext = createContext<NotificationsContextType>(() => null)
 
 export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [timerId, setTimerId] = useState<number | null>(null)
@@ -40,7 +36,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   return (
-    <NotificationsContext.Provider value={{ alert }}>
+    <NotificationsContext.Provider value={alert}>
       {children}
       <AnimatePresence>
         {timerId && (

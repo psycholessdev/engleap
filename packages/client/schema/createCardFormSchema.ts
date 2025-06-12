@@ -3,18 +3,22 @@ import { z } from 'zod'
 export const createCardFormSchema = z
   .object({
     sentence: z
-      .string({ message: 'Specify a sentence with the target word(s)' })
+      .string({ message: 'Please enter a sentence that includes the target word(s).' })
       .trim()
-      .min(3, { message: 'Sentence should be at least 3 characters' })
+      .min(3, { message: 'The sentence must be at least 3 characters long.' })
       .max(4000, {
         message:
-          'Sentence should be at much 4000 characters. If you think you need more please contact me.',
+          'The sentence can be up to 4000 characters. If you need more space, feel free to contact us.',
       }),
     targetWords: z
       .array(
-        z.string({ message: 'Specify Target Word(s)' }).trim().toLowerCase().min(1, {
-          message: 'Check targetWords array: each target word should be at least 1 character',
-        })
+        z
+          .string({ message: 'Please specify at least one target word.' })
+          .trim()
+          .toLowerCase()
+          .min(1, {
+            message: 'Each target word must be at least 1 character long.',
+          })
       )
       .refine(
         array => {
@@ -29,10 +33,10 @@ export const createCardFormSchema = z
           }
           return true
         },
-        { message: 'All items in targetWords array should be unique' }
+        { message: 'Target words must be unique. Please remove any duplicates.' }
       ),
     userSpecifiedTargetWords: z
-      .string({ message: 'Specify Target Word(s)' })
+      .string({ message: 'Please specify at least one target word.' })
       .trim()
       .toLowerCase()
       .transform(str =>
@@ -54,7 +58,7 @@ export const createCardFormSchema = z
           }
           return true
         },
-        { message: 'All items in targetWords array should be unique. Do not repeat them.' }
+        { message: 'Target words must be unique. Please remove any duplicates.' }
       )
       .optional(),
   })
@@ -65,5 +69,5 @@ export const createCardFormSchema = z
 
       return tw.keys.length === ustw.keys.length
     },
-    { message: 'all items in targetWords array should be unique' }
+    { message: 'Target words must be unique. Please remove any duplicates.' }
   )

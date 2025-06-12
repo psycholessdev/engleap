@@ -4,13 +4,8 @@
 0 silly argv   globs: [],
 0 silly argv   lernaVersion: '5.6.2',
 0 silly argv   '$0': 'node_modules\\lerna\\cli.js',
-0 silly argv   pkg: '@radix-ui'
+0 silly argv   pkg: 'hyphen/patterns/en-us'
 0 silly argv }
 1 notice cli v5.6.2
 2 verbose rootPath D:\Web projects\engleap
-3 error Error: Invalid tag name "@radix-ui": Tags may not have any characters that encodeURIComponent encodes.
-3 error     at invalidTagName (D:\Web projects\engleap\node_modules\npm-package-arg\npa.js:94:15)
-3 error     at fromRegistry (D:\Web projects\engleap\node_modules\npm-package-arg\npa.js:299:13)
-3 error     at resolve (D:\Web projects\engleap\node_modules\npm-package-arg\npa.js:84:12)
-3 error     at npa (D:\Web projects\engleap\node_modules\npm-package-arg\npa.js:55:10)
-3 error     at AddCommand.initialize (D:\Web projects\engleap\node_modules\@lerna\add\index.js:46:17)
+3 error

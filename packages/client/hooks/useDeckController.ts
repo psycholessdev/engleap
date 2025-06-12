@@ -13,7 +13,7 @@ import {
 
 export const useDeckController = () => {
   const router = useRouter()
-  const { alert } = useNotifications()
+  const alert = useNotifications()
   const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
 
   const createDeck = async (data: CreateDeckRequest) => {

@@ -46,7 +46,7 @@ export const CardItem: React.FC<ICardItem> = ({
 
   return (
     <Link
-      href={`/decks/${deckId}/card/${cardId}`}
+      href={showButtons ? `/decks/${deckId}/card/${cardId}` : '#'}
       className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
       <div className="flex flex-col gap-1">
         <Label className="text-white text-lg">{sentence}</Label>

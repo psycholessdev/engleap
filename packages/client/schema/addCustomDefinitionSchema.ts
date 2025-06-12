@@ -7,10 +7,10 @@ export const addCustomDefinitionSchema = z
 
     // the original word, e.g. fascinate
     word: z
-      .string({ message: 'you should select a Target Word' })
+      .string({ message: 'You must select a target word.' })
       .trim()
       .toLowerCase()
-      .min(1, { message: 'you should select a Target Word' })
+      .min(1, { message: 'You must select a target word.' })
       .max(200),
 
     text: z.string().trim().min(1).max(4000),
@@ -29,5 +29,5 @@ export const addCustomDefinitionSchema = z
       const parsedSyllabifiedWord: string = syllabifiedWord.split('*').join('')
       return id === parsedSyllabifiedWord
     },
-    { message: 'syllabifiedWord should match the original word' }
+    { message: 'The syllabified word must match the original word.' }
   )
