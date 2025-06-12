@@ -5,6 +5,7 @@ import {
   createCard as createCardHandler,
   editCard as editCardHandler,
   deleteCard as deleteCardHandler,
+  deleteDefinition as deleteDefinitionHandler,
 } from '@/api'
 import type { CreateCardRequest, EditCardRequest, Card, Definition } from '@/api'
 
@@ -68,6 +69,24 @@ export const useCardController = () => {
     return card
   }
 
+  const deleteCustomDefinition = async (defId: string) => {
+    const success = await handleAxios(
+      async () => {
+        await deleteDefinitionHandler(defId)
+        return true
+      },
+      { errorMessage: 'Failed to delete custom Definition' }
+    )
+
+    if (success) {
+      alert('Success', 'The Definition was deleted.')
+      // TODO refetch definitions in DefinitionList component and do not update the whole page
+      router.refresh()
+      location.reload() // it's a temporary fix
+    }
+    return !!success
+  }
+
   const deleteCard = async (cardId: string) => {
     const success = await handleAxios(
       async () => {
@@ -80,5 +99,13 @@ export const useCardController = () => {
     return !!success
   }
 
-  return { isLoading, failureMessage, createCard, editCard, addCustomDefinition, deleteCard }
+  return {
+    isLoading,
+    failureMessage,
+    createCard,
+    editCard,
+    addCustomDefinition,
+    deleteCard,
+    deleteCustomDefinition,
+  }
 }

@@ -51,7 +51,8 @@ interface IAddCardForm {
 
 const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
   const modalOpenBtnRef = useRef<HTMLButtonElement>(null)
-  const { isLoading, failureMessage, createCard, editCard } = useCardController()
+  const { isLoading, failureMessage, createCard, editCard, deleteCustomDefinition } =
+    useCardController()
   const [targetWordsToSelect, setTargetWordsToSelect] = useState<string[]>([])
   const [selectedTargetWords, setSelectedTargetWords] = useState<string[]>(
     convertRawTargetWords(cardToEdit?.targetWords || [])
@@ -266,7 +267,14 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
               onClick={() => modalOpenBtnRef?.current?.click()}
             />
           )}
-          {cardToEdit && <DefinitionList cardId={cardToEdit.id} />}
+          {cardToEdit && (
+            <DefinitionList
+              cardId={cardToEdit.id}
+              disabled={isLoading}
+              showButtons
+              onDelete={deleteCustomDefinition}
+            />
+          )}
         </div>
       </form>
 

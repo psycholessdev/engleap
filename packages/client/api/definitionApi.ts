@@ -23,3 +23,7 @@ export const getDefinitionsForCard = async (
   const res = await $axios.get(`/definitions/card/${cardId}`)
   return res.data
 }
+
+export const deleteDefinition = async (defId: string) => {
+  await $axios.delete(`/definitions/${defId}`)
+}

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { IconVolume } from '@tabler/icons-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 
 import type { Definition } from '@/api'
 
@@ -43,7 +44,10 @@ const SpeakerButton: React.FC<ISpeakerButton> = ({ audioUrl }) => {
 }
 
 interface IDefinitionCard {
+  disabled?: boolean
   definition: Definition
+  showButtons?: boolean
+  onDelete?: (defId: string) => void
 }
 
 export const DefinitionCardSkeleton = () => {
@@ -60,11 +64,21 @@ export const DefinitionCardSkeleton = () => {
   )
 }
 
-const DefinitionCard: React.FC<IDefinitionCard> = ({ definition }) => {
+const DefinitionCard: React.FC<IDefinitionCard> = ({
+  definition,
+  disabled = false,
+  showButtons = false,
+  onDelete,
+}) => {
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(definition.id)
+    }
+  }
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="w-full flex flex-col items-start gap-1">
       <div className="flex items-center gap-2">
-        <SpeakerButton audioUrl={definition.audio} />
+        <SpeakerButton audioUrl={!disabled && definition.audio} />
         <span className="font-ubuntu text-2xl text-white">
           {definition.syllabifiedWord.replaceAll('*', '·')}
         </span>
@@ -80,6 +94,16 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({ definition }) => {
         ))}
       </div>
       <span className="font-ubuntu text-white text-lg ml-2">{definition.text}</span>
+      {showButtons && (
+        <Button
+          className="mt-2"
+          type="button"
+          disabled={disabled}
+          variant="destructive"
+          onClick={handleDelete}>
+          Delete
+        </Button>
+      )}
     </div>
   )
 }

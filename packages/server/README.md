@@ -269,7 +269,7 @@ DefinitionList[]
 
 #### Get definitions by a word
 
-- **URL:** `/definitions/:word`
+- **URL:** `/definitions/word/:word`
 - **Method:** `GET`
 
 **Response:** `200 OK`
@@ -277,6 +277,15 @@ DefinitionList[]
 ```
 DefinitionList[]
 ```
+
+#### Delete Definition
+
+You can only delete Definitions created by you
+
+- **URL:** `/definitions/:defId`
+- **Method:** `DELETE`
+
+**Response:** `200 OK`
 
 ### Word API
 

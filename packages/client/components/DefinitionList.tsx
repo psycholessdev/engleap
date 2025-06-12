@@ -2,14 +2,23 @@
 import React from 'react'
 import DefinitionCard, { DefinitionCardSkeleton } from '@/components/DefinitionCard'
 
-import { useFetchDefinitions } from '@/hooks'
+import { useAuth, useFetchDefinitions } from '@/hooks'
 import type { Definition } from '@/api'
 
 interface IDefinitionList {
   cardId: string
+  disabled?: boolean
+  showButtons?: boolean
+  onDelete?: (defId: string) => void
 }
 
-const DefinitionList: React.FC<IDefinitionList> = ({ cardId }) => {
+const DefinitionList: React.FC<IDefinitionList> = ({
+  cardId,
+  disabled = false,
+  showButtons = false,
+  onDelete,
+}) => {
+  const { userId } = useAuth()
   const { definitions } = useFetchDefinitions(cardId)
 
   if (definitions === null) {
@@ -31,7 +40,19 @@ const DefinitionList: React.FC<IDefinitionList> = ({ cardId }) => {
   return (
     <div className="flex flex-col gap-5">
       {definitions.map((def: Definition) => (
-        <DefinitionCard key={def.id} definition={def} />
+        <DefinitionCard
+          key={def.id}
+          disabled={disabled}
+          definition={def}
+          showButtons={
+            showButtons &&
+            userId &&
+            def.createdByUserId &&
+            def.source === 'user' &&
+            def.createdByUserId === userId
+          }
+          onDelete={onDelete}
+        />
       ))}
     </div>
   )
