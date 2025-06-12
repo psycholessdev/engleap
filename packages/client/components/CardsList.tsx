@@ -17,6 +17,7 @@ import { useCardController, useFetchCards } from '@/hooks'
 import { useRouter } from 'next/navigation'
 
 interface ICardItem {
+  loading: boolean
   deckId: string
   cardId: string
   sentence: string
@@ -32,16 +33,14 @@ export const CardItem: React.FC<ICardItem> = ({
   cardId,
   deckId,
   onDelete,
+  loading,
 }) => {
-  const { loading, deleteCard } = useCardController()
   const handleDeleteCard = (e: React.MouseEvent) => {
     e.stopPropagation()
     e.preventDefault()
-    deleteCard(cardId).then(() => {
-      if (onDelete) {
-        onDelete(cardId)
-      }
-    })
+    if (onDelete) {
+      onDelete(cardId)
+    }
   }
 
   return (
@@ -59,12 +58,12 @@ export const CardItem: React.FC<ICardItem> = ({
       <div className="flex items-center gap-2">
         {loading && <Loader2Icon className="animate-spin" />}
         {showButtons && (
-          <Button variant="outline" size="sm">
-            <IconEdit />
+          <Button variant="outline" size="sm" disabled={loading}>
+            <IconEdit /> Edit
           </Button>
         )}
         {showButtons && (
-          <Button variant="outline" size="sm" onClick={handleDeleteCard}>
+          <Button variant="outline" size="sm" onClick={handleDeleteCard} disabled={loading}>
             <IconTrash />
           </Button>
         )}
@@ -95,7 +94,16 @@ interface ICardsList {
 const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
   const router = useRouter()
   const { cards, refetchCards } = useFetchCards(deckId)
+  const { loading, deleteCard } = useCardController()
   let cardNodes: React.ReactNode | null
+
+  const handleDeleteCard = (cardId: string) => {
+    deleteCard(cardId).then(deleted => {
+      if (deleted) {
+        refetchCards()
+      }
+    })
+  }
 
   if (cards === undefined) {
     // fetching state
@@ -112,7 +120,6 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
     // idle state, fetch failed
     cardNodes = <p>Try again</p>
   } else {
-    console.log(cards)
     cardNodes = cards.map((card: Card) => (
       <CardItem
         key={card.id}
@@ -121,7 +128,8 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
         sentence={card.sentence}
         targetWords={card.targetWords}
         showButtons={showButtons}
-        onDelete={() => refetchCards()}
+        loading={loading}
+        onDelete={handleDeleteCard}
       />
     ))
   }
