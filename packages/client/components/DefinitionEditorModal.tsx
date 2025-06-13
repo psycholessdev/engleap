@@ -205,7 +205,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
           <AddButtonGhost text="Add custom definition" ref={openBtnRef} hidden />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-full overflow-y-auto overflow-x-hidden">
         <form className="contents" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Add custom definition</DialogTitle>

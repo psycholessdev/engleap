@@ -1,9 +1,9 @@
 'use client'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
-  IconExclamationCircle,
-  IconRosetteDiscountCheck,
-  IconAlertCircle,
+  IconExclamationCircleFilled,
+  IconRosetteDiscountCheckFilled,
+  IconAlertCircleFilled,
 } from '@tabler/icons-react'
 
 import React, { createContext, useContext, useState } from 'react'
@@ -47,9 +47,9 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
             exit={{ opacity: 0, scale: 0.8 }}
             className="absolute top-20 left-10 z-[9000]">
             <Alert variant={type === 'failure' ? 'destructive' : 'default'}>
-              {type === 'success' && <IconRosetteDiscountCheck />}
-              {type === 'warning' && <IconAlertCircle />}
-              {type === 'failure' && <IconExclamationCircle />}
+              {type === 'success' && <IconRosetteDiscountCheckFilled />}
+              {type === 'warning' && <IconAlertCircleFilled />}
+              {type === 'failure' && <IconExclamationCircleFilled />}
 
               <AlertTitle>{title}</AlertTitle>
               <AlertDescription>{message}</AlertDescription>
