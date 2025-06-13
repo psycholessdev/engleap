@@ -344,3 +344,54 @@ Request's body
 ```
 
 **Response:** `200 OK`
+
+### Card progress (SRS) API
+
+#### Get SRS Cards to review
+
+- **URL:** `/srs/cards`
+- **Method:** `GET`
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "string", // uuid
+  "userId": "string", // uuid
+  "cardId": "string", // uuid
+  "repetitionCount": "number",
+  "easinessFactor": "number",
+  "intervalDays": "number",
+  "nextReviewAt": "Date",
+  "lastReviewedAt": "Date",
+  "card": "Card"
+}
+```
+
+#### Update Card Progress
+
+- **URL:** `/srs/card/:cardId`
+- **Method:** `POST`
+
+Request's body
+
+```json
+{
+  "grade": "number" // from 0 to 5
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "string", // uuid
+  "userId": "string", // uuid
+  "cardId": "string", // uuid
+  "repetitionCount": "number",
+  "easinessFactor": "number",
+  "intervalDays": "number",
+  "nextReviewAt": "Date",
+  "lastReviewedAt": "Date"
+}
+```

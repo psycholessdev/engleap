@@ -1,4 +1,4 @@
-import { Card, Word, CardTargetWord, CardDefinition } from '../models'
+import { Card, Word, CardTargetWord, CardDefinition, UserCardProgress } from '../models'
 import { sequelize } from '../../db'
 import { ensureWordsInDictionary, upsertWordsAndDefinitions } from '../services'
 import { ExtractedDefinition } from '../types'
@@ -74,6 +74,14 @@ export const addCard = async (
       targetWords,
       definitions || [],
       transaction
+    )
+
+    await UserCardProgress.create(
+      {
+        userId: createdByUserId,
+        cardId: createdCard.id,
+      },
+      { transaction }
     )
 
     return { createdCard, notFoundWords, inserted }

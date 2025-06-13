@@ -9,6 +9,7 @@ import {
   definitionRoutes,
   wordRoutes,
   userRoutes,
+  srsRoutes,
 } from './src/routes'
 import { connectDB } from './db'
 import { checkAuth, notFoundMiddleware } from './src/middlewares'
@@ -46,6 +47,7 @@ app.use('/api/decks', deckRoutes)
 app.use('/api/cards', cardRoutes)
 app.use('/api/words', wordRoutes)
 app.use('/api/definitions', definitionRoutes)
+app.use('/api/srs', srsRoutes)
 
 app.use(notFoundMiddleware)
 

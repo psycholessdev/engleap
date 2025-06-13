@@ -26,7 +26,7 @@ export class UserCardProgress extends Model {
 
   @ForeignKey(() => User)
   @Unique('user_card_unique')
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   userId!: string
 
   @BelongsTo(() => Card, 'cardId')
@@ -34,7 +34,7 @@ export class UserCardProgress extends Model {
 
   @ForeignKey(() => Card)
   @Unique('user_card_unique')
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, onDelete: 'CASCADE' })
   cardId!: string
 
   @Default(0)
