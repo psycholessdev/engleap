@@ -1,5 +1,5 @@
-import { Request, Response } from 'express'
-import { UpdateSrsCardRequest } from '../types'
+import { Response } from 'express'
+import { UpdateSrsCardRequest, GetSrsCardsRequest } from '../types'
 import { handleError } from '../utils'
 import { getRequestUserId } from './utils'
 import { updateSrsProgress, getSrsWithCards } from '../services'
@@ -17,11 +17,12 @@ export const updateSrsCardProgressController = async (req: UpdateSrsCardRequest,
   }
 }
 
-export const getSrsCardsController = async (req: Request, res: Response) => {
+export const getSrsCardsController = async (req: GetSrsCardsRequest, res: Response) => {
   try {
+    const { deckId } = req.query
     const userId = getRequestUserId(req)
 
-    const srsWithCards = await getSrsWithCards(userId)
+    const srsWithCards = await getSrsWithCards(userId, deckId)
     return res.status(200).json(srsWithCards)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to get SRS cards')

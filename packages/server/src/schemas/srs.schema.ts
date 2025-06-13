@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+export const getSrsCardsParamSchema = z.strictObject({
+  deckId: z.string().uuid().optional(),
+})
+
 export const updateSrsCardSchema = z.strictObject({
   grade: z
     .number({ message: 'You must specify a grade. It should be number in the range from 0 to 5.' })

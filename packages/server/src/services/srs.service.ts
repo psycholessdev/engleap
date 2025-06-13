@@ -2,14 +2,22 @@ import { sequelize } from '../../db'
 import { UserCardProgress, Card } from '../models'
 import { Op } from 'sequelize'
 
-export const getSrsWithCards = async (userId: string) => {
+export const getSrsWithCards = async (userId: string, deckId?: string) => {
+  const CardsFilter = deckId ? { deckId } : undefined
+
   return await UserCardProgress.findAll({
     where: {
       userId,
       [Op.or]: [{ nextReviewAt: null }, { nextReviewAt: { [Op.lte]: new Date() } }],
     },
-    include: [Card],
+    include: [
+      {
+        model: Card,
+        where: CardsFilter,
+      },
+    ],
     order: [['nextReviewAt', 'ASC']], // earliest first
+    limit: 20,
   })
 }
 

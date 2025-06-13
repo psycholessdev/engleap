@@ -350,22 +350,29 @@ Request's body
 #### Get SRS Cards to review
 
 - **URL:** `/srs/cards`
+- **Query (optional):** `?deckId={deckId}`
 - **Method:** `GET`
+
+To get Cards for a specific Deck, use deckId query
 
 **Response:** `200 OK`
 
 ```json
-{
-  "id": "string", // uuid
-  "userId": "string", // uuid
-  "cardId": "string", // uuid
-  "repetitionCount": "number",
-  "easinessFactor": "number",
-  "intervalDays": "number",
-  "nextReviewAt": "Date",
-  "lastReviewedAt": "Date",
-  "card": "Card"
-}
+[
+  {
+    "id": "string", // uuid
+    "userId": "string", // uuid
+    "cardId": "string", // uuid
+    "repetitionCount": "number",
+    "easinessFactor": "number",
+    "intervalDays": "number",
+    "nextReviewAt": "Date",
+    "lastReviewedAt": "Date",
+    "card": "Card"
+  }
+  // ...
+  // max 20 entities
+]
 ```
 
 #### Update Card Progress

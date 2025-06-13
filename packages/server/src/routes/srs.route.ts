@@ -1,11 +1,12 @@
 import express from 'express'
 import { validateRequestData } from '../middlewares'
-import { cardIdParamUtilizedSchema, updateSrsCardSchema } from '../schemas'
+import { cardIdParamUtilizedSchema, updateSrsCardSchema, getSrsCardsParamSchema } from '../schemas'
 import { updateSrsCardProgressController, getSrsCardsController } from '../controllers'
 
 const router = express.Router()
 
-router.get('/cards', getSrsCardsController)
+// ?deckId={deckId}
+router.get('/cards', validateRequestData(getSrsCardsParamSchema, 'query'), getSrsCardsController)
 
 router.post(
   '/card/:cardId',
