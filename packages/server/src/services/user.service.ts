@@ -59,3 +59,12 @@ export const unfollowDeck = async (userId: string, deckId: string) => {
     where: { userId, deckId },
   })
 }
+
+export const getIsFollowingDeck = async (userId: string, deckId: string) => {
+  const userDeck = await UserDeck.findOne({
+    where: { userId, deckId },
+    attributes: ['id'],
+  })
+
+  return !!userDeck
+}

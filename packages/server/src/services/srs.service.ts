@@ -1,5 +1,5 @@
 import { sequelize } from '../../db'
-import { UserCardProgress, Card } from '../models'
+import { UserCardProgress, Card, CardTargetWord, Word } from '../models'
 import { Op } from 'sequelize'
 
 export const getSrsWithCards = async (userId: string, deckId?: string) => {
@@ -14,6 +14,18 @@ export const getSrsWithCards = async (userId: string, deckId?: string) => {
       {
         model: Card,
         where: CardsFilter,
+        include: [
+          {
+            model: CardTargetWord,
+            attributes: ['id'],
+            include: [
+              {
+                model: Word,
+                attributes: ['id', 'text'],
+              },
+            ],
+          },
+        ],
       },
     ],
     order: [['nextReviewAt', 'ASC']], // earliest first

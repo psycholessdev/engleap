@@ -1,14 +1,24 @@
 import { Response } from 'express'
 import { UpdateSrsCardRequest, GetSrsCardsRequest } from '../types'
-import { handleError } from '../utils'
+import { handleError, getErrorObject } from '../utils'
 import { getRequestUserId } from './utils'
-import { updateSrsProgress, getSrsWithCards } from '../services'
+import { updateSrsProgress, getSrsWithCards, getCardById, getIsFollowingDeck } from '../services'
 
 export const updateSrsCardProgressController = async (req: UpdateSrsCardRequest, res: Response) => {
   try {
     const { cardId } = req.params
     const { grade } = req.body
     const userId = getRequestUserId(req)
+
+    const card = await getCardById(cardId, ['deckId'])
+    if (!card) {
+      return res.status(404).json(getErrorObject('Card not found'))
+    }
+
+    const isFollowing = await getIsFollowingDeck(userId, card.deckId)
+    if (!isFollowing) {
+      return res.status(403).json(getErrorObject('You are not following the deck'))
+    }
 
     const progress = await updateSrsProgress(userId, cardId, grade)
     return res.status(200).json(progress)

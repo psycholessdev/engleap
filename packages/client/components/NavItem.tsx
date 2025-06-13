@@ -13,7 +13,7 @@ interface INavItem {
 const NavItem: React.FC<INavItem> = ({ icon, link, currentPath, title }) => {
   return (
     <Tooltip disableHoverableContent>
-      <TooltipTrigger>
+      <TooltipTrigger asChild>
         <Link
           href={link}
           className={`block w-16 h-16 p-1 rounded-lg cursor-pointer transition-colors border-2 hover:border-el-secondary active:bg-el-secondary active:border-el-primary ${

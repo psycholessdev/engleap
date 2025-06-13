@@ -7,6 +7,10 @@ interface HandleAxiosOptions {
   errorMessage?: string
   showAlert?: boolean
   createFailureMessage?: boolean
+
+  // parallel requests are blocked by default
+  // if set to true loading state will be ignored for this request and parallel request can be performed
+  allowParallelLoading?: boolean
 }
 
 export const useAxiosErrorHandler = () => {
@@ -23,11 +27,15 @@ export const useAxiosErrorHandler = () => {
       errorMessage = 'Unexpected error occurred',
       showAlert = true,
       createFailureMessage = true,
+      allowParallelLoading = false,
     } = options || {}
 
     try {
-      if (isLoading) return null
-      setIsLoading(true)
+      if (!allowParallelLoading && isLoading) return null
+
+      if (!allowParallelLoading) {
+        setIsLoading(true)
+      }
       setFailureMessage('')
 
       return await callback()
@@ -48,7 +56,9 @@ export const useAxiosErrorHandler = () => {
 
       return null
     } finally {
-      setIsLoading(false)
+      if (!allowParallelLoading) {
+        setIsLoading(false)
+      }
     }
   }
 

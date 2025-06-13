@@ -13,7 +13,7 @@ import DefinitionList from '@/components/DefinitionList'
 import AddButtonGhost from '@/components/AddButtonGhost'
 
 import { useDebouncedCallback } from 'use-debounce'
-import { generateTargetWords, convertRawTargetWords, deepCompare } from '@/utils'
+import { generateTargetWords, normalizeCard, deepCompare } from '@/utils'
 import { useForm } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,18 +50,19 @@ interface IAddCardForm {
 }
 
 const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
+  const normalizedCardToEdit = cardToEdit ? normalizeCard(cardToEdit) : null
   const modalOpenBtnRef = useRef<HTMLButtonElement>(null)
   const { isLoading, failureMessage, createCard, editCard, deleteCustomDefinition } =
     useCardController()
   const [targetWordsToSelect, setTargetWordsToSelect] = useState<string[]>([])
   const [selectedTargetWords, setSelectedTargetWords] = useState<string[]>(
-    convertRawTargetWords(cardToEdit?.targetWords || [])
+    normalizedCardToEdit?.targetWords || []
   )
   const form = useForm({
     resolver: zodResolver(createCardFormSchema),
     defaultValues: {
       sentence: cardToEdit?.sentence || '',
-      targetWords: convertRawTargetWords(cardToEdit?.targetWords || []),
+      targetWords: normalizedCardToEdit?.targetWords || [],
     },
   })
 
@@ -149,8 +150,9 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
 
   useEffect(() => {
     if (cardToEdit) {
-      const targetWordsToSelect = generateTargetWords(cardToEdit.sentence.trim())
-      const selectedTargetWords = convertRawTargetWords(cardToEdit.targetWords || [])
+      const normalizedCardToEdit = normalizeCard(cardToEdit)
+      const targetWordsToSelect = generateTargetWords(normalizedCardToEdit.sentence.trim())
+      const selectedTargetWords = normalizedCardToEdit.targetWords
 
       const selectableTargetWords = selectedTargetWords.filter(stw =>
         targetWordsToSelect.includes(stw)
@@ -159,7 +161,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
         stw => !targetWordsToSelect.includes(stw)
       )
 
-      form.setValue('sentence', cardToEdit.sentence.trim())
+      form.setValue('sentence', normalizedCardToEdit.sentence.trim())
       setTargetWordsToSelect(targetWordsToSelect)
       setSelectedTargetWords(selectableTargetWords)
       form.setValue('targetWords', selectableTargetWords)
