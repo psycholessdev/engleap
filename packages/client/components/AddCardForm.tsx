@@ -167,11 +167,6 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
     }
   }, [form, cardToEdit])
 
-  const selectedWordsCount =
-    selectedTargetWords.length +
-    (form.getValues().userSpecifiedTargetWords
-      ? form.getValues().userSpecifiedTargetWords.split(',').length
-      : 0)
   const allTargetWords: string[] = [
     ...selectedTargetWords,
     ...(form.getValues().userSpecifiedTargetWords
@@ -232,14 +227,18 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
               disabled={isLoading}
               {...form.register('userSpecifiedTargetWords')}
             />
-            <p className="text-muted-foreground text-sm">Separate multiple words with commas.</p>
+            <p className="text-muted-foreground text-sm">
+              Separate multiple words with commas. This field is very useful for Phrasal verbs or
+              Idioms, like &apos;Spill the beans&apos;, &apos;Look after&apos; or &apos;Plot
+              armor&apos;.
+            </p>
             <FormInputError error={form.formState.errors.userSpecifiedTargetWords} />
           </div>
         )}
 
         <div className="flex flex-col items-start gap-2 w-full">
           <div className="mb-4 flex flex-col items-start gap-2">
-            <Button disabled={isLoading || selectedWordsCount === 0} type="submit">
+            <Button disabled={isLoading || allTargetWords.length === 0} type="submit">
               {cardToEdit ? '💾 Save changes' : '💡 Generate Definitions'}
             </Button>
             {!cardToEdit && (
@@ -252,18 +251,21 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
 
           <div className="flex items-center gap-2">
             <h2 className="font-ubuntu text-lg text-white">📓 Definitions block</h2>
-            <Badge>{selectedWordsCount} words selected</Badge>
+            <Badge>{allTargetWords.length} words selected</Badge>
           </div>
-          {form.getValues().sentence && selectedWordsCount === 0 && (
+          {form.getValues().sentence && allTargetWords.length === 0 && (
             <Alert variant="destructive">
               <IconBulb />
-              <AlertTitle>Choose the target word (or a few) to generate the definitions</AlertTitle>
+              <AlertTitle>
+                Choose the target word (or a few) to generate the definitions or create you own
+              </AlertTitle>
             </Alert>
           )}
 
           {cardToEdit && (
             <AddButtonGhost
               text="Add custom definition"
+              disabled={allTargetWords.length === 0}
               onClick={() => modalOpenBtnRef?.current?.click()}
             />
           )}
