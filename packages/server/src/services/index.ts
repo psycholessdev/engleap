@@ -1,0 +1,7 @@
+export * from './user.service'
+export * from './deck.service'
+export * from './cards.service'
+export * from './word.service'
+export * from './definitions.service'
+export * from './dictionary'
+export * from './srs.service'
