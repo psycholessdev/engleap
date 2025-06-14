@@ -1,9 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { IconVolume } from '@tabler/icons-react'
+import { IconVolume, IconHelpOctagon } from '@tabler/icons-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+
+import { useAuth } from '@/hooks'
 
 import type { Definition } from '@/api'
 
@@ -70,6 +73,7 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
   showButtons = false,
   onDelete,
 }) => {
+  const { userId } = useAuth()
   const handleDelete = () => {
     if (onDelete) {
       onDelete(definition.id)
@@ -86,7 +90,20 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
       <span className="font-ubuntu">{definition.partOfSpeech}</span>
       <div className="flex items-center gap-1">
         {definition.offensive && <Badge variant="destructive">Offensive</Badge>}
-        {definition.source === 'user' && <Badge variant="secondary">User-defined</Badge>}
+        {definition.source === 'user' && (
+          <Tooltip disableHoverableContent>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary">
+                User-defined
+                <IconHelpOctagon />
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              {userId && definition.createdByUserId === userId && <span>Written by you</span>}
+              {userId && definition.approved && <span>Reviewed by an AI</span>}
+            </TooltipContent>
+          </Tooltip>
+        )}
         {definition.labels.map((l, i) => (
           <Badge variant="secondary" key={i}>
             {l}

@@ -185,8 +185,21 @@ URL query
 
 **Response:** `200 OK`
 
-```
-Deck[]
+```json
+[
+  {
+    "id": "46749710-3484-431b-a77d-5afa62df37c4",
+    "title": "My super deck 1",
+    "description": "follow me on inst @akkame",
+    "cardCount": "16",
+    "isPublic": true,
+    "copiedFrom": null,
+    "creatorId": "db549270-4c30-4802-af3d-d1a1af56cecd",
+    "createdAt": "2025-06-01T07:35:15.058Z",
+    "updatedAt": "2025-06-13T04:07:42.249Z"
+  }
+  // ...
+]
 ```
 
 #### Get Deck by id (uuid)
@@ -346,6 +359,23 @@ Request's body
 **Response:** `200 OK`
 
 ### Card progress (SRS) API
+
+#### Get SRS Cards due count
+
+- **URL:** `/srs/cards/stats`
+- **Query (optional):** `?deckId={deckId}`
+- **Method:** `GET`
+
+To get count of due Cards for a specific Deck, use deckId query
+
+**Response:** `200 OK`
+
+```json
+{
+  "count": "number",
+  "deckId": "string" // optional
+}
+```
 
 #### Get SRS Cards to review
 

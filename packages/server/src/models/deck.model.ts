@@ -7,10 +7,12 @@ import {
   BelongsTo,
   PrimaryKey,
   Default,
+  HasMany,
 } from 'sequelize-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { NonAttribute } from 'sequelize'
 import { User } from './user.model'
+import { Card } from './card.model'
 
 @Table
 export class Deck extends Model {
@@ -31,6 +33,9 @@ export class Deck extends Model {
   // only this user can edit
   @BelongsTo(() => User, 'creatorId')
   creator!: NonAttribute<User>
+
+  @HasMany(() => Card, 'deckId')
+  cards!: NonAttribute<Card[]>
 
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID, allowNull: true })

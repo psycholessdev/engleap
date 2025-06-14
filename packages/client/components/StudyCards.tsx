@@ -91,7 +91,7 @@ const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
     <div className="w-full h-full py-4">
       {!allCardsFetched && cardSRSPool.length === 0 && (
         <div className="w-full h-full flex justify-center items-center">
-          <Loader2Icon />
+          <Loader2Icon className="animate-spin" />
         </div>
       )}
 

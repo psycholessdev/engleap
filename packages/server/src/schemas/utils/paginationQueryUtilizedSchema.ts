@@ -6,7 +6,7 @@ const paginationQueryUtilizedSchema = z.strictObject({
   limit: z.coerce
     .number({ message: 'limit should be a number' })
     .min(0, { message: 'limit should be greater than 0' })
-    .max(100, { message: 'limit should be at much 100 characters' })
+    .max(30, { message: 'limit should be at much 30 characters' })
     .default(15),
 })
 

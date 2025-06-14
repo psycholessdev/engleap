@@ -31,7 +31,11 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
       />
       <p className="font-ubuntu my-5 text-white text-lg">{responseData.deck.description}</p>
 
-      <CardsList deckId={deckId} showButtons={userId === responseData.deck.creatorId} />
+      <CardsList
+        deckId={deckId}
+        cardCount={responseData.cardsTotal}
+        showButtons={userId === responseData.deck.creatorId}
+      />
     </>
   )
 }

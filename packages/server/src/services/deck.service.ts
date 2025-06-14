@@ -1,5 +1,5 @@
 import { Card, Deck, UserDeck } from '../models'
-import { Op } from 'sequelize'
+import { Op, fn, col } from 'sequelize'
 
 export const getDecksByUserId = async (userId: string, offset = 0, limit = 20) => {
   const userDecks = await UserDeck.findAll({
@@ -11,6 +11,21 @@ export const getDecksByUserId = async (userId: string, offset = 0, limit = 20) =
     where: {
       [Op.or]: [{ id: deckIds }, { creatorId: userId }],
     },
+
+    // counts all cards in Deck in "cardCount" field
+    include: [
+      {
+        model: Card,
+        as: 'cards',
+        attributes: [],
+        required: false,
+      },
+    ],
+    attributes: {
+      include: [[fn('COUNT', col('cards.id')), 'cardCount']],
+    },
+    group: ['Deck.id'],
+    subQuery: false,
     offset,
     limit,
   })

@@ -89,9 +89,10 @@ const CardItemSkeleton: React.FC = () => {
 interface ICardsList {
   deckId: string
   showButtons?: boolean
+  cardCount?: number
 }
 
-const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
+const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => {
   const router = useRouter()
   const { cards, refetchCards } = useFetchCards(deckId)
   const { loading, deleteCard } = useCardController()
@@ -138,7 +139,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, showButtons }) => {
     <div className="flex flex-col items-start gap-3">
       <div className="flex items-center gap-3">
         <h2 className="font-ubuntu text-2xl text-white">🚀 Cards</h2>
-        <Badge>{cards?.length || 0} items</Badge>
+        {cardCount && <Badge>{cardCount} items</Badge>}
       </div>
       <Input id="search" name="search" placeholder="Search Cards" />
       {showButtons && (

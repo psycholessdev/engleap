@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect } from 'react'
-import { getMyDecks, type Deck } from '@/api'
+import { getMyDecks, type DeckWithCardCount } from '@/api'
 import { useAxiosErrorHandler } from '@/hooks'
 
 export const useFetchDecks = () => {
   const { handleAxios } = useAxiosErrorHandler()
-  const [decks, setDecks] = React.useState<Deck[] | undefined | null>(undefined)
+  const [decks, setDecks] = React.useState<DeckWithCardCount[] | undefined | null>(undefined)
 
   useEffect(() => {
     const fetchDecks = async () => {

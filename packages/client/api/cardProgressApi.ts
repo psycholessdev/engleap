@@ -22,6 +22,17 @@ export const getCardsToReview = async (deckId?: string): Promise<NormalizedCardP
   return (res.data as CardProgress[]).map(cp => ({ ...cp, card: normalizeCard(cp.card) }))
 }
 
+type GetCardsToReviewCountResponse = { count: number; deckId?: string }
+
+export const getCardsToReviewCount = async (
+  deckId?: string
+): Promise<GetCardsToReviewCountResponse> => {
+  const res = await $axios.get('/srs/cards/stats', {
+    params: { deckId },
+  })
+  return res.data
+}
+
 type UpdateCardProgressRequest = { grade: number }
 type UpdateCardProgressResponse = Omit<CardProgress, 'card'>
 
