@@ -33,7 +33,7 @@ export const getDefinitionsByWord = async (word: string) => {
   })
 }
 
-export const getDefinitionsForCard = async (cardId: string) => {
+export const getDefinitionsForCard = async (cardId: string, offset = 0, limit = 15) => {
   const ctws = await CardTargetWord.findAll({
     where: { cardId },
     attributes: ['id', 'wordId'],
@@ -59,7 +59,8 @@ export const getDefinitionsForCard = async (cardId: string) => {
         { [Op.and]: [{ wordId: wordIds }, { approved: true }] },
       ],
     },
-    limit: 20,
+    limit,
+    offset,
     attributes: [
       'id',
       'wordId',

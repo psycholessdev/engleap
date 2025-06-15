@@ -28,8 +28,14 @@ export interface Definition {
   stems?: string[]
 }
 
-export const getCardsByDeckId = async (decKId: string): Promise<Card[]> => {
-  const res = await $axios.get(`/cards/deck/${decKId}`)
+export const getCardsByDeckId = async (
+  decKId: string,
+  offset: number,
+  limit: number
+): Promise<Card[]> => {
+  const res = await $axios.get(`/cards/deck/${decKId}`, {
+    params: { offset, limit },
+  })
   return res.data
 }
 

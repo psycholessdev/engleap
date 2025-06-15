@@ -11,8 +11,10 @@ export interface Deck {
 export type DeckWithCardCount = Deck & { cardCount: string }
 type GetMyDecksResponse = DeckWithCardCount[]
 
-export const getMyDecks = async (): Promise<GetMyDecksResponse> => {
-  const res = await $axios.get('/decks')
+export const getMyDecks = async (offset: number, limit: number): Promise<GetMyDecksResponse> => {
+  const res = await $axios.get('/decks', {
+    params: { offset, limit },
+  })
   return res.data
 }
 

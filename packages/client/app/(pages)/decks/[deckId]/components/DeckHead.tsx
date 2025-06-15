@@ -95,9 +95,9 @@ const DeckHead: React.FC<IDeckHead> = ({
         onEditOpen={() => setModalOpened(true)}
       />
 
-      <div className="flex flex-col self-start gap-3">
-        <div className="flex items-center gap-3">
-          <h1 className="font-ubuntu text-3xl text-white">📗 {title}</h1>
+      <div className="flex flex-col self-start gap-2">
+        <div className="flex items-center gap-1">
+          <h1 className="font-ubuntu lg:text-3xl text-2xl text-white">📗 {title}</h1>
           <Badge variant={isPublic ? 'default' : 'destructive'}>
             {isPublic ? 'public' : 'private'}
           </Badge>

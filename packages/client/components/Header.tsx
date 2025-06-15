@@ -11,9 +11,9 @@ const Header = () => {
   const { isLogged, isLoading, logout } = useAuth()
 
   return (
-    <header className="fixed top-0 left-0 h-[90px] w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline">
+    <header className="fixed top-0 left-0 lg:h-[90px] h-20 w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline">
       <div>
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center lg:gap-7 gap-3">
           <Image
             src="/favicon.png"
             alt="App Logo"
@@ -21,7 +21,7 @@ const Header = () => {
             width={41}
             height={40}
           />
-          <h3 className="text-el-primary text-2xl ml-7 select-none">EngLeap</h3>
+          <h3 className="text-el-primary text-2xl select-none">EngLeap</h3>
         </Link>
       </div>
 

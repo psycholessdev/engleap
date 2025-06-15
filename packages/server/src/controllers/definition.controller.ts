@@ -33,6 +33,7 @@ export const getDefinitionsForCardController = async (
   res: Response
 ) => {
   try {
+    const { offset, limit } = req.query
     const { cardId } = req.params
 
     const card = await getCardById(cardId, ['id'])
@@ -41,7 +42,7 @@ export const getDefinitionsForCardController = async (
     }
     // TODO check if the Deck is public (security check)
 
-    const definitions = await getDefinitionsForCard(cardId)
+    const definitions = await getDefinitionsForCard(cardId, offset, limit)
     return res.status(200).json(definitions)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to get definitions')

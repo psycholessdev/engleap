@@ -162,3 +162,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   @apply p-0 m-0 min-h-[100vh] bg-el-root-bg selection:bg-[#FFFFFF19];
 }
+
+.root-element_p {
+  @apply lg:pl-[90px];
+}

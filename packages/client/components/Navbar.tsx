@@ -13,11 +13,11 @@ const Navbar = () => {
     <AnimatePresence initial={true}>
       {isLogged ? (
         <motion.nav
-          initial={{ x: -60 }}
-          animate={{ x: 0 }}
-          exit={{ x: -60 }}
-          transition={{ duration: 0.5 }}
-          className="fixed top-0 left-0 h-full w-[90px] bg-el-root-bg z-[4000] flex flex-col gap-5 justify-center items-center px-4 border-r-1 border-r-el-outline">
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.35 }}
+          className="fixed left-0 bottom-0 lg:h-full lg:w-[90px] w-full h-20 bg-el-root-bg z-[4000] flex lg:flex-col gap-5 justify-center items-center px-4 lg:border-r-1 lg:border-r-el-outline border-t-1 border-t-el-outline">
           <NavItem
             link="/study"
             icon="/icons/academic-cap.png"

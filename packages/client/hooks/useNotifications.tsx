@@ -45,7 +45,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute top-20 left-10 z-[9000]">
+            className="absolute top-20 lg:left-10 left-2 z-[9000]">
             <Alert variant={type === 'failure' ? 'destructive' : 'default'}>
               {type === 'success' && <IconRosetteDiscountCheckFilled />}
               {type === 'warning' && <IconAlertCircleFilled />}

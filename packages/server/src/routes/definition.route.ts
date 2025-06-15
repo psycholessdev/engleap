@@ -1,6 +1,11 @@
 import express from 'express'
 import { validateRequestData } from '../middlewares'
-import { wordParamSchema, cardIdParamUtilizedSchema, defIdParamUtilizedSchema } from '../schemas'
+import {
+  wordParamSchema,
+  cardIdParamUtilizedSchema,
+  defIdParamUtilizedSchema,
+  paginationQueryUtilizedSchema,
+} from '../schemas'
 import {
   getDefinitionsByWordController,
   getDefinitionsForCardController,
@@ -24,7 +29,8 @@ router.delete(
 router.get(
   '/card/:cardId',
   validateRequestData(cardIdParamUtilizedSchema, 'params'),
-  getDefinitionsForCardController
+  validateRequestData(paginationQueryUtilizedSchema, 'query'),
+  getDefinitionsForCardController as unknown as express.RequestHandler
 )
 
 export default router

@@ -18,9 +18,13 @@ export interface Definition {
 type GetDefinitionsForCardResponse = Definition[]
 
 export const getDefinitionsForCard = async (
-  cardId: string
+  cardId: string,
+  offset: number,
+  limit: number
 ): Promise<GetDefinitionsForCardResponse> => {
-  const res = await $axios.get(`/definitions/card/${cardId}`)
+  const res = await $axios.get(`/definitions/card/${cardId}`, {
+    params: { offset, limit },
+  })
   return res.data
 }
 

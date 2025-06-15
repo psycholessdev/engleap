@@ -16,10 +16,10 @@ const Sentence: React.FC<{
   const dissectedSentence = dissectSentenceByTargetWords(text, targetWords)
   return (
     <div
-      className={`w-full rounded-2xl flex justify-center items-center transition-colors my-6 py-5 ${
+      className={`w-full rounded-2xl flex justify-center items-center transition-colors my-6 py-5 px-3 ${
         showBg ? 'bg-el-tertiary-container' : ''
       }`}>
-      <p className="font-ubuntu text-2xl text-white">
+      <p className="font-ubuntu lg:text-2xl text-lg leading-7 text-white">
         {dissectedSentence.map((word, i) => {
           return targetWords.includes(word) ? (
             <span className="px-1 bg-el-inverse-primary text-black rounded-lg" key={i}>
@@ -40,7 +40,7 @@ const ActionBar: React.FC<{
   onRate: (rate: number) => void
 }> = ({ revealed, onReveal, onRate }) => {
   return (
-    <div className="sticky bottom-0 w-full py-6 border-t-1 border-t-el-outline flex flex-col items-center gap-3 bg-el-root-bg">
+    <div className="sticky bottom-0 w-full py-3 border-t-1 border-t-el-outline flex flex-col items-center gap-3 bg-el-root-bg">
       {revealed && <h2 className="text-xl">Rate your answer</h2>}
       <div className="w-full flex justify-center gap-2">
         {!revealed && (
@@ -88,7 +88,7 @@ const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
   }
 
   return (
-    <div className="w-full h-full py-4">
+    <div className="w-full h-full py-3">
       {!allCardsFetched && cardSRSPool.length === 0 && (
         <div className="w-full h-full flex justify-center items-center">
           <Loader2Icon className="animate-spin" />
@@ -103,7 +103,7 @@ const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
 
       {cardSRSPool.length > 0 && (
         <>
-          <div className="w-full h-auto min-h-full flex flex-col justify-center items-center border-1 border-el-outline rounded-3xl p-10">
+          <div className="w-full h-auto min-h-full flex flex-col justify-center items-center lg:border-1 lg:border-el-outline rounded-3xl lg:p-6">
             <Sentence
               text={cardSRSPool[0].card.sentence}
               targetWords={cardSRSPool[0].card.targetWords}

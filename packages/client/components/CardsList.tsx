@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Label } from '@/components/ui/label'
@@ -13,7 +13,8 @@ import { Loader2Icon } from 'lucide-react'
 import { type Card } from '@/api'
 import { type TargetWord } from '@/api'
 
-import { useCardController, useFetchCards } from '@/hooks'
+import { useInView } from 'react-intersection-observer'
+import { useCardController, useInfiniteCards } from '@/hooks'
 import { useRouter } from 'next/navigation'
 
 interface ICardItem {
@@ -47,8 +48,8 @@ export const CardItem: React.FC<ICardItem> = ({
     <Link
       href={showButtons ? `/decks/${deckId}/card/${cardId}` : '#'}
       className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
-      <div className="flex flex-col gap-1">
-        <Label className="text-white text-lg">{sentence}</Label>
+      <div className="flex flex-col gap-2">
+        <Label className="text-white text-lg leading-5">{sentence}</Label>
         <div className="flex items-center gap-1">
           {targetWords.map(t => (
             <Badge key={t.id}>{t.word.text}</Badge>
@@ -59,7 +60,7 @@ export const CardItem: React.FC<ICardItem> = ({
         {loading && <Loader2Icon className="animate-spin" />}
         {showButtons && (
           <Button variant="outline" size="sm" disabled={loading}>
-            <IconEdit /> Edit
+            <IconEdit /> <span className="lg:inline hidden">Edit</span>
           </Button>
         )}
         {showButtons && (
@@ -94,49 +95,27 @@ interface ICardsList {
 
 const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => {
   const router = useRouter()
-  const { cards, refetchCards } = useFetchCards(deckId)
+  const { cards, fetchNextPage, hasNextPage, isFetching, status, refetch } =
+    useInfiniteCards(deckId)
+  const { ref, inView } = useInView()
   const { loading, deleteCard } = useCardController()
-  let cardNodes: React.ReactNode | null
 
   const handleDeleteCard = (cardId: string) => {
     deleteCard(cardId).then(deleted => {
       if (deleted) {
-        refetchCards()
+        refetch()
       }
     })
   }
 
-  if (cards === undefined) {
-    // fetching state
-    cardNodes = (
-      <div className="flex flex-col gap-2">
-        {Array(4)
-          .fill(null)
-          .map((_, i) => (
-            <CardItemSkeleton key={i} />
-          ))}
-      </div>
-    )
-  } else if (cards === null) {
-    // idle state, fetch failed
-    cardNodes = <p>Try again</p>
-  } else {
-    cardNodes = cards.map((card: Card) => (
-      <CardItem
-        key={card.id}
-        cardId={card.id}
-        deckId={deckId}
-        sentence={card.sentence}
-        targetWords={card.targetWords}
-        showButtons={showButtons}
-        loading={loading}
-        onDelete={handleDeleteCard}
-      />
-    ))
-  }
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage()
+    }
+  }, [inView, hasNextPage, fetchNextPage])
 
   return (
-    <div className="flex flex-col items-start gap-3">
+    <div className="flex flex-col items-start gap-3 pb-20">
       <div className="flex items-center gap-3">
         <h2 className="font-ubuntu text-2xl text-white">🚀 Cards</h2>
         {cardCount && <Badge>{cardCount} items</Badge>}
@@ -145,7 +124,32 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
       {showButtons && (
         <AddButtonGhost text="Add Card" onClick={() => router.push(`/decks/${deckId}/card`)} />
       )}
-      {cardNodes}
+
+      {cards &&
+        cards.map((card: Card) => (
+          <CardItem
+            key={card.id}
+            cardId={card.id}
+            deckId={deckId}
+            sentence={card.sentence}
+            targetWords={card.targetWords}
+            showButtons={showButtons}
+            loading={loading}
+            onDelete={handleDeleteCard}
+          />
+        ))}
+      {status === 'error' && <p>Try again</p>}
+      {isFetching && (
+        <>
+          {Array(4)
+            .fill(null)
+            .map((_, i) => (
+              <CardItemSkeleton key={i} />
+            ))}
+        </>
+      )}
+
+      <div ref={ref} />
     </div>
   )
 }

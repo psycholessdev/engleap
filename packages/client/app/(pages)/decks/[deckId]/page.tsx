@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
         usersFollowing={responseData.usersFollowing}
         followingDefault={responseData.isUserFollowing}
       />
-      <p className="font-ubuntu my-5 text-white text-lg">{responseData.deck.description}</p>
+      <p className="font-ubuntu my-5 text-white lg:text-lg">{responseData.deck.description}</p>
 
       <CardsList
         deckId={deckId}

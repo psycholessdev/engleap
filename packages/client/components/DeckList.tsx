@@ -5,8 +5,9 @@ import { IconPencil, IconMenuDeep, IconCircleCheckFilled } from '@tabler/icons-r
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
-import React from 'react'
-import { useAuth, useFetchDecks, useFetchSRSCardsCount } from '@/hooks'
+import React, { useEffect } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { useAuth, useInfiniteDecks, useFetchSRSCardsCount } from '@/hooks'
 
 interface IDeckItem {
   deckId: string
@@ -26,7 +27,7 @@ const DeckItem: React.FC<IDeckItem> = ({ title, cardsTotalCount, editable, deckI
           <Badge>{cardsTotalCount} total</Badge>
 
           {!!cardsDueCount && <Badge variant="secondary">{cardsDueCount} to study</Badge>}
-          {cardsDueCount === 0 && (
+          {cardsTotalCount > 0 && cardsDueCount === 0 && (
             <Badge variant="secondary">
               <IconCircleCheckFilled /> All cards are finished
             </Badge>
@@ -67,37 +68,39 @@ const DeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
 }
 
 const DeckList = () => {
-  const { decks } = useFetchDecks()
+  const { ref, inView } = useInView()
+  const { decks, hasNextPage, isFetching, fetchNextPage, status } = useInfiniteDecks()
   const { userId } = useAuth()
 
-  if (decks === undefined) {
-    // fetching state
-    return (
-      <div className="flex flex-col gap-2">
-        {Array(6)
-          .fill(null)
-          .map((_, i) => (
-            <DeckItemSkeleton key={i} />
-          ))}
-      </div>
-    )
-  }
-  if (decks === null) {
-    // idle state, fetch failed
-    return <p>Try again</p>
-  }
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage()
+    }
+  }, [inView, hasNextPage, fetchNextPage])
 
   return (
-    <div className="flex flex-col gap-2">
-      {decks.map(deck => (
-        <DeckItem
-          key={deck.id}
-          deckId={deck.id}
-          title={deck.title}
-          cardsTotalCount={deck.cardCount}
-          editable={deck.creatorId === userId}
-        />
-      ))}
+    <div className="flex flex-col gap-2 pb-20">
+      {decks &&
+        decks.map(deck => (
+          <DeckItem
+            key={deck.id}
+            deckId={deck.id}
+            title={deck.title}
+            cardsTotalCount={deck.cardCount}
+            editable={deck.creatorId === userId}
+          />
+        ))}
+      {status === 'error' && <p>Try again</p>}
+      {isFetching && (
+        <>
+          {Array(6)
+            .fill(null)
+            .map((_, i) => (
+              <DeckItemSkeleton key={i} />
+            ))}
+        </>
+      )}
+      <div ref={ref} />
     </div>
   )
 }

@@ -276,7 +276,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
                 {...form.register('syllabifiedWord')}
               />
               <Button disabled={loading} type="button" onClick={handleGenerateSyllabifiedWord}>
-                💡 Generate Syllabified Word (not always accurate)
+                💡 Generate Syllabified Word
               </Button>
               <p className="text-muted-foreground text-sm">
                 Automatic syllable generation may be incorrect. Double-check to ensure correct
