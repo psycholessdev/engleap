@@ -21,14 +21,14 @@ const DefinitionList: React.FC<IDefinitionList> = ({
 }) => {
   const { userId } = useAuth()
   const { ref, inView } = useInView()
-  const { definitions, fetchNextPage, isFetching, hasNextPage, status } =
+  const { definitions, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage, status } =
     useInfiniteDefinitions(cardId)
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
-  }, [inView, hasNextPage, fetchNextPage])
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
 
   return (
     <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 pb-20">
@@ -51,7 +51,7 @@ const DefinitionList: React.FC<IDefinitionList> = ({
       {status === 'error' && <p>Try again</p>}
       {isFetching && (
         <>
-          {Array(3)
+          {Array(4)
             .fill(null)
             .map((_, i) => (
               <DefinitionCardSkeleton key={i} />

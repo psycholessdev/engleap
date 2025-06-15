@@ -7,11 +7,13 @@ import {
   deleteCard as deleteCardHandler,
   deleteDefinition as deleteDefinitionHandler,
 } from '@/api'
+import { useQueryClient } from '@tanstack/react-query'
 import type { CreateCardRequest, EditCardRequest, Card, Definition } from '@/api'
 
 export const useCardController = () => {
   const router = useRouter()
   const alert = useNotifications()
+  const queryClient = useQueryClient()
   const { handleAxios, isLoading, failureMessage } = useAxiosErrorHandler()
 
   const createCard = async (deckId: string, data: CreateCardRequest) => {
@@ -40,9 +42,8 @@ export const useCardController = () => {
     if (card) {
       alert('Success', 'The changes were saved.')
 
-      // TODO refetch definitions in DefinitionList component and do not update the whole page
       router.refresh()
-      location.reload() // it's a temporary fix
+      await queryClient.invalidateQueries({ queryKey: ['definitions'] })
     }
     return card
   }
@@ -62,9 +63,9 @@ export const useCardController = () => {
 
     if (card) {
       alert('Success', 'The changes were saved.')
-      // TODO refetch definitions in DefinitionList component and do not update the whole page
+
       router.refresh()
-      location.reload() // it's a temporary fix
+      await queryClient.invalidateQueries({ queryKey: ['definitions'] })
     }
     return card
   }
@@ -80,9 +81,9 @@ export const useCardController = () => {
 
     if (success) {
       alert('Success', 'The Definition was deleted.')
-      // TODO refetch definitions in DefinitionList component and do not update the whole page
+
       router.refresh()
-      location.reload() // it's a temporary fix
+      await queryClient.invalidateQueries({ queryKey: ['definitions'] })
     }
     return !!success
   }

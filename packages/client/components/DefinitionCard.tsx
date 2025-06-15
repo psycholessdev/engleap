@@ -55,14 +55,14 @@ interface IDefinitionCard {
 
 export const DefinitionCardSkeleton = () => {
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="w-full flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <Skeleton className="p-6 rounded-full" />
         <Skeleton className="rounded-2xl w-30 h-5" />
       </div>
       <Skeleton className="rounded-2xl w-10 h-3" />
       <div />
-      <Skeleton className="ml-2 rounded-2xl w-120 h-6" />
+      <Skeleton className="ml-2 rounded-2xl lg:w-120 w-80 lg:h-6 h-4" />
     </div>
   )
 }

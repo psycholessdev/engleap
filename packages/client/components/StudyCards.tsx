@@ -42,31 +42,33 @@ const ActionBar: React.FC<{
   return (
     <div className="sticky bottom-0 w-full py-3 border-t-1 border-t-el-outline flex flex-col items-center gap-3 bg-el-root-bg">
       {revealed && <h2 className="text-xl">Rate your answer</h2>}
-      <div className="w-full flex justify-center gap-2">
+      <div className="w-full flex xl:flex-row flex-col justify-center gap-2">
         {!revealed && (
-          <Button variant="secondary" onClick={onReveal}>
+          <Button size="lg" variant="secondary" onClick={onReveal}>
             <IconEye />
             Reveal Answer
           </Button>
         )}
         {revealed && (
           <>
-            <Button variant="destructive" onClick={() => onRate(0)}>
+            <Button size="sm" variant="destructive" onClick={() => onRate(0)}>
               (0) Completely forgot
             </Button>
-            <Button variant="secondary" onClick={() => onRate(1)}>
+            <Button size="sm" variant="secondary" onClick={() => onRate(1)}>
               (1) Incorrect but familiar
             </Button>
-            <Button variant="secondary" onClick={() => onRate(2)}>
+            <Button size="sm" variant="secondary" onClick={() => onRate(2)}>
               (2) Incorrect but remembered after hint
             </Button>
-            <Button variant="secondary" onClick={() => onRate(3)}>
+            <Button size="sm" variant="secondary" onClick={() => onRate(3)}>
               (3) Correct but difficult recall
             </Button>
-            <Button variant="secondary" onClick={() => onRate(4)}>
+            <Button size="sm" variant="secondary" onClick={() => onRate(4)}>
               (4) Correct response after hesitation
             </Button>
-            <Button onClick={() => onRate(5)}>(5) Perfect recall</Button>
+            <Button size="sm" onClick={() => onRate(5)}>
+              (5) Perfect recall
+            </Button>
           </>
         )}
       </div>

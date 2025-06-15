@@ -1,7 +1,10 @@
 import React from 'react'
 import { getIsAuthed } from '@/utils'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
+
 import DeckList from '@/components/DeckList'
+import AddButtonGhost from '@/components/AddButtonGhost'
 
 export default async function Home() {
   if (!(await getIsAuthed())) {
@@ -10,7 +13,7 @@ export default async function Home() {
 
   return (
     <>
-      <div className="py-8 flex flex-col gap-3">
+      <div className="py-8 flex flex-col items-start gap-3">
         <h1 className="font-ubuntu text-3xl text-white">📗 My decks</h1>
         <p className="text-muted-foreground text-sm">
           To study a Deck, just click on it. To study all the Decks simultaneously, click the Study
@@ -18,6 +21,9 @@ export default async function Home() {
         </p>
       </div>
 
+      <Link href="/decks/add">
+        <AddButtonGhost text="Add Deck" />
+      </Link>
       <DeckList />
     </>
   )
