@@ -56,7 +56,7 @@ const DefinitionList: React.FC<IDefinitionList> = ({
             onDelete={onDelete}
           />
         ))}
-      {status === 'error' && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

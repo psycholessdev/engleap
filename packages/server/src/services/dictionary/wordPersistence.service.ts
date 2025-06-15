@@ -85,7 +85,7 @@ export const upsertWordsAndDefinitions = async (
       offensive: def.offensive,
       source,
       sourceName,
-      difficulty: 'B2',
+      difficulty: def.difficulty,
       createdByUserId,
     })
   }

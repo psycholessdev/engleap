@@ -4,12 +4,12 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 
 const PAGE_SIZE = 15
 
-export const useInfiniteCards = (deckId: string) => {
+export const useInfiniteCards = (deckId: string, querySentence?: string) => {
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch, status } =
     useInfiniteQuery({
       queryKey: ['cards', deckId],
       queryFn: async ({ pageParam = 0 }) => {
-        return await getCardsByDeckId(deckId, pageParam, PAGE_SIZE)
+        return await getCardsByDeckId(deckId, querySentence, pageParam, PAGE_SIZE)
       },
       getNextPageParam: (lastPage, allPages) => {
         // If last page has fewer than PAGE_SIZE, no more data

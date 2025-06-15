@@ -21,7 +21,7 @@ const Sentence: React.FC<{
       }`}>
       <p className="font-ubuntu lg:text-2xl text-lg leading-7 text-white">
         {dissectedSentence.map((word, i) => {
-          return targetWords.includes(word) ? (
+          return targetWords.includes(word.toLowerCase()) ? (
             <span className="px-1 bg-el-inverse-primary text-black rounded-lg" key={i}>
               {word}
             </span>

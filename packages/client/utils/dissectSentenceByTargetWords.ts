@@ -6,11 +6,12 @@ export const dissectSentenceByTargetWords = (text: string, targetWords: string[]
     return []
   }
 
+  const textLowerCase = text.toLowerCase()
   const targetWordsPositions: { start: number; end: number }[] = []
 
   // Find all occurrences of target words and store their positions
   for (const tw of targetWords) {
-    const twStartPos = text.indexOf(tw)
+    const twStartPos = textLowerCase.indexOf(tw.toLowerCase())
 
     if (twStartPos !== -1) {
       // Only add if the word is found

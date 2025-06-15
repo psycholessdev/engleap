@@ -30,11 +30,12 @@ export interface Definition {
 
 export const getCardsByDeckId = async (
   decKId: string,
+  querySentence: string | undefined,
   offset: number,
   limit: number
 ): Promise<Card[]> => {
   const res = await $axios.get(`/cards/deck/${decKId}`, {
-    params: { offset, limit },
+    params: { sentence: querySentence, offset, limit },
   })
   return res.data
 }

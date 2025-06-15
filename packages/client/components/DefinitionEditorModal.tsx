@@ -76,7 +76,7 @@ const PartOfSpeechSelector: React.FC<{
         <SelectItem value="verb">verb</SelectItem>
         <SelectItem value="adjective">adjective</SelectItem>
         <SelectItem value="adverb">adverb</SelectItem>
-        <SelectItem value="phrasalVerb">phrasal verb</SelectItem>
+        <SelectItem value="phrasal verb">phrasal verb</SelectItem>
         <SelectItem value="idiom">idiom</SelectItem>
         <SelectItem value="preposition">preposition</SelectItem>
         <SelectItem value="conjunction">conjunction</SelectItem>

@@ -30,7 +30,7 @@ const DeckList = () => {
             editable={deck.creatorId === userId}
           />
         ))}
-      {status === 'error' && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(6)

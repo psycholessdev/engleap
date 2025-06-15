@@ -1,13 +1,25 @@
-import { Card, Word, CardTargetWord, CardDefinition, UserCardProgress } from '../models'
+import { Op } from 'sequelize'
 import { sequelize } from '../../db'
+import { Card, Word, CardTargetWord, CardDefinition, UserCardProgress } from '../models'
 import { ensureWordsInDictionary, upsertWordsAndDefinitions } from '../services'
 import { ExtractedDefinition } from '../types'
 import { Transaction } from 'sequelize'
 
-export const getCardsByDeckId = async (deckId: string, offset = 0, limit = 10) => {
+export const getCardsByDeckId = async (
+  deckId: string,
+  query: string | undefined,
+  offset = 0,
+  limit = 10
+) => {
   // offset tells the database to skip the first N records
+
+  const queryFilter = query ? { sentence: { [Op.iLike]: `%${query}%` } } : undefined
+
   return await Card.findAll({
-    where: { deckId },
+    where: {
+      deckId,
+      ...queryFilter,
+    },
     offset,
     limit,
     include: [

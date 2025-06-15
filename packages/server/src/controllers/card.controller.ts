@@ -23,7 +23,7 @@ export const getAllCardsByDeckIdController = async (
   res: Response
 ) => {
   try {
-    const { offset, limit } = req.query
+    const { offset, limit, sentence } = req.query
     const { deckId } = req.params
     const userId = getRequestUserId(req)
 
@@ -33,7 +33,7 @@ export const getAllCardsByDeckIdController = async (
     }
 
     if (deck.isPublic || deck.creatorId === userId) {
-      const cards = await getCardsByDeckId(deckId, offset, limit)
+      const cards = await getCardsByDeckId(deckId, sentence, offset, limit)
       return res.status(200).json(cards)
     } else {
       return res.status(403).json(getErrorObject('You do not have the right to access this deck'))

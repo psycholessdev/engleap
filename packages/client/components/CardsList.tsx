@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import AddButtonGhost from './AddButtonGhost'
@@ -8,6 +8,7 @@ import FailureFallback from '@/components/FailureFallback'
 
 import { type Card } from '@/api'
 
+import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
 import { useCardController, useInfiniteCards } from '@/hooks'
 import { useRouter } from 'next/navigation'
@@ -20,10 +21,11 @@ interface ICardsList {
 
 const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => {
   const router = useRouter()
-  const { cards, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status, refetch } =
-    useInfiniteCards(deckId)
   const { ref, inView } = useInView()
   const { loading, deleteCard } = useCardController()
+  const [searchQuery, setSearchQuery] = useState('')
+  const { cards, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status, refetch } =
+    useInfiniteCards(deckId, searchQuery)
 
   const handleDeleteCard = (cardId: string) => {
     deleteCard(cardId).then(deleted => {
@@ -33,11 +35,19 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
     })
   }
 
+  const handleSearchChange = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }, 700)
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+
+  useEffect(() => {
+    refetch()
+  }, [searchQuery])
 
   return (
     <div className="flex flex-col items-start gap-3 pb-20">
@@ -45,7 +55,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
         <h2 className="font-ubuntu text-2xl text-white">🚀 Cards</h2>
         {typeof cardCount === 'number' && <Badge>{cardCount} items</Badge>}
       </div>
-      <Input id="search" name="search" placeholder="Search Cards" />
+      <Input id="search" name="search" placeholder="Search Cards" onChange={handleSearchChange} />
       {showButtons && (
         <AddButtonGhost text="Add Card" onClick={() => router.push(`/decks/${deckId}/card`)} />
       )}
@@ -63,7 +73,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
             onDelete={handleDeleteCard}
           />
         ))}
-      {status === 'error' && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

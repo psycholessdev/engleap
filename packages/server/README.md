@@ -120,7 +120,7 @@ UserDefinition schema
   "id": "string",
   "word": "string",
   "text": "string", // definition's body
-  "partOfSpeech": "string",
+  "partOfSpeech": "string", // noun | pronoun | verb | adjective | adverb | phrasal verb | idiom | preposition | conjunction | interjection
   "syllabifiedWord": "string", // sub*scrip*tion
   "pronunciationAudioUrl": "string", // URL
   "offensive": "string", // optional, false by default

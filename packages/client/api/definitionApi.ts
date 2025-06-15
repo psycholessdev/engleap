@@ -5,7 +5,17 @@ export interface Definition {
   wordId: string
   audio?: string
   text: string
-  partOfSpeech: string
+  partOfSpeech:
+    | 'noun'
+    | 'pronoun'
+    | 'verb'
+    | 'adjective'
+    | 'adverb'
+    | 'phrasal verb'
+    | 'idiom'
+    | 'preposition'
+    | 'conjunction'
+    | 'interjection'
   labels: string[]
   syllabifiedWord: string
   offensive: boolean

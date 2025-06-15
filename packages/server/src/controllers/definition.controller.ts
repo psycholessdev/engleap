@@ -62,7 +62,7 @@ export const deleteUserDefinitionController = async (
       return res.status(404).json(getErrorObject('Definition not found'))
     }
     if (def.source !== 'user' || def.createdByUserId !== userId) {
-      return res.status(403).json(getErrorObject('You can delete only definitions created by you'))
+      return res.status(403).json(getErrorObject('You can only delete definitions created by you'))
     }
     await unlinkDefinitionFromCard(defId)
     return res.status(200).json({ success: true })

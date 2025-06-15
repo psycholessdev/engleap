@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import xss from 'xss'
+import { paginationQueryUtilizedSchema } from './utils'
 
 export const extractedDefinitionSchema = z
   .strictObject({
@@ -26,13 +27,30 @@ export const extractedDefinitionSchema = z
       .max(4000)
       .transform(val => xss(val)),
 
-    partOfSpeech: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(1)
-      .max(30)
-      .transform(val => xss(val)),
+    partOfSpeech: z.enum(
+      [
+        'noun',
+        'pronoun',
+        'verb',
+        'adjective',
+        'adverb',
+        'phrasal verb',
+        'idiom',
+        'preposition',
+        'conjunction',
+        'interjection',
+      ],
+      {
+        message:
+          'partOfSpeech should be one of these: noun, pronoun, verb, adjective, adverb, phrasal verb, idiom, preposition, conjunction, interjection',
+      }
+    ),
+
+    difficulty: z
+      .enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], {
+        message: 'difficulty should be one of these: A1, A2, B1, B2, C1, C2',
+      })
+      .optional(),
 
     syllabifiedWord: z
       .string()
@@ -220,6 +238,10 @@ export const editCardToDeckSchema = z
         'check the data you provided: ether both sentence and targetWords should be provided or none of them at all. If they are provided, all targetWords should be included in the sentence. Also, if you provided custom definitions, make sure they listed in targetWords array.',
     }
   )
+
+export const getCardsRequestQuerySchema = paginationQueryUtilizedSchema.extend({
+  sentence: z.string().trim().max(80).optional(),
+})
 
 // :cardId param check
 export const cardIdParamUtilizedSchema = z.strictObject({
