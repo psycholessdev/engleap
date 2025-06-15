@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 import DefinitionCard, { DefinitionCardSkeleton } from '@/components/DefinitionCard'
+import FailureFallback from '@/components/FailureFallback'
 
 import { useInView } from 'react-intersection-observer'
 import { useAuth, useInfiniteDefinitions } from '@/hooks'
@@ -21,8 +22,15 @@ const DefinitionList: React.FC<IDefinitionList> = ({
 }) => {
   const { userId } = useAuth()
   const { ref, inView } = useInView()
-  const { definitions, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage, status } =
-    useInfiniteDefinitions(cardId)
+  const {
+    definitions,
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    refetch,
+    status,
+  } = useInfiniteDefinitions(cardId)
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -48,7 +56,7 @@ const DefinitionList: React.FC<IDefinitionList> = ({
             onDelete={onDelete}
           />
         ))}
-      {status === 'error' && <p>Try again</p>}
+      {status === 'error' && <FailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

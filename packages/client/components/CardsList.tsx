@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import AddButtonGhost from './AddButtonGhost'
 import CardItem, { CardItemSkeleton } from '@/components/CardItem'
+import FailureFallback from '@/components/FailureFallback'
 
 import { type Card } from '@/api'
 
@@ -62,7 +63,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
             onDelete={handleDeleteCard}
           />
         ))}
-      {status === 'error' && <p>Try again</p>}
+      {status === 'error' && <FailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

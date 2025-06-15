@@ -1,5 +1,6 @@
 'use client'
 import DeckItem, { DeckItemSkeleton } from '@/components/DeckItem'
+import FailureFallback from '@/components/FailureFallback'
 
 import React, { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -7,7 +8,7 @@ import { useAuth, useInfiniteDecks } from '@/hooks'
 
 const DeckList = () => {
   const { ref, inView } = useInView()
-  const { decks, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage, status } =
+  const { decks, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage, refetch, status } =
     useInfiniteDecks()
   const { userId } = useAuth()
 
@@ -29,7 +30,7 @@ const DeckList = () => {
             editable={deck.creatorId === userId}
           />
         ))}
-      {status === 'error' && <p>Try again</p>}
+      {status === 'error' && <FailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(6)
