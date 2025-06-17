@@ -77,6 +77,18 @@ export const addCard = async (
   return await sequelize.transaction(async transaction => {
     const [createdCard, inserted] = await Card.findOrCreate({
       where: { deckId, sentence, createdByUserId },
+      include: [
+        {
+          model: CardTargetWord,
+          attributes: ['id'],
+          include: [
+            {
+              model: Word,
+              attributes: ['id', 'text'],
+            },
+          ],
+        },
+      ],
       transaction,
     })
 
@@ -95,6 +107,9 @@ export const addCard = async (
       },
       { transaction }
     )
+
+    // include the Words after they have been inserted
+    await createdCard.reload({ transaction })
 
     return { createdCard, notFoundWords, inserted }
   })
@@ -120,6 +135,7 @@ export const editCard = async (
       )
     }
 
+    let notFoundNewWords: string[] = []
     if (targetWords) {
       // Syncs targetWords
       // deleted CTWs get deleted
@@ -137,8 +153,17 @@ export const editCard = async (
         transaction,
       })
 
-      await linkDefinitionsToCard(cardId, userId, targetWords, definitions || [], transaction)
+      const { notFoundWords } = await linkDefinitionsToCard(
+        cardId,
+        userId,
+        targetWords,
+        definitions || [],
+        transaction
+      )
+      notFoundNewWords = notFoundWords
     }
+
+    return { notFoundWords: notFoundNewWords }
   })
 }
 

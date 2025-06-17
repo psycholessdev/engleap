@@ -17,7 +17,7 @@ import { generateTargetWords, normalizeCard, deepCompare } from '@/utils'
 import { useForm } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCardController } from '@/hooks'
+import { useCardController, useAlert } from '@/hooks'
 import { type Card, type CreateCardRequest, type EditCardRequest } from '@/api'
 import { z } from 'zod'
 
@@ -50,6 +50,7 @@ interface IAddCardForm {
 }
 
 const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
+  const alert = useAlert()
   const normalizedCardToEdit = cardToEdit ? normalizeCard(cardToEdit) : null
   const modalOpenBtnRef = useRef<HTMLButtonElement>(null)
   const { isLoading, failureMessage, createCard, editCard, deleteCustomDefinition } =
@@ -85,7 +86,16 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       }
       delete requestData.userSpecifiedTargetWords
 
-      await editCard(cardToEdit.id, requestData)
+      const editingDetails = await editCard(cardToEdit.id, requestData)
+
+      if (editingDetails && editingDetails.notFoundWords.length > 0) {
+        alert(
+          'Could not find Definitions',
+          `Your changes were saved. However, we could not find definitions for ${editingDetails.notFoundWords.join(
+            ', '
+          )}. Consider adding your own definitions.`
+        )
+      }
     } else {
       // creating mode
       const requestData: CreateCardRequest = {
@@ -100,6 +110,15 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
         setSelectedTargetWords([])
         setTargetWordsToSelect([])
         form.reset()
+
+        if (result.notFoundWords.length > 0) {
+          alert(
+            'Could not find Definitions',
+            `Your changes were saved. However, we could not find definitions for ${result.notFoundWords.join(
+              ', '
+            )}. Consider adding your own definitions.`
+          )
+        }
       }
     }
   }

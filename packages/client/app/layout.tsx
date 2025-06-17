@@ -7,8 +7,7 @@ import { Ubuntu } from 'next/font/google'
 
 import type { Metadata, Viewport } from 'next'
 import { getBackendUrl } from '@/utils'
-import { AuthProvider } from '@/hooks/useAuth'
-import { NotificationsProvider } from '@/hooks'
+import { NotificationsProvider, AuthProvider, AlertProvider } from '@/hooks'
 
 const ubuntu = Ubuntu({
   variable: '--font-ubuntu',
@@ -40,13 +39,15 @@ export default function RootLayout({
         />
 
         <NotificationsProvider>
-          <AuthProvider>
-            <RootElement>
-              <Header />
-              <Navbar />
-              <div className="w-[90%] h-full">{children}</div>
-            </RootElement>
-          </AuthProvider>
+          <AlertProvider>
+            <AuthProvider>
+              <RootElement>
+                <Header />
+                <Navbar />
+                <div className="w-[90%] h-full">{children}</div>
+              </RootElement>
+            </AuthProvider>
+          </AlertProvider>
         </NotificationsProvider>
       </body>
     </html>

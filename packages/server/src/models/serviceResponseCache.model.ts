@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 // Cache not-found responses from services
 @Table
-export class ServiceResponseCacheModel extends Model {
+export class ServiceResponseCache extends Model {
   @PrimaryKey
   @Default(uuidv4)
   @Column({ type: DataType.UUID })

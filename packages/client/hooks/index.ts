@@ -1,5 +1,6 @@
 export * from './useAuth'
 export * from './useNotifications'
+export * from './useAlert'
 export * from './useInfiniteDecks'
 export * from './useDeckController'
 export * from './useInfiniteCards'

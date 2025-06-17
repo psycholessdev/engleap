@@ -132,10 +132,13 @@ export const editCardController = async (req: EditCardToDeckRequest, res: Respon
       return res.status(403).json(getErrorObject('You do not have the right to edit this card'))
     }
 
-    await editCard(cardId, userId, sentence, targetWords, definitions)
+    const { notFoundWords } = await editCard(cardId, userId, sentence, targetWords, definitions)
 
     const updatedCard = await getCardByIdWithWords(cardId)
-    return res.status(200).json(updatedCard)
+    return res.status(200).json({
+      card: updatedCard,
+      notFoundWords,
+    })
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to edit the card')
   }

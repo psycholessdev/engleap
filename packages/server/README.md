@@ -108,8 +108,8 @@ Request's body
 ```json
 {
   "sentence": "string",
-  "targetWords": string[],
-  "definitions": UserDefinition[] // optional, see UserDefinition schema
+  "targetWords": "string[]",
+  "definitions": "UserDefinition[]" // optional, see UserDefinition schema
 }
 ```
 
@@ -133,8 +133,8 @@ UserDefinition schema
 
 ```json
 {
-  "card": Card,
-  "notFoundWords": string[],
+  "card": "Card",
+  "notFoundWords": "string[]",
   "inserted": "boolean"
 }
 ```
@@ -149,15 +149,18 @@ Request's body
 ```json
 {
   "sentence": "string", // optional
-  "targetWords": string[], // optional if sentence was not provided
-  "definitions": UserDefinition[] // optional, see UserDefinition schema
+  "targetWords": "string[]", // optional if sentence was not provided
+  "definitions": "UserDefinition[]" // optional, see UserDefinition schema
 }
 ```
 
 **Response:** `200 OK`
 
-```
-Card
+```json
+{
+  "card": "Card",
+  "notFoundWords": "string[]"
+}
 ```
 
 #### Delete Card by id (uuid)
@@ -211,7 +214,7 @@ URL query
 
 ```json
 {
-  "deck": Deck,
+  "deck": "Deck",
   "cardsTotal": "number",
   "usersFollowing": "number",
   "isUserFollowing": "boolean"

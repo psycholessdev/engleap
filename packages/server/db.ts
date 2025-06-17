@@ -9,7 +9,7 @@ import {
   UserCardProgress,
   UserDeck,
   Word,
-  ServiceResponseCacheModel,
+  ServiceResponseCache,
 } from './src/models'
 
 import dotenv from 'dotenv'
@@ -44,7 +44,7 @@ export const sequelize = new Sequelize({
     UserCardProgress,
     UserDeck,
     Word,
-    ServiceResponseCacheModel,
+    ServiceResponseCache,
   ],
 })
 

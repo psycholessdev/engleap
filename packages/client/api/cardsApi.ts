@@ -49,15 +49,30 @@ export interface CreateCardRequest {
   targetWords: string[]
   definitions?: UserProvidedDefinition[]
 }
+interface CreateCardResponse {
+  card: Card
+  notFoundWords: string[]
+  inserted: boolean
+}
 
-export const createCard = async (deckId: string, data: CreateCardRequest) => {
+export const createCard = async (
+  deckId: string,
+  data: CreateCardRequest
+): Promise<CreateCardResponse> => {
   const res = await $axios.post(`/cards/deck/${deckId}`, data)
   return res.data
 }
 
 export type EditCardRequest = Partial<CreateCardRequest>
+interface EditCardResponse {
+  card: Card
+  notFoundWords: string[]
+}
 
-export const editCard = async (cardId: string, data: EditCardRequest) => {
+export const editCard = async (
+  cardId: string,
+  data: EditCardRequest
+): Promise<EditCardResponse> => {
   const res = await $axios.put(`/cards/${cardId}`, data)
   return res.data
 }

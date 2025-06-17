@@ -8,7 +8,7 @@ import {
   deleteDefinition as deleteDefinitionHandler,
 } from '@/api'
 import { useQueryClient } from '@tanstack/react-query'
-import type { CreateCardRequest, EditCardRequest, Card, UserProvidedDefinition } from '@/api'
+import type { CreateCardRequest, EditCardRequest, UserProvidedDefinition } from '@/api'
 
 export const useCardController = () => {
   const router = useRouter()
@@ -31,21 +31,21 @@ export const useCardController = () => {
     return creationDetails
   }
 
-  const editCard = async (cardId: string, data: EditCardRequest): Promise<Card | null> => {
-    const card = await handleAxios(
+  const editCard = async (cardId: string, data: EditCardRequest) => {
+    const editingDetails = await handleAxios(
       async () => {
         return await editCardHandler(cardId, data)
       },
       { errorMessage: 'Failed to edit Card' }
     )
 
-    if (card) {
+    if (editingDetails) {
       alert('Success', 'The changes were saved.')
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
     }
-    return card
+    return editingDetails
   }
 
   const addCustomDefinition = async (
@@ -54,20 +54,20 @@ export const useCardController = () => {
     targetWords: string[],
     def: UserProvidedDefinition
   ) => {
-    const card = await handleAxios(
+    const editingDetails = await handleAxios(
       async () => {
         return await editCardHandler(cardId, { sentence, targetWords, definitions: [def] })
       },
       { errorMessage: 'Failed to add custom Definition' }
     )
 
-    if (card) {
+    if (editingDetails) {
       alert('Success', 'The changes were saved.')
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
     }
-    return card
+    return editingDetails
   }
 
   const deleteCustomDefinition = async (defId: string) => {

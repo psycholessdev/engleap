@@ -135,8 +135,8 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
   const onSubmit = async (data: z.infer<typeof addCustomDefinitionSchema>) => {
     // requesting after zod validation has passed
 
-    const editedCard = await addCustomDefinition(cardId, sentence, selectedTargetWords, data)
-    if (editedCard) {
+    const editingDetails = await addCustomDefinition(cardId, sentence, selectedTargetWords, data)
+    if (editingDetails) {
       setModalOpen(false)
       router.refresh()
       location.reload()
