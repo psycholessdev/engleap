@@ -1,5 +1,4 @@
 import React from 'react'
-import { useFetchSRSCardsCount } from '@/hooks'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { IconCircleCheckFilled, IconMenuDeep, IconPencil } from '@tabler/icons-react'
@@ -10,12 +9,18 @@ interface IDeckItem {
   deckId: string
   title: string
   cardsTotalCount: number
+  cardsDueCount: number
   key?: string
   editable?: boolean
 }
 
-const DeckItem: React.FC<IDeckItem> = ({ title, cardsTotalCount, editable, deckId }) => {
-  const cardsDueCount = useFetchSRSCardsCount(deckId)
+const DeckItem: React.FC<IDeckItem> = ({
+  title,
+  cardsTotalCount,
+  cardsDueCount,
+  editable,
+  deckId,
+}) => {
   return (
     <div className="w-full py-5 px-3 flex items-center justify-between rounded-2xl cursor-pointer last:border-b-transparent hover:bg-el-secondary-container/20">
       <Link href={`/study?deckId=${deckId}`} className="flex flex-col gap-1 w-full">
@@ -23,13 +28,12 @@ const DeckItem: React.FC<IDeckItem> = ({ title, cardsTotalCount, editable, deckI
         <div className="flex items-center gap-1">
           <Badge>{cardsTotalCount} total</Badge>
 
-          {!!cardsDueCount && <Badge variant="secondary">{cardsDueCount} to study</Badge>}
-          {cardsTotalCount > 0 && cardsDueCount === 0 && (
+          {cardsDueCount > 0 && <Badge variant="secondary">{cardsDueCount} to study</Badge>}
+          {cardsDueCount == 0 && (
             <Badge variant="secondary">
               <IconCircleCheckFilled /> All cards are finished
             </Badge>
           )}
-          {cardsDueCount === undefined && <Skeleton className="w-22 h-6 rounded-2xl" />}
         </div>
       </Link>
       <Button asChild variant="secondary" size="sm">

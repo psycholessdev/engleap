@@ -10,7 +10,7 @@ import { getErrorObject, handleError } from '../utils'
 import {
   addCard,
   getCardsByDeckId,
-  getDeckById,
+  getDeckPlainById,
   getCardByIdWithWords,
   getCardById,
   editCard,
@@ -27,7 +27,7 @@ export const getAllCardsByDeckIdController = async (
     const { deckId } = req.params
     const userId = getRequestUserId(req)
 
-    const deck = await getDeckById(deckId, ['id', 'creatorId', 'isPublic'])
+    const deck = await getDeckPlainById(deckId, ['id', 'creatorId', 'isPublic'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }
@@ -52,7 +52,7 @@ export const getCardByIdController = async (req: GetCardByIdRequest, res: Respon
     if (!card) {
       return res.status(404).json(getErrorObject('Card not found'))
     }
-    const deck = await getDeckById(card.deckId, ['creatorId', 'isPublic'])
+    const deck = await getDeckPlainById(card.deckId, ['creatorId', 'isPublic'])
     if (!deck || (deck.creatorId !== userId && !deck.isPublic)) {
       return res.status(403).json(getErrorObject('You do not have the right to see this card'))
     }
@@ -90,7 +90,7 @@ export const addCardToDeckController = async (req: AddCardToDeckRequest, res: Re
     const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
-    const deck = await getDeckById(deckId, ['creatorId'])
+    const deck = await getDeckPlainById(deckId, ['creatorId'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }

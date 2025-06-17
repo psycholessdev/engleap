@@ -27,6 +27,7 @@ const DeckList = () => {
             deckId={deck.id}
             title={deck.title}
             cardsTotalCount={deck.cardCount}
+            cardsDueCount={deck.dueCardCount}
             editable={deck.creatorId === userId}
           />
         ))}

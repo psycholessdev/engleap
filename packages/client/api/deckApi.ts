@@ -8,8 +8,13 @@ export interface Deck {
   isPublic: string
 }
 
-export type DeckWithCardCount = Deck & { cardCount: string }
-type GetMyDecksResponse = DeckWithCardCount[]
+export type DeckWithCardInfo = Deck & {
+  cardCount: string
+  dueCardCount: string
+  usersFollowing: string
+  isUserFollowing: boolean
+}
+type GetMyDecksResponse = DeckWithCardInfo[]
 
 export const getMyDecks = async (offset: number, limit: number): Promise<GetMyDecksResponse> => {
   const res = await $axios.get('/decks', {

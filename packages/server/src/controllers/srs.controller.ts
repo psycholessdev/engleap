@@ -5,9 +5,8 @@ import { getRequestUserId } from './utils'
 import {
   updateSrsProgress,
   getSrsWithCards,
-  countSrsDueCards,
   getCardById,
-  getDeckById,
+  getDeckPlainById,
   getIsFollowingDeck,
 } from '../services'
 
@@ -40,7 +39,7 @@ export const getSrsCardsController = async (req: GetSrsCardsRequest, res: Respon
     const userId = getRequestUserId(req)
 
     if (deckId) {
-      const deck = await getDeckById(deckId)
+      const deck = await getDeckPlainById(deckId)
       if (!deck) {
         return res.status(404).json(getErrorObject('Deck not found'))
       }
@@ -50,24 +49,5 @@ export const getSrsCardsController = async (req: GetSrsCardsRequest, res: Respon
     return res.status(200).json(srsWithCards)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to get SRS cards')
-  }
-}
-
-export const getSrsCardsStatsController = async (req: GetSrsCardsRequest, res: Response) => {
-  try {
-    const { deckId } = req.query
-    const userId = getRequestUserId(req)
-
-    if (deckId) {
-      const deck = await getDeckById(deckId)
-      if (!deck) {
-        return res.status(404).json(getErrorObject('Deck not found'))
-      }
-    }
-
-    const srsDue = await countSrsDueCards(userId, deckId)
-    return res.status(200).json({ count: srsDue, deckId })
-  } catch (error) {
-    return handleError(error, res, 'Internal error: Failed to count SRS cards')
   }
 }

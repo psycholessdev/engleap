@@ -16,6 +16,7 @@ import { Deck } from './deck.model'
 import { User } from './user.model'
 import { CardTargetWord } from './cardTargetWord.model'
 import { Definition } from './definition.model'
+import { UserCardProgress } from './userCardProgress.model'
 
 @Table
 export class Card extends Model {
@@ -43,6 +44,9 @@ export class Card extends Model {
 
   @HasMany(() => CardTargetWord, 'cardId')
   targetWords!: NonAttribute<CardTargetWord[]>
+
+  @HasMany(() => UserCardProgress, 'cardId')
+  userCardProgresses!: NonAttribute<UserCardProgress[]>
 
   @BelongsToMany(() => Definition, {
     through: {

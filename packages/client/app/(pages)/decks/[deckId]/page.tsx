@@ -12,8 +12,8 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
   }
   const { deckId } = await params
 
-  const responseData = await getDeck(deckId)
-  if (!responseData) {
+  const deck = await getDeck(deckId)
+  if (!deck) {
     notFound()
   }
 
@@ -21,20 +21,20 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
     <>
       <DeckHead
         deckId={deckId}
-        showEditButtons={userId === responseData.deck.creatorId}
-        title={responseData.deck.title}
-        description={responseData.deck.description}
-        isPublic={responseData.deck.isPublic}
-        cardsTotal={responseData.cardsTotal}
-        usersFollowing={responseData.usersFollowing}
-        followingDefault={responseData.isUserFollowing}
+        showEditButtons={userId === deck.creatorId}
+        title={deck.title}
+        description={deck.description}
+        isPublic={deck.isPublic}
+        cardsTotal={deck.cardsTotal}
+        usersFollowing={deck.usersFollowing}
+        followingDefault={deck.isUserFollowing}
       />
-      <p className="font-ubuntu my-5 text-white lg:text-lg">{responseData.deck.description}</p>
+      <p className="font-ubuntu my-5 text-white lg:text-lg">{deck.description}</p>
 
       <CardsList
         deckId={deckId}
-        cardCount={responseData.cardsTotal}
-        showButtons={userId === responseData.deck.creatorId}
+        cardCount={deck.cardsTotal}
+        showButtons={userId === deck.creatorId}
       />
     </>
   )

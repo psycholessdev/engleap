@@ -10,8 +10,8 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
   }
   const { deckId } = await params
 
-  const responseData = await getDeck(deckId)
-  if (!responseData || responseData.deck.creatorId !== userId) {
+  const deck = await getDeck(deckId)
+  if (!deck || deck.creatorId !== userId) {
     // Deck does not exist or user is not allowed to edit the Deck
     notFound()
   }

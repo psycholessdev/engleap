@@ -33,24 +33,6 @@ export const getSrsWithCards = async (userId: string, deckId?: string) => {
   })
 }
 
-export const countSrsDueCards = async (userId: string, deckId?: string) => {
-  const deckFilter = deckId ? { ['$card.deckId$']: deckId } : undefined
-
-  return await UserCardProgress.count({
-    where: {
-      userId,
-      [Op.or]: [{ nextReviewAt: null }, { nextReviewAt: { [Op.lte]: new Date() } }],
-      ...deckFilter,
-    },
-    include: [
-      {
-        model: Card,
-        required: true, // Ensures INNER JOIN so deckId filter works
-      },
-    ],
-  })
-}
-
 export const updateSrsProgress = async (userId: string, cardId: string, grade?: number) => {
   return await sequelize.transaction(async transaction => {
     const now = new Date()

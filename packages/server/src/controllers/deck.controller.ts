@@ -9,9 +9,9 @@ import {
 import {
   createDeck,
   deleteDeck,
-  getDeckById,
+  getDeckPlainById,
+  getDeckWithInfo,
   getDecksByUserId,
-  getDeckStats,
   updateDeck,
 } from '../services'
 import { getErrorObject, handleError } from '../utils'
@@ -23,16 +23,15 @@ export const getDeckController = async (req: GetDeckRequest, res: Response) => {
     const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
-    const deck = await getDeckById(deckId, ['id', 'title', 'description', 'creatorId', 'isPublic'])
-    if (!deck) {
+    const deckWithInfo = await getDeckWithInfo(deckId, userId)
+    if (!deckWithInfo) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }
-    if (deck.creatorId !== userId && !deck.isPublic) {
+    if (deckWithInfo.creatorId !== userId && !deckWithInfo.isPublic) {
       return res.status(403).json(getErrorObject('You do not have the right to see this deck'))
     }
-    const stats = await getDeckStats(deckId, userId)
 
-    return res.status(200).json({ deck, ...stats })
+    return res.status(200).json(deckWithInfo)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to delete the deck')
   }
@@ -69,7 +68,7 @@ export const editDeckController = async (req: EditDeckRequest, res: Response) =>
     const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
-    const deck = await getDeckById(deckId, ['id', 'creatorId'])
+    const deck = await getDeckPlainById(deckId, ['id', 'creatorId'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }
@@ -90,7 +89,7 @@ export const deleteDeckController = async (req: DeleteDeckRequest, res: Response
     const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
-    const deck = await getDeckById(deckId, ['id', 'creatorId'])
+    const deck = await getDeckPlainById(deckId, ['id', 'creatorId'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }
