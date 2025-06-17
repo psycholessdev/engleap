@@ -110,7 +110,9 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
           </Badge>
         ))}
       </div>
-      <span className="font-ubuntu text-white lg:text-lg leading-5 ml-2">{definition.text}</span>
+      <span className="font-ubuntu text-white lg:text-lg lg:leading-6 leading-5 ml-2">
+        {definition.text}
+      </span>
       {showButtons && (
         <Button
           className="mt-2"

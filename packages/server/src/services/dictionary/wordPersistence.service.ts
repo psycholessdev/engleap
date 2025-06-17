@@ -1,12 +1,10 @@
-import { ExtractedDefinition } from '../../types'
+import { DefinitionDTO } from '../../types'
 import { Transaction } from 'sequelize'
 import { Definition, Word } from '../../models'
 
 export const upsertWordsAndDefinitions = async (
   targetWords: string[],
-  definitions: ExtractedDefinition[],
-  source: 'dictionary' | 'user',
-  sourceName: 'Merriam Webster Intermediate dictionary' | undefined,
+  definitions: DefinitionDTO[],
   createdByUserId: string,
   transaction: Transaction
 ) => {
@@ -80,11 +78,11 @@ export const upsertWordsAndDefinitions = async (
       text: def.text,
       partOfSpeech: def.partOfSpeech,
       labels: def.labels,
-      preciseWord: def.id,
+      sourceEntryId: def.sourceEntryId,
       syllabifiedWord: def.syllabifiedWord,
       offensive: def.offensive,
-      source,
-      sourceName,
+      source: def.sourceName ? 'dictionary' : 'user',
+      sourceName: def.sourceName,
       difficulty: def.difficulty,
       createdByUserId,
     })

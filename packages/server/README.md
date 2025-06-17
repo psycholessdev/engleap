@@ -109,7 +109,7 @@ Request's body
 {
   "sentence": "string",
   "targetWords": string[],
-  "definitions": UserDefinition[][] // optional, see UserDefinition schema
+  "definitions": UserDefinition[] // optional, see UserDefinition schema
 }
 ```
 
@@ -117,14 +117,14 @@ UserDefinition schema
 
 ```json
 {
-  "id": "string",
-  "word": "string",
+  "word": "string", // word from the sentence (e.g. strings)
+  "sourceEntryId": "string", // precise word this definition for (e.g. string)
   "text": "string", // definition's body
   "partOfSpeech": "string", // noun | pronoun | verb | adjective | adverb | phrasal verb | idiom | preposition | conjunction | interjection
   "syllabifiedWord": "string", // sub*scrip*tion
-  "pronunciationAudioUrl": "string", // URL
+  "pronunciationAudioUrl": "string",
   "offensive": "string", // optional, false by default
-  "labels": "string", // british, derogatory, archaic
+  "labels": "string", // british, derogatory, archaic, slang
   "stems": "string"
 }
 ```
@@ -150,7 +150,7 @@ Request's body
 {
   "sentence": "string", // optional
   "targetWords": string[], // optional if sentence was not provided
-  "definitions": UserDefinition[][] // optional, see UserDefinition schema
+  "definitions": UserDefinition[] // optional, see UserDefinition schema
 }
 ```
 

@@ -20,6 +20,7 @@ export const getDefinitionsByWord = async (word: string) => {
     attributes: [
       'id',
       'wordId',
+      'sourceEntryId',
       'audio',
       'text',
       'partOfSpeech',
@@ -64,6 +65,7 @@ export const getDefinitionsForCard = async (cardId: string, offset = 0, limit = 
     attributes: [
       'id',
       'wordId',
+      'sourceEntryId',
       'audio',
       'text',
       'partOfSpeech',

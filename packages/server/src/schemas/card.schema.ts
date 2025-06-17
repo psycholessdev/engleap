@@ -2,9 +2,9 @@ import { z } from 'zod'
 import xss from 'xss'
 import { paginationQueryUtilizedSchema } from './utils'
 
-export const extractedDefinitionSchema = z
+export const definitionTDOSchema = z
   .strictObject({
-    id: z
+    sourceEntryId: z
       .string()
       .trim()
       .toLowerCase()
@@ -93,15 +93,15 @@ export const extractedDefinitionSchema = z
       .default([]),
   })
   .refine(
-    ({ id, syllabifiedWord }) => {
+    ({ sourceEntryId, syllabifiedWord }) => {
       // check if syllabifiedWord matches the original
       const parsedSyllabifiedWord: string[] = syllabifiedWord.split('*')
-      return id === parsedSyllabifiedWord.join('')
+      return sourceEntryId === parsedSyllabifiedWord.join('')
     },
     { message: 'syllabifiedWord should match the original word' }
   )
 
-const userProvidedDefinitions = z.array(extractedDefinitionSchema).min(1).max(15)
+const userProvidedDefinitions = z.array(definitionTDOSchema).min(1).max(15)
 
 export const addCardToDeckSchema = z
   .strictObject({

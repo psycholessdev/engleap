@@ -1,8 +1,8 @@
 import { Transaction } from 'sequelize'
 import { Word } from '../../models'
-import { fetchMerriamWebsterIntermediateDefinitions } from './dictionaryAdapter.service'
 import { upsertWordsAndDefinitions } from './wordPersistence.service'
-import { ExtractedDefinition } from '../../types'
+import { DefinitionDTO } from '../../types'
+import { fetchDefinitionsFromAnySource } from './dictionaryRegistry'
 
 export const ensureWordsInDictionary = async (
   createdByUserId: string,
@@ -25,9 +25,7 @@ export const ensureWordsInDictionary = async (
   // TODO load balancing and many sources
   const externalDictionaryResult =
     missingWords.length > 0
-      ? await Promise.all(
-          missingWords.map(word => fetchMerriamWebsterIntermediateDefinitions(word))
-        )
+      ? await Promise.all(missingWords.map(word => fetchDefinitionsFromAnySource(word)))
       : []
 
   const foundResults = externalDictionaryResult.filter(r => r.found)
@@ -35,7 +33,7 @@ export const ensureWordsInDictionary = async (
 
   // For foundResults, extract arrays of definitions
   const definitionsRaw = foundResults.map(r => r.extractedDefinitions)
-  const definitionsList: ExtractedDefinition[] = []
+  const definitionsList: DefinitionDTO[] = []
   for (const bunchOfDefs of definitionsRaw) {
     definitionsList.push(...bunchOfDefs)
   }
@@ -47,8 +45,6 @@ export const ensureWordsInDictionary = async (
   const persistResult = await upsertWordsAndDefinitions(
     foundTexts,
     definitionsList,
-    'dictionary',
-    'Merriam Webster Intermediate dictionary',
     createdByUserId,
     transaction
   )

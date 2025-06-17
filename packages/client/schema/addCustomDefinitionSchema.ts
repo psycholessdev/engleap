@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const addCustomDefinitionSchema = z
   .strictObject({
     // the word this definition for, e.g., fascinating
-    id: z.string().trim().toLowerCase().min(1).max(200),
+    sourceEntryId: z.string().trim().toLowerCase().min(1).max(200),
 
     // the original word, e.g. fascinate
     word: z
@@ -24,10 +24,10 @@ export const addCustomDefinitionSchema = z
     stems: z.array(z.string().trim().min(1).max(30)).default([]),
   })
   .refine(
-    ({ id, syllabifiedWord }) => {
+    ({ sourceEntryId, syllabifiedWord }) => {
       // check if syllabifiedWord matches the original
       const parsedSyllabifiedWord: string = syllabifiedWord.split('*').join('')
-      return id === parsedSyllabifiedWord
+      return sourceEntryId === parsedSyllabifiedWord
     },
     { message: 'The syllabified word must match the original word.' }
   )

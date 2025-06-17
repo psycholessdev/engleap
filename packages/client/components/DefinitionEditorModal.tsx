@@ -156,10 +156,10 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
   }
 
   const handleGenerateSyllabifiedWord = () => {
-    const id = form.getValues().id
-    if (!id) return
+    const sourceEntryId = form.getValues().sourceEntryId
+    if (!sourceEntryId) return
 
-    syllabify(id).then(text => {
+    syllabify(sourceEntryId).then(text => {
       form.setValue('syllabifiedWord', text)
       form.setFocus('syllabifiedWord')
     })
@@ -167,8 +167,8 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
 
   useEffect(() => {
     form.setValue('word', '')
-    if (form.getValues().id) {
-      form.setValue('id', '')
+    if (form.getValues().sourceEntryId) {
+      form.setValue('sourceEntryId', '')
     }
   }, [selectedTargetWords, form])
 
@@ -187,10 +187,10 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
         touchedFields: true,
       },
       callback: ({ values }) => {
-        if (!idAutofilled && values.word && !values.id) {
+        if (!idAutofilled && values.word && !values.sourceEntryId) {
           setIdAutofilled(true)
-          form.setValue('id', values.word)
-          form.setFocus('id')
+          form.setValue('sourceEntryId', values.word)
+          form.setFocus('sourceEntryId')
         }
       },
     })
@@ -229,12 +229,17 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="id">Exact Word for this Definition</Label>
-              <Input id="id" name="id" disabled={loading} {...form.register('id')} />
+              <Label htmlFor="sourceEntryId">Exact Word for this Definition</Label>
+              <Input
+                id="sourceEntryId"
+                name="sourceEntryId"
+                disabled={loading}
+                {...form.register('sourceEntryId')}
+              />
               <p className="text-muted-foreground text-sm">
                 Example: if the Target Word is “Ducks,” the exact word might be “Duck.”
               </p>
-              <FormInputError error={form.formState.errors.id} />
+              <FormInputError error={form.formState.errors.sourceEntryId} />
             </div>
 
             <div className="grid gap-2">

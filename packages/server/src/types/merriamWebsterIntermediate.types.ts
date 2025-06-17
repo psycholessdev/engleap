@@ -1,23 +1,3 @@
-export interface DictionaryServiceResult {
-  word: string
-  found: boolean
-  extractedDefinitions: ExtractedDefinition[]
-  similarWords: string[]
-}
-
-export type ExtractedDefinition = {
-  word: string // exact name in local db (placed)
-  id: string // what word this definition for (place)
-  text: string
-  partOfSpeech: string
-  difficulty?: string
-  syllabifiedWord: string
-  pronunciationAudioUrl?: string
-  offensive: boolean
-  labels: string[]
-  stems: string[]
-}
-
 export type MerriamWebsterResponse = Array<MerriamWebsterEntry> | string[]
 
 export interface MerriamWebsterEntry {
@@ -36,25 +16,25 @@ export interface MerriamWebsterEntry {
   shortdef: string[]
 }
 
-export interface HeadwordInfo {
+interface HeadwordInfo {
   hw: string // e.g., "drag*on" with breaks
   prs?: Pronunciation[]
 }
 
-export interface Pronunciation {
+interface Pronunciation {
   mw: string // pronunciation spelling, e.g., "ˈdrag-ən"
   sound?: {
     audio: string // e.g., "dragon01"
   }
 }
 
-export interface DefinitionBlock {
+interface DefinitionBlock {
   sseq: SenseSequence[][]
 }
 
-export type SenseSequence = ['sense', Sense] | ['bs', unknown] // 'bs' stands for "because of sense" or similar, rarely used
+type SenseSequence = ['sense', Sense] | ['bs', unknown] // 'bs' stands for "because of sense" or similar, rarely used
 
-export interface Sense {
+interface Sense {
   sn?: string // sense number
   dt: DefinitionText[] // definitions, possibly with formatting like {bc}
   lbs?: string[] // labels like "capitalized", "usually", "often"
@@ -64,4 +44,4 @@ export interface Sense {
   }
 }
 
-export type DefinitionText = ['text', string] | ['vis', Array<{ t: string }>]
+type DefinitionText = ['text', string] | ['vis', Array<{ t: string }>]

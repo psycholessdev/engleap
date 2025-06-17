@@ -8,7 +8,7 @@ import {
   deleteDefinition as deleteDefinitionHandler,
 } from '@/api'
 import { useQueryClient } from '@tanstack/react-query'
-import type { CreateCardRequest, EditCardRequest, Card, Definition } from '@/api'
+import type { CreateCardRequest, EditCardRequest, Card, UserProvidedDefinition } from '@/api'
 
 export const useCardController = () => {
   const router = useRouter()
@@ -52,7 +52,7 @@ export const useCardController = () => {
     cardId: string,
     sentence: string,
     targetWords: string[],
-    def: Definition
+    def: UserProvidedDefinition
   ) => {
     const card = await handleAxios(
       async () => {

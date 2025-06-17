@@ -2,7 +2,7 @@ import { Op } from 'sequelize'
 import { sequelize } from '../../db'
 import { Card, Word, CardTargetWord, CardDefinition, UserCardProgress } from '../models'
 import { ensureWordsInDictionary, upsertWordsAndDefinitions } from '../services'
-import { ExtractedDefinition } from '../types'
+import { DefinitionDTO } from '../types'
 import { Transaction } from 'sequelize'
 
 export const getCardsByDeckId = async (
@@ -72,7 +72,7 @@ export const addCard = async (
   sentence: string,
   createdByUserId: string,
   targetWords: string[],
-  definitions?: ExtractedDefinition[]
+  definitions?: DefinitionDTO[]
 ) => {
   return await sequelize.transaction(async transaction => {
     const [createdCard, inserted] = await Card.findOrCreate({
@@ -105,7 +105,7 @@ export const editCard = async (
   userId: string,
   sentence: string | undefined,
   targetWords: string[] | undefined,
-  definitions?: ExtractedDefinition[]
+  definitions?: DefinitionDTO[]
 ) => {
   return await sequelize.transaction(async transaction => {
     if (sentence) {
@@ -149,7 +149,7 @@ export const linkDefinitionsToCard = async (
   cardId: string,
   createdByUserId: string,
   targetWords: string[],
-  definitions: ExtractedDefinition[],
+  definitions: DefinitionDTO[],
   transaction: Transaction
 ) => {
   // Auto (dictionary) path: try to fetch+persist missing from Merriam-Webster
@@ -159,8 +159,6 @@ export const linkDefinitionsToCard = async (
   const userPersisted = await upsertWordsAndDefinitions(
     targetWords || [],
     definitions || [],
-    'user',
-    undefined,
     createdByUserId,
     transaction
   )

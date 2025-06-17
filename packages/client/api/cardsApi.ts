@@ -16,8 +16,8 @@ export interface TargetWord {
   }
 }
 
-export interface Definition {
-  id: string
+export interface UserProvidedDefinition {
+  sourceEntryId: string
   word: string
   text: string
   partOfSpeech: string
@@ -47,7 +47,7 @@ export const deleteCard = async (cardId: string) => {
 export interface CreateCardRequest {
   sentence: string
   targetWords: string[]
-  definitions?: Definition[]
+  definitions?: UserProvidedDefinition[]
 }
 
 export const createCard = async (deckId: string, data: CreateCardRequest) => {
