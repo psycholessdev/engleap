@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import xss from 'xss'
+import { paginationQueryUtilizedSchema } from './utils'
 
 export const createDeckSchema = z.strictObject({
   title: z
@@ -20,6 +21,10 @@ export const createDeckSchema = z.strictObject({
 })
 
 export const editDeckSchema = createDeckSchema.partial()
+
+export const getPublicDecksRequestQuerySchema = paginationQueryUtilizedSchema.extend({
+  query: z.string().trim().max(50).optional(),
+})
 
 // :deckId param check
 export const deckIdParamUtilizedSchema = z.strictObject({

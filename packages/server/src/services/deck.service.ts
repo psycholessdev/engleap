@@ -2,7 +2,7 @@ import { Card, Deck, UserDeck, UserCardProgress } from '../models'
 import { Op, fn, col, literal } from 'sequelize'
 import { sequelize } from '../../db'
 
-export const getDecksByUserId = async (userId: string, offset = 0, limit = 20) => {
+export const getDecksWithInfoByUserId = async (userId: string, offset = 0, limit = 20) => {
   const userDecks = await UserDeck.findAll({
     where: { userId },
   })
@@ -54,6 +54,40 @@ export const getDecksByUserId = async (userId: string, offset = 0, limit = 20) =
               AND "UserDecks"."userId" = '${userId}'
           )`),
           'isUserFollowing',
+        ],
+      ],
+    },
+    group: ['Deck.id'],
+    subQuery: false,
+    offset,
+    limit,
+  })
+}
+
+export const getPublicDecksWithInfo = async (query: string, offset = 0, limit = 20) => {
+  return await Deck.findAll({
+    where: {
+      [Op.and]: [{ isPublic: true }, { title: { [Op.iLike]: `%${query}%` } }],
+    },
+    include: [
+      {
+        model: Card,
+        as: 'cards',
+        attributes: [],
+        required: false,
+      },
+    ],
+    attributes: {
+      include: [
+        // Total number of cards in the deck
+        [fn('COUNT', col('cards.id')), 'cardCount'],
+        // Total users following the deck
+        [
+          literal(`(
+            SELECT COUNT(*) FROM "UserDecks"
+            WHERE "UserDecks"."deckId" = "Deck"."id"
+          )`),
+          'usersFollowing',
         ],
       ],
     },

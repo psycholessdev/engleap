@@ -1,8 +1,9 @@
 import { Response } from 'express'
-import {
+import type {
   CreateDeckRequest,
   DeleteDeckRequest,
   GetAllDecksRequest,
+  GetPublicDecksRequest,
   GetDeckRequest,
   EditDeckRequest,
   FollowDeckRequest,
@@ -13,7 +14,8 @@ import {
   deleteDeck,
   getDeckPlainById,
   getDeckWithInfo,
-  getDecksByUserId,
+  getDecksWithInfoByUserId,
+  getPublicDecksWithInfo,
   updateDeck,
   followDeck,
   unfollowDeck,
@@ -41,15 +43,26 @@ export const getDeckController = async (req: GetDeckRequest, res: Response) => {
   }
 }
 
-export const getAllDecksController = async (req: GetAllDecksRequest, res: Response) => {
+export const getUserDecksController = async (req: GetAllDecksRequest, res: Response) => {
   try {
     const { offset, limit } = req.query
     const userId = getRequestUserId(req)
 
-    const decks = await getDecksByUserId(userId, offset, limit)
+    const decks = await getDecksWithInfoByUserId(userId, offset, limit)
     return res.status(200).json(decks)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to get decks')
+  }
+}
+
+export const getPublicDecksController = async (req: GetPublicDecksRequest, res: Response) => {
+  try {
+    const { query, offset, limit } = req.query
+
+    const decks = await getPublicDecksWithInfo(query ?? '', offset, limit)
+    return res.status(200).json(decks)
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to get public decks')
   }
 }
 

@@ -6,11 +6,15 @@ import {
   paginationQueryUtilizedSchema,
   editDeckSchema,
   changeFollowStatusDeckSchema,
+  getPublicDecksRequestQuerySchema,
 } from '../schemas'
 import { DeckIdParamUtilizedData } from '../utils'
 
 export type GetAllDecksData = z.infer<typeof paginationQueryUtilizedSchema>
 export type GetAllDecksRequest = Request<AnyObject, AnyObject, AnyObject, GetAllDecksData>
+
+export type GetPublicDecksData = z.infer<typeof getPublicDecksRequestQuerySchema>
+export type GetPublicDecksRequest = Request<AnyObject, AnyObject, AnyObject, GetPublicDecksData>
 
 export type CreateDeckData = z.infer<typeof createDeckSchema>
 export type CreateDeckRequest = Request<AnyObject, AnyObject, CreateDeckData>

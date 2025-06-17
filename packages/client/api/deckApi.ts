@@ -23,6 +23,23 @@ export const getMyDecks = async (offset: number, limit: number): Promise<GetMyDe
   return res.data
 }
 
+export type PublicDeck = Deck & {
+  cardCount: string
+  usersFollowing: string
+}
+type GetPublicDecksResponse = PublicDeck[]
+
+export const getPublicDecks = async (
+  query: string,
+  offset: number,
+  limit: number
+): Promise<GetPublicDecksResponse> => {
+  const res = await $axios.get('/decks/all', {
+    params: { query, offset, limit },
+  })
+  return res.data
+}
+
 export interface CreateDeckRequest {
   title: string
   description?: string

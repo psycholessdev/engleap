@@ -172,6 +172,40 @@ Request's body
 
 ### Deck API
 
+#### Search public Decks
+
+- **URL:** `/decks/all`
+- **Method:** `GET`
+
+URL query
+
+```json
+{
+  "query": "string",
+  "limit": "number",
+  "offset": "number"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": "46749710-3484-431b-a77d-5afa62df37c4",
+    "title": "My super deck 1",
+    "description": "follow me on inst @akkame",
+    "cardCount": "16",
+    "isPublic": true,
+    "copiedFrom": null,
+    "creatorId": "db549270-4c30-4802-af3d-d1a1af56cecd",
+    "createdAt": "2025-06-01T07:35:15.058Z",
+    "updatedAt": "2025-06-13T04:07:42.249Z"
+  }
+  // ...
+]
+```
+
 #### Get my Decks
 
 - **URL:** `/decks`

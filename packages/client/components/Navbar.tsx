@@ -25,7 +25,12 @@ const Navbar = () => {
             currentPath={pathname}
           />
           <NavItem link="/decks" icon="/icons/cards.png" title="My Decks" currentPath={pathname} />
-          <NavItem link="/search" icon="/icons/search.png" title="Search" currentPath={pathname} />
+          <NavItem
+            link="/decks/search"
+            icon="/icons/search.png"
+            title="Search"
+            currentPath={pathname}
+          />
         </motion.nav>
       ) : null}
     </AnimatePresence>

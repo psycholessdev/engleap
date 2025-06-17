@@ -5,21 +5,31 @@ import {
   editDeckSchema,
   deckIdParamUtilizedSchema,
   paginationQueryUtilizedSchema,
+  getPublicDecksRequestQuerySchema,
 } from '../schemas'
 import {
   createDeckController,
   deleteDeckController,
-  getAllDecksController,
+  getUserDecksController,
+  getPublicDecksController,
   getDeckController,
   editDeckController,
 } from '../controllers'
 
 const router = express.Router()
 
+// user's decks list
 router.get(
   '/',
   validateRequestData(paginationQueryUtilizedSchema, 'query'),
-  getAllDecksController as unknown as express.RequestHandler
+  getUserDecksController as unknown as express.RequestHandler
+)
+
+// public search
+router.get(
+  '/all',
+  validateRequestData(getPublicDecksRequestQuerySchema, 'query'),
+  getPublicDecksController as unknown as express.RequestHandler
 )
 
 router.get('/:deckId', validateRequestData(deckIdParamUtilizedSchema, 'params'), getDeckController)

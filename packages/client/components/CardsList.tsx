@@ -47,7 +47,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
 
   useEffect(() => {
     refetch()
-  }, [searchQuery])
+  }, [searchQuery, refetch])
 
   return (
     <div className="flex flex-col items-start gap-3 pb-20">
