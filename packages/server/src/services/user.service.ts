@@ -1,4 +1,4 @@
-import { User, UserDeck } from '../models'
+import { User } from '../models'
 
 export const getUserByAuth = async (id: string, passwordHash: string, attributes = ['id']) => {
   return await User.findOne({
@@ -46,25 +46,4 @@ export const createUser = async (
   proficiencyLevel: string
 ) => {
   return await User.create({ username, email, passwordHash, proficiencyLevel })
-}
-
-export const followDeck = async (userId: string, deckId: string) => {
-  await UserDeck.findOrCreate({
-    where: { userId, deckId },
-  })
-}
-
-export const unfollowDeck = async (userId: string, deckId: string) => {
-  await UserDeck.destroy({
-    where: { userId, deckId },
-  })
-}
-
-export const getIsFollowingDeck = async (userId: string, deckId: string) => {
-  const userDeck = await UserDeck.findOne({
-    where: { userId, deckId },
-    attributes: ['id'],
-  })
-
-  return !!userDeck
 }

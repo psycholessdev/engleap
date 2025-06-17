@@ -1,5 +1,6 @@
 import { Card, Deck, UserDeck, UserCardProgress } from '../models'
 import { Op, fn, col, literal } from 'sequelize'
+import { sequelize } from '../../db'
 
 export const getDecksByUserId = async (userId: string, offset = 0, limit = 20) => {
   const userDecks = await UserDeck.findAll({
@@ -158,17 +159,63 @@ export const deleteDeck = async (id: string) => {
   })
 }
 
-export const getDeckStats = async (deckId: string, userId?: string) => {
-  const cardsTotal = await Card.count({ where: { deckId } })
-  const usersFollowing = await UserDeck.count({ where: { deckId } })
-  let isUserFollowing = false
-  if (userId) {
-    const found = await UserDeck.findOne({
-      where: { deckId, userId },
-      attributes: ['id'],
+export const followDeck = async (userId: string, deckId: string) => {
+  return await sequelize.transaction(async transaction => {
+    await UserDeck.findOrCreate({
+      where: { userId, deckId },
+      transaction,
     })
-    isUserFollowing = !!found
-  }
 
-  return { cardsTotal, usersFollowing, isUserFollowing }
+    // create zero progress for each card (if was not any)
+    const cards = await Card.findAll({
+      where: { deckId },
+      attributes: ['id'],
+      transaction,
+    })
+    await Promise.all(
+      cards.map(card =>
+        UserCardProgress.findOrCreate({
+          where: {
+            userId,
+            cardId: card.id,
+          },
+          attributes: ['id'],
+          transaction,
+        })
+      )
+    )
+  })
+}
+
+export const unfollowDeck = async (userId: string, deckId: string) => {
+  return await sequelize.transaction(async transaction => {
+    await UserDeck.destroy({
+      where: { userId, deckId },
+      transaction,
+    })
+
+    // destroy all user progress
+    const cards = await Card.findAll({
+      where: { deckId },
+      attributes: ['id'],
+      transaction,
+    })
+    await Promise.all(
+      cards.map(card =>
+        UserCardProgress.destroy({
+          where: { userId, cardId: card.id },
+          transaction,
+        })
+      )
+    )
+  })
+}
+
+export const getIsFollowingDeck = async (userId: string, deckId: string) => {
+  const userDeck = await UserDeck.findOne({
+    where: { userId, deckId },
+    attributes: ['id'],
+  })
+
+  return !!userDeck
 }

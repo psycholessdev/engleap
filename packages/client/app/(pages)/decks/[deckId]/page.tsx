@@ -25,7 +25,7 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
         title={deck.title}
         description={deck.description}
         isPublic={deck.isPublic}
-        cardsTotal={deck.cardsTotal}
+        cardsTotal={deck.cardCount}
         usersFollowing={deck.usersFollowing}
         followingDefault={deck.isUserFollowing}
       />

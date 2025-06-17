@@ -22,7 +22,7 @@ export default async function Home() {
       </div>
 
       <Link href="/decks/add">
-        <AddButtonGhost text="Add Deck" />
+        <AddButtonGhost text="Create Deck" />
       </Link>
       <DeckList />
     </>
