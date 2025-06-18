@@ -39,7 +39,7 @@ const DefinitionList: React.FC<IDefinitionList> = ({
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
 
   return (
-    <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 pb-20">
+    <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 pb-20 w-full">
       {definitions &&
         definitions.map((def: Definition) => (
           <DefinitionCard

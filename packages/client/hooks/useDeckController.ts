@@ -26,7 +26,7 @@ export const useDeckController = () => {
     )
 
     if (isSuccess) {
-      alert('Success', 'Your Deck was successfully created.')
+      alert('Created', 'Your Deck was successfully created.')
       router.push('/decks')
     }
     return !!isSuccess
@@ -41,7 +41,7 @@ export const useDeckController = () => {
     )
 
     if (editedDeck) {
-      alert('Success', 'The changes were saved')
+      alert('Saved', 'The changes were saved')
     }
     return editedDeck
   }
@@ -56,7 +56,7 @@ export const useDeckController = () => {
     )
 
     if (isSuccess) {
-      alert('Success', 'Now you are following the Deck')
+      alert('Followed', 'Now you are following the Deck')
     }
     return !!isSuccess
   }
@@ -71,7 +71,7 @@ export const useDeckController = () => {
     )
 
     if (isSuccess) {
-      alert('Success', 'You are no longer following the Deck')
+      alert('Unfollowed', 'You are no longer following the Deck')
     }
     return !!isSuccess
   }

@@ -1,6 +1,6 @@
 'use client'
 import { Input } from '@/components/ui/input'
-import DeckItem, { DeckItemSkeleton } from '@/components/DeckItem'
+import PublicDeckItem, { PublicDeckItemSkeleton } from '@/components/PublicDeckItem'
 import FailureFallback from '@/components/FailureFallback'
 
 import React, { useState, useEffect } from 'react'
@@ -41,21 +41,24 @@ const PublicDeckList = () => {
     <div className="flex flex-col items-start gap-3 pb-20">
       <Input id="search" name="search" placeholder="Search Decks" onChange={handleSearchChange} />
 
-      {publicDecks &&
-        publicDecks.map((pd: PublicDeck) => (
-          <DeckItem
-            key={pd.id}
-            deckId={pd.id}
-            title={pd.title}
-            cardsTotalCount={pd.cardCount}
-            cardsDueCount={0}
-          />
-        ))}
-      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
-      {isFetching &&
-        Array(4)
-          .fill(null)
-          .map((_, i) => <DeckItemSkeleton key={i} />)}
+      <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 w-full">
+        {publicDecks &&
+          publicDecks.map((pd: PublicDeck) => (
+            <PublicDeckItem
+              key={pd.id}
+              deckId={pd.id}
+              title={pd.title}
+              description={pd.description}
+              cardsTotalCount={pd.cardCount}
+              followersCount={pd.usersFollowing}
+            />
+          ))}
+        {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
+        {isFetching &&
+          Array(4)
+            .fill(null)
+            .map((_, i) => <PublicDeckItemSkeleton key={i} />)}
+      </div>
 
       <div ref={ref} />
     </div>

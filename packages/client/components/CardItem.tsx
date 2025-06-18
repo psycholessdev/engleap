@@ -1,12 +1,13 @@
-import React from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { TargetWord } from '@/api'
-import Link from 'next/link'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Loader2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { IconEdit, IconTrash } from '@tabler/icons-react'
+
+import React from 'react'
+import Link from 'next/link'
+import type { TargetWord } from '@/api'
 
 interface ICardItem {
   loading: boolean

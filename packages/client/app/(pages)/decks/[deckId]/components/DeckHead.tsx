@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { IconOctagonPlus, IconCancel, IconEdit } from '@tabler/icons-react'
 import { Loader2Icon } from 'lucide-react'
 import DeckEditorModal from './DeckEditorModal'
+import UnfollowConfirmDialog from './UnfollowConfirmDialog'
 
 import { useDeckController } from '@/hooks'
 
@@ -65,6 +66,7 @@ const DeckHead: React.FC<IDeckHead> = ({
   description,
 }) => {
   const [modalOpened, setModalOpened] = useState(false)
+  const [unfollowModalOpened, setUnfollowModalOpened] = useState(false)
   const [following, setFollowing] = useState(followingDefault)
   const { isLoading, followDeck, unfollowDeck } = useDeckController()
 
@@ -77,6 +79,7 @@ const DeckHead: React.FC<IDeckHead> = ({
   }
 
   const handleUnfollowClick = () => {
+    setUnfollowModalOpened(false)
     unfollowDeck({ deckId }).then(success => {
       if (success) {
         setFollowing(false)
@@ -91,7 +94,7 @@ const DeckHead: React.FC<IDeckHead> = ({
         editAvailable={showEditButtons}
         isFollowing={following}
         onFollow={handleFollowClick}
-        onUnfollow={handleUnfollowClick}
+        onUnfollow={() => setUnfollowModalOpened(true)}
         onEditOpen={() => setModalOpened(true)}
       />
 
@@ -115,6 +118,11 @@ const DeckHead: React.FC<IDeckHead> = ({
         defaultIsPublic={isPublic}
         onCloseSignal={() => setModalOpened(false)}
         opened={modalOpened}
+      />
+      <UnfollowConfirmDialog
+        opened={unfollowModalOpened}
+        onClose={() => setUnfollowModalOpened(false)}
+        onConfirm={handleUnfollowClick}
       />
     </div>
   )

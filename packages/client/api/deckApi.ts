@@ -17,7 +17,7 @@ export type DeckWithCardInfo = Deck & {
 type GetMyDecksResponse = DeckWithCardInfo[]
 
 export const getMyDecks = async (offset: number, limit: number): Promise<GetMyDecksResponse> => {
-  const res = await $axios.get('/decks', {
+  const res = await $axios.get('/decks/my', {
     params: { offset, limit },
   })
   return res.data

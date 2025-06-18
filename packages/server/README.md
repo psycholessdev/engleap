@@ -208,7 +208,7 @@ URL query
 
 #### Get my Decks
 
-- **URL:** `/decks`
+- **URL:** `/decks/my`
 - **Method:** `GET`
 
 URL query

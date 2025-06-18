@@ -1,9 +1,10 @@
-import React from 'react'
-import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { IconCircleCheckFilled, IconMenuDeep, IconPencil } from '@tabler/icons-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+
+import Link from 'next/link'
+import React from 'react'
 
 interface IDeckItem {
   deckId: string

@@ -25,7 +25,7 @@ export const useCardController = () => {
     )
 
     if (creationDetails) {
-      alert('Success', 'The Card was successfully created.')
+      alert('Created', 'The Card was successfully created.')
       router.push(`/decks/${deckId}/card/${creationDetails.card.id}`)
     }
     return creationDetails
@@ -40,7 +40,7 @@ export const useCardController = () => {
     )
 
     if (editingDetails) {
-      alert('Success', 'The changes were saved.')
+      alert('Saved', 'The changes were saved.')
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
@@ -62,7 +62,7 @@ export const useCardController = () => {
     )
 
     if (editingDetails) {
-      alert('Success', 'The changes were saved.')
+      alert('Saved', 'The changes were saved.')
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
@@ -80,7 +80,7 @@ export const useCardController = () => {
     )
 
     if (success) {
-      alert('Success', 'The Definition was deleted.')
+      alert('Deleted', 'The Definition was deleted.')
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })

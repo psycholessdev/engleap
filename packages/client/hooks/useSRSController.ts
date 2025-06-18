@@ -34,7 +34,6 @@ export const useSRSController = (deckId?: string) => {
       (cardSRSPool.length < 5 && !isLoading && !allCardsFetched) ||
       (cardSRSPool.length === 0 && !isLoading)
     ) {
-      console.log('updating the pool')
       updatePool()
     }
   }, [cardSRSPool, deckId])

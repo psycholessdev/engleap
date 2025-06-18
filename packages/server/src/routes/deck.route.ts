@@ -20,7 +20,7 @@ const router = express.Router()
 
 // user's decks list
 router.get(
-  '/',
+  '/my',
   validateRequestData(paginationQueryUtilizedSchema, 'query'),
   getUserDecksController as unknown as express.RequestHandler
 )
