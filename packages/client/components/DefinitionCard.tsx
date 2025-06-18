@@ -99,8 +99,13 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
-              {userId && definition.createdByUserId === userId && <span>Written by you</span>}
-              {userId && definition.approved && <span>Reviewed by an AI</span>}
+              {userId && definition.createdByUserId === userId ? (
+                <span>Written by you</span>
+              ) : userId && definition.approved ? (
+                <span>Reviewed by an AI</span>
+              ) : (
+                <span>Was not reviewed</span>
+              )}
             </TooltipContent>
           </Tooltip>
         )}

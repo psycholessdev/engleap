@@ -28,8 +28,9 @@ export const getDeckController = async (req: GetDeckRequest, res: Response) => {
     const { deckId } = req.params
     const userId = getRequestUserId(req)
 
-    // checks if the user is allowed to do the action
     const deckWithInfo = await getDeckWithInfo(deckId, userId)
+
+    // checks if the user is allowed to do the action
     if (!deckWithInfo) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }

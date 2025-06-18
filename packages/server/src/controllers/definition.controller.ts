@@ -7,6 +7,7 @@ import {
 import { getErrorObject, handleError } from '../utils'
 import {
   getCardById,
+  getDeckPlainById,
   getDefinitionsByWord,
   getDefinitionsForCard,
   getDefinitionById,
@@ -36,11 +37,18 @@ export const getDefinitionsForCardController = async (
     const { offset, limit } = req.query
     const { cardId } = req.params
 
-    const card = await getCardById(cardId, ['id'])
+    // security checks
+    const card = await getCardById(cardId, ['id', 'deckId'])
     if (!card) {
       return res.status(404).json(getErrorObject('Card not found'))
     }
-    // TODO check if the Deck is public (security check)
+    const deck = await getDeckPlainById(card.deckId, ['id', 'isPublic'])
+    if (!deck) {
+      return res.status(404).json(getErrorObject('Deck not found'))
+    }
+    if (!deck.isPublic) {
+      return res.status(403).json(getErrorObject('Deck is not public'))
+    }
 
     const definitions = await getDefinitionsForCard(cardId, offset, limit)
     return res.status(200).json(definitions)

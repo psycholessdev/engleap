@@ -47,7 +47,7 @@ export const useSRSController = (deckId?: string) => {
       },
       {
         errorTitle: 'Failed to save your progress',
-        errorMessage: 'TODO schedule update later',
+        errorMessage: 'Better refresh the page to restore the connectivity',
         allowParallelLoading: true,
       }
     )

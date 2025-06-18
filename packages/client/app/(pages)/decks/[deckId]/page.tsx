@@ -33,7 +33,7 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
 
       <CardsList
         deckId={deckId}
-        cardCount={deck.cardsTotal}
+        cardCount={Number(deck.cardCount)}
         showButtons={userId === deck.creatorId}
       />
     </>
