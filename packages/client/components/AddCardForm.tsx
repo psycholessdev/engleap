@@ -196,7 +196,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
   ]
 
   return (
-    <div>
+    <div className="pb-20">
       <h1 className="font-ubuntu text-3xl text-white py-8">
         {cardToEdit ? '🚀 Edit card' : '🚀 Add a new card'}
       </h1>

@@ -72,6 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     )
 
     if (user) {
+      setIsLogged(true)
       setUserId(user.id)
       router.refresh()
       alert('Successfully logged in', `Welcome, ${user.username}`, 'success')
@@ -125,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       failureMessage,
       logout,
     }),
-    [isLogged, failureMessage]
+    [isLogged, isLoading, failureMessage]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

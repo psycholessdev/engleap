@@ -1,5 +1,5 @@
 import { Card, Deck, UserDeck, UserCardProgress } from '../models'
-import { Op, fn, col, literal } from 'sequelize'
+import { Op, fn, col, literal, Transaction } from 'sequelize'
 import { sequelize } from '../../db'
 
 export const getDecksWithInfoByUserId = async (userId: string, offset = 0, limit = 20) => {
@@ -161,15 +161,18 @@ export const createDeck = async (
   creatorId: string,
   isPublic: boolean
 ) => {
-  const [deck, created] = await Deck.findOrCreate({
-    where: { title, description, creatorId, isPublic },
+  return sequelize.transaction(async transaction => {
+    const [deck, created] = await Deck.findOrCreate({
+      where: { title, description, creatorId, isPublic },
+      transaction,
+    })
+
+    if (created) {
+      await followDeck(creatorId, deck.id, transaction)
+    }
+
+    return deck
   })
-
-  if (created) {
-    await UserDeck.create({ userId: creatorId, deckId: deck.id })
-  }
-
-  return deck
 }
 
 export const updateDeck = async (
@@ -193,8 +196,8 @@ export const deleteDeck = async (id: string) => {
   })
 }
 
-export const followDeck = async (userId: string, deckId: string) => {
-  return await sequelize.transaction(async transaction => {
+export const followDeck = async (userId: string, deckId: string, transaction?: Transaction) => {
+  const callback = async (transaction: Transaction) => {
     await UserDeck.findOrCreate({
       where: { userId, deckId },
       transaction,
@@ -218,7 +221,12 @@ export const followDeck = async (userId: string, deckId: string) => {
         })
       )
     )
-  })
+  }
+
+  if (transaction) {
+    return await callback(transaction)
+  }
+  return await sequelize.transaction(callback)
 }
 
 export const unfollowDeck = async (userId: string, deckId: string) => {

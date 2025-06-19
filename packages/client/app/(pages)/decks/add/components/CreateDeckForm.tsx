@@ -3,6 +3,7 @@ import React from 'react'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Form,
   FormControl,
@@ -41,7 +42,7 @@ const CreateDeckForm = () => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="lg:w-2/3 w-full space-y-6">
           <FormField
             control={form.control}
             name="title"
@@ -62,7 +63,7 @@ const CreateDeckForm = () => {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Input
+                  <Textarea
                     placeholder="Most used terms regarding casual US Law"
                     disabled={isLoading}
                     {...field}

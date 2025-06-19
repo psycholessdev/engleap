@@ -20,7 +20,7 @@ const PublicDeckItem: React.FC<IPublicDeckItem> = ({
   followersCount,
 }) => {
   return (
-    <div className="w-full py-5 px-3 flex items-center justify-between rounded-2xl cursor-pointer last:border-b-transparent hover:bg-el-secondary-container/20">
+    <div className="w-full p-3 flex items-center justify-between rounded-2xl cursor-pointer last:border-b-transparent hover:bg-el-secondary-container/20">
       <Link href={`/decks/${deckId}`} className="flex flex-col w-full">
         <span className="font-ubuntu text-2xl text-white select-none">{title}</span>
         <span className="font-ubuntu text-el-secondary-container pb-2 select-none">
@@ -37,8 +37,8 @@ const PublicDeckItem: React.FC<IPublicDeckItem> = ({
 
 export const PublicDeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
   return (
-    <div className="flex flex-col w-full py-5 px-3 gap-1">
-      <Skeleton className="w-60 h-6 mt-1 rounded-2xl" />
+    <div className="flex flex-col w-full p-5 gap-1">
+      <Skeleton className="w-60 h-6 rounded-2xl" />
       <Skeleton className="w-90 h-4 rounded-2xl" />
       <div className="flex items-center gap-1 mt-3">
         <Skeleton className="w-19 h-6 rounded-2xl" />

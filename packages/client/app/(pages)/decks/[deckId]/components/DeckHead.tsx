@@ -28,6 +28,20 @@ const DeckActions: React.FC<{
   onUnfollow: () => void
   onEditOpen: () => void
 }> = ({ isLoading, editAvailable, onFollow, onUnfollow, isFollowing, onEditOpen }) => {
+  const followButton = isLoading ? (
+    <Button disabled size="lg">
+      <Loader2Icon className="animate-spin" /> loading
+    </Button>
+  ) : isFollowing ? (
+    <Button size="lg" onClick={onUnfollow}>
+      <IconCancel /> Unfollow
+    </Button>
+  ) : (
+    <Button size="lg" onClick={onFollow}>
+      <IconOctagonPlus /> Follow
+    </Button>
+  )
+
   return (
     <div className="self-end flex items-center gap-2">
       {/* Edit button */}
@@ -37,20 +51,7 @@ const DeckActions: React.FC<{
         </Button>
       )}
 
-      {/* Follow button */}
-      {isLoading ? (
-        <Button disabled size="lg">
-          <Loader2Icon className="animate-spin" /> loading
-        </Button>
-      ) : isFollowing ? (
-        <Button size="lg" onClick={onUnfollow}>
-          <IconCancel /> Unfollow
-        </Button>
-      ) : (
-        <Button size="lg" onClick={onFollow}>
-          <IconOctagonPlus /> Follow
-        </Button>
-      )}
+      {!editAvailable && followButton}
     </div>
   )
 }

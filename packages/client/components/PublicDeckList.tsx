@@ -41,7 +41,7 @@ const PublicDeckList = () => {
     <div className="flex flex-col items-start gap-3 pb-20">
       <Input id="search" name="search" placeholder="Search Decks" onChange={handleSearchChange} />
 
-      <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 w-full">
+      <div className="grid xl:grid-cols-2 grid-cols-1 lg:gap-2 w-full">
         {publicDecks &&
           publicDecks.map((pd: PublicDeck) => (
             <PublicDeckItem

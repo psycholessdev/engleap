@@ -1,4 +1,7 @@
 import { z } from 'zod'
+import { partOfSpeechDefs } from '@/app/consts'
+
+const partOfSpeechList = Object.keys(partOfSpeechDefs)
 
 export const addCustomDefinitionSchema = z
   .strictObject({
@@ -15,7 +18,9 @@ export const addCustomDefinitionSchema = z
 
     text: z.string().trim().min(1).max(4000),
 
-    partOfSpeech: z.string().trim().toLowerCase().min(1).max(30),
+    partOfSpeech: z.enum(partOfSpeechList, {
+      message: 'Select Part of Speech',
+    }),
 
     syllabifiedWord: z.string().trim().min(1).max(200),
 
