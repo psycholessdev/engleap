@@ -1,0 +1,7 @@
+export * from './auth.controller'
+export * from './user.controller'
+export * from './deck.controller'
+export * from './card.controller'
+export * from './definition.controller'
+export * from './word.controller'
+export * from './srs.controller'
