@@ -34,7 +34,7 @@ export const definitionTDOSchema = z
         'verb',
         'adjective',
         'adverb',
-        'phrasal verb',
+        'phrasalVerb',
         'idiom',
         'preposition',
         'conjunction',

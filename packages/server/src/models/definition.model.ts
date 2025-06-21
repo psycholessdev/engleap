@@ -44,7 +44,7 @@ export class Definition extends Model {
       'verb',
       'adjective',
       'adverb',
-      'phrasal verb',
+      'phrasalVerb',
       'idiom',
       'preposition',
       'conjunction',
