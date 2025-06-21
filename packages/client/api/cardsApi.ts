@@ -1,4 +1,5 @@
 import { $axios } from '@/api/baseApi'
+import { normalizeCard, type NormalizedCard } from '@/utils'
 
 export interface Card {
   id: string
@@ -29,15 +30,20 @@ export interface UserProvidedDefinition {
 }
 
 export const getCardsByDeckId = async (
-  decKId: string,
+  deckId: string,
   querySentence: string | undefined,
   offset: number,
   limit: number
 ): Promise<Card[]> => {
-  const res = await $axios.get(`/cards/deck/${decKId}`, {
+  const res = await $axios.get(`/cards/deck/${deckId}`, {
     params: { sentence: querySentence, offset, limit },
   })
   return res.data
+}
+
+export const getCardById = async (cardId: string): Promise<NormalizedCard> => {
+  const res = await $axios.get(`/cards/${cardId}`)
+  return normalizeCard(res.data as Card)
 }
 
 export const deleteCard = async (cardId: string) => {

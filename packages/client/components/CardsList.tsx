@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import AddButtonGhost from './AddButtonGhost'
 import CardItem, { CardItemSkeleton } from '@/components/CardItem'
 import FailureFallback from '@/components/FailureFallback'
+import CardPreviewModal from '@/components/CardPreviewModal'
 
 import { type Card } from '@/api'
 
@@ -23,6 +24,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
   const router = useRouter()
   const { ref, inView } = useInView()
   const { loading, deleteCard } = useCardController()
+  const [cardPreviewModalId, setCardPreviewModalId] = useState<string | undefined>(undefined)
   const [searchQuery, setSearchQuery] = useState('')
   const { cards, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status, refetch } =
     useInfiniteCards(deckId, searchQuery)
@@ -70,6 +72,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
             targetWords={card.targetWords}
             showButtons={showButtons}
             loading={loading}
+            onClick={setCardPreviewModalId}
             onDelete={handleDeleteCard}
           />
         ))}
@@ -85,6 +88,12 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
       )}
 
       <div ref={ref} />
+
+      <CardPreviewModal
+        cardId={cardPreviewModalId}
+        opened={Boolean(cardPreviewModalId)}
+        onClose={() => setCardPreviewModalId(undefined)}
+      />
     </div>
   )
 }

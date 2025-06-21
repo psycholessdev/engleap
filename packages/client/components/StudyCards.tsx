@@ -8,7 +8,7 @@ import { Loader2Icon } from 'lucide-react'
 import { dissectSentenceByTargetWords } from '@/utils'
 import { useSRSController } from '@/hooks'
 
-const Sentence: React.FC<{
+export const Sentence: React.FC<{
   text: string
   targetWords: string[]
   showBg?: boolean

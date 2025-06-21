@@ -27,7 +27,7 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ pickedEmoji, onPick, disabled }) 
     if (inView && items.length !== emojiList.length) {
       fetchNext()
     }
-  }, [inView])
+  }, [inView, items])
 
   return (
     <Popover>

@@ -17,6 +17,7 @@ interface ICardItem {
   targetWords: TargetWord[]
   showButtons?: boolean
   onDelete?: (cardId: string) => void
+  onClick: (cardId: string) => void
 }
 
 const CardItem: React.FC<ICardItem> = ({
@@ -26,21 +27,18 @@ const CardItem: React.FC<ICardItem> = ({
   cardId,
   deckId,
   onDelete,
+  onClick,
   loading,
 }) => {
-  const handleDeleteCard = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
+  const handleDeleteCard = () => {
     if (onDelete) {
       onDelete(cardId)
     }
   }
 
   return (
-    <Link
-      href={showButtons ? `/decks/${deckId}/card/${cardId}` : '#'}
-      className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
-      <div className="flex flex-col gap-2">
+    <div className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
+      <div className="flex flex-col gap-2" onClick={() => onClick(cardId)}>
         <Label className="text-white text-lg leading-5">{sentence}</Label>
         <div className="flex items-center gap-1">
           {targetWords.map(t => (
@@ -51,8 +49,10 @@ const CardItem: React.FC<ICardItem> = ({
       <div className="flex items-center gap-2">
         {loading && <Loader2Icon className="animate-spin" />}
         {showButtons && (
-          <Button variant="outline" size="sm" disabled={loading}>
-            <IconEdit /> <span className="lg:inline hidden">Edit</span>
+          <Button variant="outline" size="sm" disabled={loading} asChild>
+            <Link href={`/decks/${deckId}/card/${cardId}`}>
+              <IconEdit /> <span className="lg:inline hidden">Edit</span>
+            </Link>
           </Button>
         )}
         {showButtons && (
@@ -61,7 +61,7 @@ const CardItem: React.FC<ICardItem> = ({
           </Button>
         )}
       </div>
-    </Link>
+    </div>
   )
 }
 
