@@ -158,12 +158,13 @@ export const getDeckPlainById = async (id: string, attributes = ['id']) => {
 export const createDeck = async (
   title: string,
   description: string,
+  emoji: string,
   creatorId: string,
   isPublic: boolean
 ) => {
   return sequelize.transaction(async transaction => {
     const [deck, created] = await Deck.findOrCreate({
-      where: { title, description, creatorId, isPublic },
+      where: { title, description, emoji, creatorId, isPublic },
       transaction,
     })
 
@@ -178,11 +179,12 @@ export const createDeck = async (
 export const updateDeck = async (
   id: string,
   title?: string,
+  emoji?: string,
   description?: string,
   isPublic?: boolean
 ) => {
   await Deck.update(
-    { title, description, isPublic },
+    { title, emoji, description, isPublic },
     {
       where: { id },
     }

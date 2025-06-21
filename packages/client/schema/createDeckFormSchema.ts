@@ -11,6 +11,14 @@ export const createDeckFormSchema = z.object({
     .max(4000, { message: 'The description can be up to 4000 characters.' })
     .optional(),
 
+  emoji: z
+    .string()
+    .emoji({
+      message:
+        'Internal error: we could not recognize this as an icon. This will not be fixed automatically. Please choose different icon.',
+    })
+    .default('📗'),
+
   isPublic: z.boolean().default(true),
 })
 

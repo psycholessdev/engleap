@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/form'
 import FailureAlert from '@/components/FailureAlert'
 import { Button } from '@/components/ui/button'
+import EmojiPicker from '@/components/EmojiPicker'
 import { Loader2Icon } from 'lucide-react'
 
 import { z } from 'zod'
@@ -27,12 +28,19 @@ const CreateDeckForm = () => {
   const { failureMessage, isLoading, createDeck } = useDeckController()
   const form = useForm<z.infer<typeof createDeckFormSchema>>({
     resolver: zodResolver(createDeckFormSchema),
+    defaultValues: {
+      emoji: '📗',
+    },
   })
 
   const onSubmit = async (data: z.infer<typeof createDeckFormSchema>) => {
     // requesting after zod validation has passed
     const success = await createDeck(data)
     if (success) form.reset()
+  }
+
+  const handleEmojiChange = (emoji: string) => {
+    form.setValue('emoji', emoji)
   }
 
   const handleSwitchChange = (value: boolean) => {
@@ -56,6 +64,23 @@ const CreateDeckForm = () => {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="emoji"
+            render={({ field }) => (
+              <FormItem className="flex flex-col items-start">
+                <FormLabel>Deck Icon</FormLabel>
+                <EmojiPicker
+                  pickedEmoji={field.value}
+                  onPick={handleEmojiChange}
+                  disabled={field.disabled}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="description"
@@ -73,6 +98,7 @@ const CreateDeckForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="isPublic"
@@ -85,6 +111,7 @@ const CreateDeckForm = () => {
               </FormItem>
             )}
           />
+
           <div className="flex flex-col gap-2">
             <div className="flex items-center space-x-2">
               <Switch

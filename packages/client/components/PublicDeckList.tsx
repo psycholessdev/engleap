@@ -49,6 +49,7 @@ const PublicDeckList = () => {
               deckId={pd.id}
               title={pd.title}
               description={pd.description}
+              emoji={pd.emoji}
               cardsTotalCount={pd.cardCount}
               followersCount={pd.usersFollowing}
             />

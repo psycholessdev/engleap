@@ -4,6 +4,7 @@ export interface Deck {
   id: string
   title: string
   description: string
+  emoji: string
   creatorId: string
   isPublic: string
 }
@@ -43,6 +44,7 @@ export const getPublicDecks = async (
 export interface CreateDeckRequest {
   title: string
   description?: string
+  emoji?: string
   isPublic: boolean
 }
 

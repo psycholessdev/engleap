@@ -8,6 +8,7 @@ interface IPublicDeckItem {
   deckId: string
   title: string
   description: string
+  emoji: string
   cardsTotalCount: number
   followersCount: number
 }
@@ -16,13 +17,16 @@ const PublicDeckItem: React.FC<IPublicDeckItem> = ({
   deckId,
   title,
   description,
+  emoji,
   cardsTotalCount,
   followersCount,
 }) => {
   return (
     <div className="w-full p-3 flex items-center justify-between rounded-2xl cursor-pointer last:border-b-transparent hover:bg-el-secondary-container/20">
       <Link href={`/decks/${deckId}`} className="flex flex-col w-full">
-        <span className="font-ubuntu text-2xl text-white select-none">{title}</span>
+        <span className="font-ubuntu text-2xl text-white select-none">
+          {emoji} {title}
+        </span>
         <span className="font-ubuntu text-el-secondary-container pb-2 select-none">
           {description}
         </span>

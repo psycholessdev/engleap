@@ -6,6 +6,8 @@ import React, { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useAuth, useInfiniteDecks } from '@/hooks'
 
+import type { DeckWithCardInfo } from '@/api'
+
 const DeckList = () => {
   const { ref, inView } = useInView()
   const { decks, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage, refetch, status } =
@@ -21,11 +23,12 @@ const DeckList = () => {
   return (
     <div className="flex flex-col gap-2 pb-20">
       {decks &&
-        decks.map(deck => (
+        decks.map((deck: DeckWithCardInfo) => (
           <DeckItem
             key={deck.id}
             deckId={deck.id}
             title={deck.title}
+            emoji={deck.emoji}
             cardsTotalCount={deck.cardCount}
             cardsDueCount={deck.dueCardCount}
             editable={deck.creatorId === userId}

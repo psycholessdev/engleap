@@ -27,6 +27,10 @@ export class Deck extends Model {
   @Column({ type: DataType.TEXT })
   description!: string
 
+  @Default('📗')
+  @Column
+  emoji!: string
+
   @Column({ type: DataType.UUID, allowNull: true })
   copiedFrom?: string
 

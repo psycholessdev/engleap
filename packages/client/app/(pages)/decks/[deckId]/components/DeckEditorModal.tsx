@@ -10,10 +10,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import FormInputError from '@/components/FormInputError'
+import EmojiPicker from '@/components/EmojiPicker'
 
 import { editDeckSchema } from '@/schema'
 import { z } from 'zod'
@@ -28,6 +36,7 @@ import { useRouter } from 'next/navigation'
 interface IDeckEditorModal {
   deckId: string
   defaultTitle: string
+  defaultEmoji: string
   defaultDescription: string
   defaultIsPublic: boolean
   opened: boolean
@@ -37,6 +46,7 @@ interface IDeckEditorModal {
 const DeckEditorModal: React.FC<IDeckEditorModal> = ({
   deckId,
   defaultTitle,
+  defaultEmoji,
   defaultDescription,
   defaultIsPublic,
   opened,
@@ -46,6 +56,12 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
   const { failureMessage, isLoading, editDeck } = useDeckController()
   const form = useForm<z.infer<typeof editDeckSchema>>({
     resolver: zodResolver(editDeckSchema),
+    defaultValues: {
+      title: defaultTitle,
+      emoji: defaultEmoji,
+      description: defaultDescription,
+      isPublic: defaultIsPublic,
+    },
   })
 
   const onSubmit = async (data: z.infer<typeof editDeckSchema>) => {
@@ -53,6 +69,7 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
     const editedDeck = await editDeck(deckId, data)
     if (editedDeck) {
       form.setValue('title', editedDeck.title)
+      form.setValue('emoji', editedDeck.emoji)
       form.setValue('description', editedDeck.description)
       form.setValue('isPublic', editedDeck.isPublic)
 
@@ -64,77 +81,111 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
   const handleSwitchChange = (value: boolean) => {
     form.setValue('isPublic', value)
   }
+  const handleEmojiChange = (emoji: string) => {
+    form.setValue('emoji', emoji)
+  }
 
   return (
     <Dialog open={opened}>
       <DialogContent className="sm:max-w-[425px]">
-        <form className="contents" onSubmit={form.handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Edit Deck</DialogTitle>
-            <DialogDescription>
-              Make changes to your Deck here. Click save when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
+        <Form {...form}>
+          <form className="contents" onSubmit={form.handleSubmit(onSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Edit Deck</DialogTitle>
+              <DialogDescription>
+                Make changes to your Deck here. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4">
+              <FormField
+                control={form.control}
                 name="title"
-                defaultValue={defaultTitle}
-                {...form.register('title')}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <FormInputError error={form.formState.errors.title} />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
+
+              <FormField
+                control={form.control}
+                name="emoji"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-start">
+                    <FormLabel>Deck Icon</FormLabel>
+                    <EmojiPicker
+                      pickedEmoji={field.value}
+                      onPick={handleEmojiChange}
+                      disabled={field.disabled}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="description"
-                defaultValue={defaultDescription}
-                {...form.register('description')}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <FormInputError error={form.formState.errors.description} />
 
-              <Input
-                type="checkbox"
-                hidden
-                defaultChecked={defaultIsPublic}
-                {...form.register('isPublic')}
+              <FormField
+                control={form.control}
+                name="checkbox"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input type="checkbox" hidden {...field} />
+                    </FormControl>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="isPublicSwitch"
+                        disabled={field.disabled}
+                        checked={field.value}
+                        defaultChecked={defaultIsPublic}
+                        onCheckedChange={handleSwitchChange}
+                      />
+                      <Label htmlFor="isPublicSwitch">Public Deck</Label>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="isPublicSwitch"
-                  disabled={isLoading}
-                  defaultChecked={defaultIsPublic}
-                  onCheckedChange={handleSwitchChange}
-                />
-                <Label htmlFor="isPublicSwitch">Public Deck</Label>
-              </div>
             </div>
-          </div>
 
-          {/* General failure */}
-          {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
+            {/* General failure */}
+            {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
 
-          <DialogFooter>
-            <DialogClose disabled={isLoading} asChild>
-              <Button disabled={isLoading} variant="outline" onClick={onCloseSignal}>
-                Cancel
-              </Button>
-            </DialogClose>
+            <DialogFooter>
+              <DialogClose disabled={isLoading} asChild>
+                <Button disabled={isLoading} variant="outline" onClick={onCloseSignal}>
+                  Cancel
+                </Button>
+              </DialogClose>
 
-            {isLoading ? (
-              <Button disabled>
-                <Loader2Icon className="animate-spin" />
-                Saving
-              </Button>
-            ) : (
-              <Button type="submit">Save changes</Button>
-            )}
-          </DialogFooter>
-        </form>
+              {isLoading ? (
+                <Button disabled>
+                  <Loader2Icon className="animate-spin" />
+                  Saving
+                </Button>
+              ) : (
+                <Button type="submit">Save changes</Button>
+              )}
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

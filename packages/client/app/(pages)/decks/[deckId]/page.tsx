@@ -24,6 +24,7 @@ export default async function Home({ params }: { params: Promise<{ deckId: strin
         showEditButtons={userId === deck.creatorId}
         title={deck.title}
         description={deck.description}
+        emoji={deck.emoji}
         isPublic={deck.isPublic}
         cardsTotal={deck.cardCount}
         usersFollowing={deck.usersFollowing}

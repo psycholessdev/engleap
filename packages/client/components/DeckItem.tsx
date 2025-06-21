@@ -9,6 +9,7 @@ import React from 'react'
 interface IDeckItem {
   deckId: string
   title: string
+  emoji: string
   cardsTotalCount: number
   cardsDueCount: number
   key?: string
@@ -17,6 +18,7 @@ interface IDeckItem {
 
 const DeckItem: React.FC<IDeckItem> = ({
   title,
+  emoji,
   cardsTotalCount,
   cardsDueCount,
   editable,
@@ -25,7 +27,9 @@ const DeckItem: React.FC<IDeckItem> = ({
   return (
     <div className="w-full py-5 px-3 flex items-center justify-between rounded-2xl cursor-pointer last:border-b-transparent hover:bg-el-secondary-container/20">
       <Link href={`/study?deckId=${deckId}`} className="flex flex-col gap-1 w-full">
-        <span className="font-ubuntu text-2xl text-white select-none mr-3">{title}</span>
+        <span className="font-ubuntu text-2xl text-white select-none mr-3">
+          {emoji} {title}
+        </span>
         <div className="flex items-center gap-1">
           <Badge>{cardsTotalCount} total</Badge>
 

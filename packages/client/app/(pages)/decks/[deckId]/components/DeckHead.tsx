@@ -13,6 +13,7 @@ interface IDeckHead {
   deckId: string
   title: string
   description: string
+  emoji: string
   followingDefault: boolean
   isPublic: boolean
   cardsTotal: string
@@ -58,13 +59,14 @@ const DeckActions: React.FC<{
 
 const DeckHead: React.FC<IDeckHead> = ({
   title,
+  description,
+  emoji,
   isPublic,
   usersFollowing,
   cardsTotal,
   deckId,
   showEditButtons,
   followingDefault,
-  description,
 }) => {
   const [modalOpened, setModalOpened] = useState(false)
   const [unfollowModalOpened, setUnfollowModalOpened] = useState(false)
@@ -101,7 +103,9 @@ const DeckHead: React.FC<IDeckHead> = ({
 
       <div className="flex flex-col self-start gap-2">
         <div className="flex items-center gap-1">
-          <h1 className="font-ubuntu lg:text-3xl text-2xl text-white">📗 {title}</h1>
+          <h1 className="font-ubuntu lg:text-3xl text-2xl text-white">
+            {emoji} {title}
+          </h1>
           <Badge variant={isPublic ? 'default' : 'destructive'}>
             {isPublic ? 'public' : 'private'}
           </Badge>
@@ -115,6 +119,7 @@ const DeckHead: React.FC<IDeckHead> = ({
       <DeckEditorModal
         deckId={deckId}
         defaultTitle={title}
+        defaultEmoji={emoji}
         defaultDescription={description}
         defaultIsPublic={isPublic}
         onCloseSignal={() => setModalOpened(false)}

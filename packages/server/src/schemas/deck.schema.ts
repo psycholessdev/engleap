@@ -17,6 +17,8 @@ export const createDeckSchema = z.strictObject({
     .default('')
     .transform(val => xss(val)),
 
+  emoji: z.string().emoji().default('📗'),
+
   isPublic: z.coerce.boolean().default(true),
 })
 

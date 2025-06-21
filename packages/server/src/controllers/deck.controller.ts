@@ -69,10 +69,10 @@ export const getPublicDecksController = async (req: GetPublicDecksRequest, res: 
 
 export const createDeckController = async (req: CreateDeckRequest, res: Response) => {
   try {
-    const { title, description, isPublic } = req.body
+    const { title, description, emoji, isPublic } = req.body
     const userId = getRequestUserId(req)
 
-    const createdDeck = await createDeck(title, description, userId, isPublic)
+    const createdDeck = await createDeck(title, description, emoji, userId, isPublic)
     return res.status(201).json(createdDeck)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to create deck')
@@ -82,7 +82,7 @@ export const createDeckController = async (req: CreateDeckRequest, res: Response
 export const editDeckController = async (req: EditDeckRequest, res: Response) => {
   try {
     const { deckId } = req.params
-    const { title, description, isPublic } = req.body
+    const { title, emoji, description, isPublic } = req.body
     const userId = getRequestUserId(req)
 
     // checks if the user is allowed to do the action
@@ -94,7 +94,7 @@ export const editDeckController = async (req: EditDeckRequest, res: Response) =>
       return res.status(403).json(getErrorObject('You do not have the right to delete this deck'))
     }
 
-    const updatedDeck = await updateDeck(deckId, title, description, isPublic)
+    const updatedDeck = await updateDeck(deckId, title, emoji, description, isPublic)
     return res.status(200).json(updatedDeck)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to delete the deck')
