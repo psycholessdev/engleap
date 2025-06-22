@@ -17,7 +17,9 @@ export const useInfiniteDefinitions = (cardId: string) => {
       },
     })
 
-  const definitions = data?.pages.flat() ?? []
+  // user definitions are prioritized
+  const definitions =
+    data?.pages.flat().sort((a, b) => (a.source === 'user' && b.source !== 'user' ? -1 : 0)) ?? []
 
   return {
     definitions,
