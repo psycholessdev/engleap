@@ -76,6 +76,7 @@ export class Definition extends Model {
 
   // only show user defs once you’ve vetted them
   // defs from a trusted source don't need to be vetted
+  @Default(false)
   @Column({ type: DataType.BOOLEAN })
   approved!: boolean
 
