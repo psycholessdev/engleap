@@ -3,8 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Toggle } from '@/components/ui/toggle'
 import { IconCaretDownFilled } from '@tabler/icons-react'
 
-import React, { useState, useEffect } from 'react'
-import { useInView } from 'react-intersection-observer'
+import React from 'react'
 import { emojiList } from '@/app/consts'
 
 interface IEmojiPicker {
@@ -14,21 +13,6 @@ interface IEmojiPicker {
 }
 
 const EmojiPicker: React.FC<IEmojiPicker> = ({ pickedEmoji, onPick, disabled }) => {
-  const { ref, inView } = useInView()
-  const [items, setItems] = useState(emojiList.slice(0, 500))
-
-  const fetchNext = () => {
-    setItems(prevItems =>
-      prevItems.concat(emojiList.slice(prevItems.length - 1, prevItems.length - 1 + 500))
-    )
-  }
-
-  useEffect(() => {
-    if (inView && items.length !== emojiList.length) {
-      fetchNext()
-    }
-  }, [inView, items])
-
   return (
     <Popover>
       <PopoverTrigger asChild disabled={disabled}>
@@ -39,7 +23,7 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ pickedEmoji, onPick, disabled }) 
       </PopoverTrigger>
       <PopoverContent className="h-70 overflow-y-auto">
         <div className="grid grid-cols-5">
-          {items.map((emoji, i) => (
+          {emojiList.map((emoji, i) => (
             <Toggle
               onClick={() => onPick(emoji)}
               className="cursor-pointer"
@@ -48,7 +32,6 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ pickedEmoji, onPick, disabled }) 
               {emoji}
             </Toggle>
           ))}
-          <div ref={ref} />
         </div>
       </PopoverContent>
     </Popover>
