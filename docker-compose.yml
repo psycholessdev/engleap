@@ -33,7 +33,7 @@ services:
     networks:
       - engleap-app-network
       - postgres-network
-    command: sh -c "./wait-for.sh postgres:${POSTGRES_PORT} -- ./wait-for.sh redis:${REDIS_PORT} -- node /app/index.js"
+    command: sh -c "./wait-for.sh postgres:${POSTGRES_PORT} -- node /app/index.js"
 
   postgres:
     image: postgres:14
