@@ -1,5 +1,5 @@
 services:
-  client:
+  engleap-client:
     container_name: engleap-client
     image: engleap-client
     build:
@@ -9,11 +9,14 @@ services:
         CLIENT_PORT: ${CLIENT_PORT}
     restart: always
     ports:
-      - "${CLIENT_PORT}:80"
-    environment:
-      - CLIENT_PORT=${CLIENT_PORT}
-      - SERVER_PORT=${SERVER_PORT}
-  server:
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
+    depends_on:
+      - engleap-server
+    env_file: ".env"
+    networks:
+      - engleap-app-network
+
+  engleap-server:
     container_name: engleap-server
     image: engleap-server
     build:
@@ -24,10 +27,13 @@ services:
     restart: always
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
-    environment:
-      SERVER_PORT: ${SERVER_PORT}
+    depends_on:
+      - postgres
+    env_file: ".env"
     networks:
-      - el-db-network
+      - engleap-app-network
+      - postgres-network
+    command: sh -c "./wait-for.sh postgres:${POSTGRES_PORT} -- ./wait-for.sh redis:${REDIS_PORT} -- node /app/index.js"
 
   postgres:
     image: postgres:14
@@ -40,7 +46,7 @@ services:
     volumes:
       - ./tmp/pgdata:/var/lib/postgresql/data
     networks:
-      - el-db-network
+      - postgres-network
 
   pgadmin:
     container_name: pgadmin
@@ -54,8 +60,30 @@ services:
     depends_on:
       - postgres
     networks:
-      - el-db-network
+      - postgres-network
+
+  nginx:
+    image: openquantumsafe/nginx-quic
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    depends_on:
+      - engleap-server
+      - engleap-client
+    volumes:
+      - ./nginx-conf:/etc/nginx:ro
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+    networks:
+      - engleap-app-network
+    restart: unless-stopped
+    command: [ "nginx", "-g", "daemon off;" ]
 
 networks:
-  el-db-network:
+  postgres-network:
     driver: bridge
+  engleap-app-network:
+    driver: bridge
+    #external: true
