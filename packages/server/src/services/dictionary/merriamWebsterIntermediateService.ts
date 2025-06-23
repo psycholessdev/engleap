@@ -10,15 +10,19 @@ const API_KEY = process.env.MERRIAM_WEBSTER_INTERMEDIATE_DICTIONARY_API_KEY
 
 export class MerriamWebsterIntermediateService implements IDictionaryService {
   readonly sourceName = 'merriam-webster-intermediate'
+  private readonly apiKey: string
 
-  async fetchDefinitions(word: string): Promise<DictionaryServiceResult> {
+  constructor() {
     if (!API_KEY) {
       throw new Error('Missing Merriam-Webster API key')
     }
+    this.apiKey = API_KEY
+  }
 
+  async fetchDefinitions(word: string): Promise<DictionaryServiceResult> {
     const url = `https://www.dictionaryapi.com/api/v3/references/sd3/json/${encodeURIComponent(
       word
-    )}?key=${API_KEY}`
+    )}?key=${this.apiKey}`
 
     const resp = await fetch(url)
     if (!resp.ok) {

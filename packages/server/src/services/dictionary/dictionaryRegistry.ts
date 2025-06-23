@@ -16,7 +16,6 @@ export async function fetchDefinitionsFromAnySource(
     try {
       const cachedNotFound = await getCachedServiceResponse(service.sourceName, word)
       if (cachedNotFound) {
-        console.log('Cached 404')
         cachedNotFound.similarWords.forEach(w => similarWordsAggregated.add(w))
         continue
       }

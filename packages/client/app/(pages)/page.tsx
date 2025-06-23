@@ -11,7 +11,7 @@ export default async function Home() {
   const userId = await getIsAuthed()
 
   return (
-    <div className="flex flex-col items-start pb-20">
+    <div className="flex flex-col items-start lg:pb-0 pb-20">
       {/* Screen 1 */}
       <div className="w-full lg:h-screen grid lg:grid-cols-2 grid-cols-1 lg:grid-rows-1 grid-rows-[400px_1fr] relative bg-el-root-bg z-5">
         <div className="flex justify-center items-center">
@@ -98,6 +98,42 @@ export default async function Home() {
           />
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="w-full lg:py-20 py-5 grid lg:grid-cols-2 grid-cols-1 lg:grid-rows-1 grid-rows-2 border-1 border-el-outline rounded-3xl">
+        <div className="flex justify-center items-center">
+          <Image
+            src="/favicon.png"
+            alt="EngLeap logo"
+            width={130}
+            height={130}
+            className="select-none drag-none"
+          />
+        </div>
+        <div className="flex flex-col items-center">
+          <Button variant="link" asChild>
+            <Link href="https://psycholess.com/" target="_blank">
+              Developer&apos;s site
+            </Link>
+          </Button>
+          <Button variant="link" asChild>
+            <Link href="https://github.com/psycholessdev/engleap" target="_blank">
+              Give me a star on GitHub
+            </Link>
+          </Button>
+          <Button variant="link" asChild>
+            <Link href="https://github.com/thyagoluciano/sm2" target="_blank">
+              SM-2 Spaced Repetition algorithm
+            </Link>
+          </Button>
+          <Button variant="link" asChild>
+            <Link href="https://www.merriam-webster.com/" target="_blank">
+              Merriam-Webster dictionary
+            </Link>
+          </Button>
+          <h4 className="font-ubuntu text-white mt-4">EngLeap app, Psycholess (developer), 2025</h4>
+        </div>
+      </footer>
     </div>
   )
 }
