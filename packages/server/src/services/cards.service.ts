@@ -100,13 +100,13 @@ export const addCard = async (
       transaction
     )
 
-    await UserCardProgress.create(
-      {
+    await UserCardProgress.findOrCreate({
+      where: {
         userId: createdByUserId,
         cardId: createdCard.id,
       },
-      { transaction }
-    )
+      transaction,
+    })
 
     // include the Words after they have been inserted
     await createdCard.reload({ transaction })

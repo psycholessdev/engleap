@@ -8,7 +8,7 @@ interface ITipItem {
 
 const TipItem: React.FC<ITipItem> = ({ title, text, image }) => {
   return (
-    <div className="w-full lg:h-screen flex flex-col items-start gap-2">
+    <div className="w-full flex flex-col items-start gap-2">
       <div>
         <h2 className="font-ubuntu text-2xl font-medium text-white">{title}</h2>
         <h3 className="font-ubuntu text-lg text-el-inverse-primary">{text}</h3>

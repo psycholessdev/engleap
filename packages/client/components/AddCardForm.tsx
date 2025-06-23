@@ -209,7 +209,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
           <h2 className="font-ubuntu text-lg text-white">Sentence containing the target word(s)</h2>
           <Textarea
             name="sentence"
-            placeholder="I was fascinated how quickly she solved the issue"
+            placeholder="It's fascinating how she always manages to break the ice with strangers so easily"
             className="w-full"
             disabled={isLoading}
             {...form.register('sentence')}
@@ -243,7 +243,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
             <Input
               type="text"
               name="userSpecifiedTargetWords"
-              placeholder="fascinated, quickly"
+              placeholder="fascinated, break the ice"
               className="w-full"
               disabled={isLoading}
               {...form.register('userSpecifiedTargetWords')}

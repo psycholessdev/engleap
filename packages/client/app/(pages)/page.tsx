@@ -75,7 +75,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:w-[50%] w-full">
+        <div className="flex flex-col lg:w-[50%] w-full lg:gap-30 gap-15">
           <TipItem
             title="1 Create a Deck"
             text="Organize your vocabulary by topics, movies, shows, or personal goals"

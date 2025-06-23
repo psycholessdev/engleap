@@ -26,9 +26,10 @@ const CardPreviewModal: React.FC<ICardPreviewModal> = ({ cardId, opened, onClose
 
   return (
     <AlertDialog open={opened}>
-      <AlertDialogContent className="sm:max-w-[425px] max-h-full overflow-y-auto overflow-x-hidden">
-        <AlertDialogHeader>
+      <AlertDialogContent className="max-h-full overflow-y-auto overflow-x-hidden">
+        <AlertDialogHeader className="flex flex-row justify-between items-center">
           <AlertDialogTitle>Card Preview</AlertDialogTitle>
+          <AlertDialogCancel onClick={onClose}>Close</AlertDialogCancel>
         </AlertDialogHeader>
         {/* Loader */}
         {isLoading && (
