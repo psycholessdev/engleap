@@ -16,8 +16,8 @@ export default async function Home() {
       <div className="py-8 flex flex-col items-start gap-3">
         <h1 className="font-ubuntu text-3xl text-white">📗 My decks</h1>
         <p className="text-muted-foreground text-sm">
-          To study a Deck, just click on it. To study all the Decks simultaneously, click the Study
-          button on the navbar.
+          To study a Deck, just click on it. To study all your Decks at once, use the Study button
+          in the navbar.
         </p>
       </div>
 

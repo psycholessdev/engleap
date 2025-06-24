@@ -28,11 +28,12 @@ const CopyDeckConfirmDialog: React.FC<ICopyDeckConfirmDialog> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Make your copy</AlertDialogTitle>
           <AlertDialogDescription>
-            When you create a copy of a Deck, you gain the full control of the copy as if it was
-            created by you. You will be able to edit custom definitions, alter cards and add your
-            own! It a great way to customize your experience. Your learning process will also be
-            copied. Also, it&apos;s recommended to unfollow of the original Deck so you don&apos;t
-            study the same cards twice.
+            When you copy a Deck, you gain full control of it — just as if you created it yourself.
+            You can edit custom definitions, modify cards, and add your own! It&apos;s a great way
+            to tailor your learning experience. Your review progress will also be copied.
+            <br />
+            🔔 Tip: It&apos;s recommended to unfollow the original Deck so you don’t end up
+            reviewing the same cards twice.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

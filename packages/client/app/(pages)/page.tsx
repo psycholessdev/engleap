@@ -1,6 +1,12 @@
 import { Button } from '@/components/ui/button'
 import TipItem from '@/app/(pages)/components/TipItem'
 import { Badge } from '@/components/ui/badge'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -78,26 +84,69 @@ export default async function Home() {
         <div className="flex flex-col lg:w-[50%] w-full lg:gap-30 gap-15">
           <TipItem
             title="1 Create a Deck"
-            text="Organize your vocabulary by topics, movies, shows, or personal goals"
+            text="Organize your vocabulary by topic, movie, show, or personal goal"
             image="/images/screenshots/deck-item.png"
           />
           <TipItem
             title="2 Create a Card with Real Context"
-            text="Add sentences you encounter in daily life — from YouTube, TikTok, movies, books, or conversations."
+            text="Use sentences you encounter in daily life — from YouTube, TikTok, movies, books, or conversations"
             image="/images/screenshots/add-card-form.png"
           />
           <TipItem
             title="3 Select target words you want to learn"
-            text="If we did not detect them correctly, you can type them. Then click “Generate Definitions”."
+            text="If we don’t detect them correctly, you can type them manually. Then click 'Generate Definitions'"
             image="/images/screenshots/select-target-words-form.png"
           />
           <TipItem
             title="4 Review your cards Daily with SRS"
-            text="EngLeap schedules your reviews using Spaced Repetition System (SM-2) to move vocabulary into your long-term memory. The more you review, the deeper your immersion."
+            text="EngLeap uses the Spaced Repetition System (SM-2) to help move vocabulary into your long-term memory. The more you review, the deeper your immersion."
             image="/images/screenshots/review-card.png"
           />
         </div>
       </div>
+
+      {/* FAQ */}
+      <h1 className="font-ubuntu text-2xl font-medium text-white">FAQ</h1>
+      <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+        <AccordionItem value="item-1">
+          <AccordionTrigger>How to customize an existing Deck?</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance font-ubuntu">
+            <p>
+              To customize a Deck, simply copy it. Once copied, you have full control — as if you
+              created it. You can edit custom definitions, change cards, and add your own. Your
+              learning progress will be copied too. Tip: Unfollow the original Deck to avoid
+              reviewing the same cards twice.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-2">
+          <AccordionTrigger>What is Spaced Repetition System?</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance font-ubuntu">
+            <p>
+              Spaced repetition is a learning technique where you review material at increasing
+              intervals over time. The idea is to strengthen memory by reviewing information shortly
+              after learning it, then again as memory starts to fade, and then at longer intervals.
+              This method is designed to enhance long-term retention by optimizing the timing of
+              review sessions.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-3">
+          <AccordionTrigger>Where do we get Definitions from?</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance font-ubuntu">
+            <p>Definitions are generated using the Merriam-Webster Intermediate Dictionary API.</p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-4">
+          <AccordionTrigger>Is it free?</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance font-ubuntu">
+            <p>
+              Yes! EngLeap is completely free and open-source. If you find it helpful, please
+              support the project by giving it a ⭐️ on GitHub — it really helps!
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       {/* Footer */}
       <footer className="w-full lg:py-20 py-5 grid lg:grid-cols-2 grid-cols-1 lg:grid-rows-1 grid-rows-2 border-1 border-el-outline rounded-3xl">

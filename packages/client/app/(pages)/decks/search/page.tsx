@@ -14,7 +14,7 @@ export default async function Home() {
       <div className="py-8 flex flex-col items-start gap-3">
         <h1 className="font-ubuntu text-3xl text-white">🔎 Search public Decks</h1>
         <p className="text-muted-foreground text-sm">
-          Collection of public Decks provided by the Community of English learners
+          Browse public Decks shared by the Community of English learners.
         </p>
       </div>
       <PublicDeckList />
