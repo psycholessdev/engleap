@@ -50,7 +50,7 @@ export const getDefinitionsForCardController = async (
       return res.status(403).json(getErrorObject('Deck is not public'))
     }
 
-    const definitions = await getDefinitionsForCard(cardId, offset, limit)
+    const definitions = await getDefinitionsForCard(cardId, 'safe', offset, limit)
     return res.status(200).json(definitions)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to get definitions')

@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import type {
   CreateDeckRequest,
+  CopyDeckRequest,
   DeleteDeckRequest,
   GetAllDecksRequest,
   GetPublicDecksRequest,
@@ -11,6 +12,7 @@ import type {
 } from '../types'
 import {
   createDeck,
+  copyDeck,
   deleteDeck,
   getDeckPlainById,
   getDeckWithInfo,
@@ -76,6 +78,26 @@ export const createDeckController = async (req: CreateDeckRequest, res: Response
     return res.status(201).json(createdDeck)
   } catch (error) {
     return handleError(error, res, 'Internal error: Failed to create deck')
+  }
+}
+
+export const copyDeckController = async (req: CopyDeckRequest, res: Response) => {
+  try {
+    const { deckId } = req.params
+    const userId = getRequestUserId(req)
+
+    const deck = await getDeckPlainById(deckId, ['id', 'isPublic', 'creatorId'])
+    if (!deck) {
+      return res.status(404).json(getErrorObject('Deck not found'))
+    }
+    if (deck.creatorId !== userId && !deck.isPublic) {
+      return res.status(403).json(getErrorObject('You do not have the right to copy this deck'))
+    }
+
+    const copiedDeck = await copyDeck(deckId, userId)
+    return res.status(201).json(copiedDeck)
+  } catch (error) {
+    return handleError(error, res, 'Internal error: Failed to copy deck')
   }
 }
 

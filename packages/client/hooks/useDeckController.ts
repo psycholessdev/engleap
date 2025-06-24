@@ -4,6 +4,7 @@ import { useNotifications, useAxiosErrorHandler } from '@/hooks'
 import {
   createDeck as createDeckHandler,
   editDeck as editDeckHandler,
+  copyDeck as copyDeckHandler,
   followDeck as followDeckHandler,
   unfollowDeck as unfollowDeckHandler,
   type ChangeFollowStatusDeckRequest,
@@ -46,6 +47,23 @@ export const useDeckController = () => {
     return editedDeck
   }
 
+  const copyDeck = async (deckId: string) => {
+    const copiedDeck = await handleAxios(
+      async () => {
+        return await copyDeckHandler(deckId)
+      },
+      { errorMessage: 'Failed to copy Deck' }
+    )
+
+    if (copiedDeck) {
+      alert(
+        'Copied',
+        'The copy was made and all of your study progress was transferred successfully'
+      )
+    }
+    return copiedDeck
+  }
+
   const followDeck = async (data: ChangeFollowStatusDeckRequest) => {
     const isSuccess = await handleAxios(
       async () => {
@@ -76,5 +94,5 @@ export const useDeckController = () => {
     return !!isSuccess
   }
 
-  return { failureMessage, isLoading, createDeck, editDeck, followDeck, unfollowDeck }
+  return { failureMessage, isLoading, createDeck, editDeck, copyDeck, followDeck, unfollowDeck }
 }

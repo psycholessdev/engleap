@@ -3,7 +3,7 @@
 // and then extracts substrings before, between, and after these target words.
 export const dissectSentenceByTargetWords = (text: string, targetWords: string[]): string[] => {
   if (!text || targetWords.length === 0) {
-    return []
+    return [text]
   }
 
   const textLowerCase = text.toLowerCase()

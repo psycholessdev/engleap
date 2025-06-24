@@ -10,6 +10,8 @@ http://localhost:3001/api
 
 #### Sign in
 
+Sign in an existing account using the credentials
+
 - **URL:** `/signin`
 - **Method:** `POST`
 
@@ -31,6 +33,8 @@ Request's body
 ```
 
 #### Sign up
+
+Create an account
 
 - **URL:** `/signup`
 - **Method:** `POST`
@@ -93,12 +97,16 @@ Card[]
 
 #### Get Card by id (uuid)
 
+You can get Cards only from a public deck or from a deck created by you
+
 - **URL:** `/cards/:cardId`
 - **Method:** `GET`
 
 **Response:** `200 OK`
 
 #### Create a Card
+
+You can create Card only in a deck created by you
 
 - **URL:** `/cards/deck/:deckId`
 - **Method:** `POST`
@@ -141,6 +149,8 @@ UserDefinition schema
 
 #### Edit Card
 
+You can edit Card only in a deck created by you
+
 - **URL:** `/cards/:cardId`
 - **Method:** `PUT`
 
@@ -165,6 +175,8 @@ Request's body
 
 #### Delete Card by id (uuid)
 
+You can delete Cards only in a deck created by you
+
 - **URL:** `/cards/:cardId`
 - **Method:** `DELETE`
 
@@ -181,9 +193,9 @@ URL query
 
 ```json
 {
-  "query": "string",
-  "limit": "number",
-  "offset": "number"
+  "query": "string", // optional
+  "limit": "number", // optional
+  "offset": "number" // optional
 }
 ```
 
@@ -208,6 +220,8 @@ URL query
 
 #### Get my Decks
 
+Get the Decks you are following
+
 - **URL:** `/decks/my`
 - **Method:** `GET`
 
@@ -215,8 +229,8 @@ URL query
 
 ```json
 {
-  "limit": "number",
-  "offset": "number"
+  "limit": "number", // optional
+  "offset": "number" // optional
 }
 ```
 
@@ -240,6 +254,8 @@ URL query
 ```
 
 #### Get Deck by id (uuid)
+
+The Deck must be public or created by you
 
 - **URL:** `/decks/:deckId`
 - **Method:** `GET`
@@ -277,6 +293,21 @@ Request's body
   "isPublic": "boolean" // optional, true by default
 }
 ```
+
+**Response:** `201 Created`
+
+```
+Deck
+```
+
+#### Copy Deck
+
+Copy a Deck as if it was created by you.
+The Deck you want to copy must be public or created by you.
+You can edit the copy and have full control over it.
+
+- **URL:** `/decks/:deckId/copy`
+- **Method:** `POST`
 
 **Response:** `201 Created`
 
@@ -364,6 +395,8 @@ Word[]
 
 #### Get User
 
+Get your account data
+
 - **URL:** `/user`
 - **Method:** `GET`
 
@@ -374,6 +407,9 @@ User
 ```
 
 #### Follow Deck
+
+You can follow only public Decks.
+You are following the Decks created by you by default.
 
 - **URL:** `/user/decks`
 - **Method:** `POST`
@@ -389,6 +425,8 @@ Request's body
 **Response:** `200 OK`
 
 #### Unfollow Deck
+
+You cannot unfollow a deck you created because you would lose your admin privileges over it.
 
 - **URL:** `/user/decks`
 - **Method:** `DELETE`
@@ -407,11 +445,12 @@ Request's body
 
 #### Get SRS Cards to review
 
+Get cards due to review (max 20 entities).
+To get Cards for a specific Deck, use deckId query.
+
 - **URL:** `/srs/cards`
 - **Query (optional):** `?deckId={deckId}`
 - **Method:** `GET`
-
-To get Cards for a specific Deck, use deckId query
 
 **Response:** `200 OK`
 
@@ -434,6 +473,16 @@ To get Cards for a specific Deck, use deckId query
 ```
 
 #### Update Card Progress
+
+Mark card as reviewed.
+You must provide a grade:
+
+- 0: Completely forgot
+- 1: Incorrect but familiar
+- 2: Incorrect but remembered after hint
+- 3: Correct but difficult recall
+- 4: Correct response after hesitation
+- 5: Perfect recall
 
 - **URL:** `/srs/card/:cardId`
 - **Method:** `POST`

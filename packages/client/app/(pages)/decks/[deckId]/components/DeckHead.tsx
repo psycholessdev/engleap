@@ -2,11 +2,12 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { IconOctagonPlus, IconCancel, IconEdit } from '@tabler/icons-react'
-import { Loader2Icon } from 'lucide-react'
+import { IconOctagonPlus, IconCancel, IconEdit, IconCopy } from '@tabler/icons-react'
 import DeckEditorModal from './DeckEditorModal'
 import UnfollowConfirmDialog from './UnfollowConfirmDialog'
+import CopyDeckConfirmDialog from './CopyDeckConfirmDialog'
 
+import { useRouter } from 'next/navigation'
 import { useDeckController } from '@/hooks'
 
 interface IDeckHead {
@@ -23,22 +24,29 @@ interface IDeckHead {
 
 const DeckActions: React.FC<{
   isLoading: boolean
+  isPublic: boolean
   editAvailable: boolean
   isFollowing: boolean
   onFollow: () => void
   onUnfollow: () => void
   onEditOpen: () => void
-}> = ({ isLoading, editAvailable, onFollow, onUnfollow, isFollowing, onEditOpen }) => {
-  const followButton = isLoading ? (
-    <Button disabled size="lg">
-      <Loader2Icon className="animate-spin" /> loading
-    </Button>
-  ) : isFollowing ? (
-    <Button size="lg" onClick={onUnfollow}>
+  onCopy: () => void
+}> = ({
+  isLoading,
+  editAvailable,
+  onFollow,
+  onUnfollow,
+  isFollowing,
+  isPublic,
+  onEditOpen,
+  onCopy,
+}) => {
+  const followButton = isFollowing ? (
+    <Button size="lg" onClick={onUnfollow} disabled={isLoading}>
       <IconCancel /> Unfollow
     </Button>
   ) : (
-    <Button size="lg" onClick={onFollow}>
+    <Button size="lg" onClick={onFollow} disabled={isLoading}>
       <IconOctagonPlus /> Follow
     </Button>
   )
@@ -49,6 +57,11 @@ const DeckActions: React.FC<{
       {editAvailable && (
         <Button size="lg" variant="secondary" onClick={onEditOpen}>
           <IconEdit /> Edit
+        </Button>
+      )}
+      {(isPublic || editAvailable) && (
+        <Button size="lg" variant="secondary" onClick={onCopy}>
+          <IconCopy /> Copy deck
         </Button>
       )}
 
@@ -68,10 +81,12 @@ const DeckHead: React.FC<IDeckHead> = ({
   showEditButtons,
   followingDefault,
 }) => {
+  const router = useRouter()
   const [modalOpened, setModalOpened] = useState(false)
   const [unfollowModalOpened, setUnfollowModalOpened] = useState(false)
+  const [copyModalOpened, setCopyModalOpened] = useState(false)
   const [following, setFollowing] = useState(followingDefault)
-  const { isLoading, followDeck, unfollowDeck } = useDeckController()
+  const { isLoading, followDeck, unfollowDeck, copyDeck } = useDeckController()
 
   const handleFollowClick = () => {
     followDeck({ deckId }).then(success => {
@@ -90,15 +105,26 @@ const DeckHead: React.FC<IDeckHead> = ({
     })
   }
 
+  const handleCopyDeck = () => {
+    setCopyModalOpened(false)
+    copyDeck(deckId).then(copiedDeck => {
+      if (copiedDeck) {
+        router.push(`/decks/${copiedDeck.id}`)
+      }
+    })
+  }
+
   return (
     <div className="w-full h-60 p-5 mt-5 bg-el-secondary-container rounded-2xl flex flex-col justify-between">
       <DeckActions
         isLoading={isLoading}
         editAvailable={showEditButtons}
         isFollowing={following}
+        isPublic={isPublic}
         onFollow={handleFollowClick}
         onUnfollow={() => setUnfollowModalOpened(true)}
         onEditOpen={() => setModalOpened(true)}
+        onCopy={() => setCopyModalOpened(true)}
       />
 
       <div className="flex flex-col self-start gap-2">
@@ -129,6 +155,11 @@ const DeckHead: React.FC<IDeckHead> = ({
         opened={unfollowModalOpened}
         onClose={() => setUnfollowModalOpened(false)}
         onConfirm={handleUnfollowClick}
+      />
+      <CopyDeckConfirmDialog
+        opened={copyModalOpened}
+        onClose={() => setCopyModalOpened(false)}
+        onConfirm={handleCopyDeck}
       />
     </div>
   )

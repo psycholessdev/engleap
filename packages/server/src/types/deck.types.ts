@@ -23,6 +23,7 @@ export type EditDeckData = z.infer<typeof editDeckSchema>
 export type EditDeckRequest = Request<DeckIdParamUtilizedData, AnyObject, EditDeckData>
 
 export type GetDeckRequest = Request<DeckIdParamUtilizedData>
+export type CopyDeckRequest = Request<DeckIdParamUtilizedData>
 export type DeleteDeckRequest = Request<DeckIdParamUtilizedData>
 
 export type changeFollowStatusDeckData = z.infer<typeof changeFollowStatusDeckSchema>

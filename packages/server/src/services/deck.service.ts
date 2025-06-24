@@ -1,6 +1,9 @@
-import { Card, Deck, UserDeck, UserCardProgress } from '../models'
+import { addCard } from './cards.service'
+import { Card, Deck, UserDeck, UserCardProgress, CardTargetWord, Word } from '../models'
 import { Op, fn, col, literal, Transaction } from 'sequelize'
 import { sequelize } from '../../db'
+import { normalizeTargetWords } from '../utils'
+import { getDefinitionsForCard } from './definitions.service'
 
 export const getDecksWithInfoByUserId = async (userId: string, offset = 0, limit = 20) => {
   const userDecks = await UserDeck.findAll({
@@ -190,6 +193,101 @@ export const updateDeck = async (
     }
   )
   return await Deck.findByPk(id)
+}
+
+export const copyDeck = async (id: string, userId: string) => {
+  return sequelize.transaction(async transaction => {
+    const targetDeck = await Deck.findByPk(id, { transaction })
+    if (!targetDeck) {
+      throw new Error('Deck not found')
+    }
+
+    const { title, description, isPublic, emoji, copiedFrom } = targetDeck
+    const createdDeck = await Deck.create(
+      {
+        title: `${title} - copy`,
+        description,
+        isPublic,
+        emoji,
+        copiedFrom: copiedFrom ?? targetDeck.id,
+        creatorId: userId,
+      },
+      { transaction }
+    )
+
+    const targetDeckCards = await Card.findAll({
+      where: { deckId: targetDeck.id },
+      include: [
+        {
+          model: CardTargetWord,
+          attributes: ['id'],
+          include: [
+            {
+              model: Word,
+              attributes: ['id', 'text'],
+            },
+          ],
+        },
+      ],
+      transaction,
+    })
+
+    for (const card of targetDeckCards) {
+      // Create custom definitions for a Card
+      // only custom non-approved defs will be copied
+      // as approved ones will be shown publicly anyway
+      const customDefs = await getDefinitionsForCard(card.id, 'userUnreviewed')
+      const normalizedDefs = customDefs.map(def => ({
+        word: def.word.text,
+        sourceEntryId: def.sourceEntryId,
+        sourceName: def.sourceName,
+        text: def.text,
+        partOfSpeech: def.partOfSpeech,
+        syllabifiedWord: def.syllabifiedWord,
+        pronunciationAudioUrl: def.audio,
+        offensive: def.offensive,
+        labels: def.labels,
+        stems: [],
+      }))
+
+      const { createdCard } = await addCard(
+        createdDeck.id,
+        card.sentence,
+        userId,
+        normalizeTargetWords(card.targetWords),
+        normalizedDefs,
+        transaction
+      )
+
+      // Transfer UserCardProgress
+      const cardProgress = await UserCardProgress.findOne({
+        where: { userId, cardId: card.id },
+        transaction,
+      })
+      if (cardProgress) {
+        // if progress was recorded, transfer it to the card copy
+        const { repetitionCount, easinessFactor, intervalDays, nextReviewAt, lastReviewedAt } =
+          cardProgress
+        await UserCardProgress.update(
+          {
+            repetitionCount,
+            easinessFactor,
+            intervalDays,
+            nextReviewAt,
+            lastReviewedAt,
+          },
+          {
+            where: { userId, cardId: createdCard.id },
+            transaction,
+          }
+        )
+      }
+    }
+
+    await followDeck(userId, createdDeck.id, transaction)
+
+    return createdDeck
+  })
 }
 
 export const deleteDeck = async (id: string) => {

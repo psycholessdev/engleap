@@ -72,9 +72,10 @@ export const addCard = async (
   sentence: string,
   createdByUserId: string,
   targetWords: string[],
-  definitions?: DefinitionDTO[]
-) => {
-  return await sequelize.transaction(async transaction => {
+  definitions?: DefinitionDTO[],
+  transaction?: Transaction
+): Promise<{ createdCard: Card; notFoundWords: string[]; inserted: boolean }> => {
+  const callback = async (transaction: Transaction) => {
     const [createdCard, inserted] = await Card.findOrCreate({
       where: { deckId, sentence, createdByUserId },
       include: [
@@ -112,7 +113,12 @@ export const addCard = async (
     await createdCard.reload({ transaction })
 
     return { createdCard, notFoundWords, inserted }
-  })
+  }
+
+  if (transaction) {
+    return await callback(transaction)
+  }
+  return await sequelize.transaction(callback)
 }
 
 export const editCard = async (

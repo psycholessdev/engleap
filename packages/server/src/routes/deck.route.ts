@@ -9,6 +9,7 @@ import {
 } from '../schemas'
 import {
   createDeckController,
+  copyDeckController,
   deleteDeckController,
   getUserDecksController,
   getPublicDecksController,
@@ -35,6 +36,12 @@ router.get(
 router.get('/:deckId', validateRequestData(deckIdParamUtilizedSchema, 'params'), getDeckController)
 
 router.post('/', validateRequestData(createDeckSchema), createDeckController)
+
+router.post(
+  '/:deckId/copy',
+  validateRequestData(deckIdParamUtilizedSchema, 'params'),
+  copyDeckController
+)
 
 router.put(
   '/:deckId',

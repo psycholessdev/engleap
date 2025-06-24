@@ -1,5 +1,5 @@
 import { CardTargetWord, Definition, Word, CardDefinition } from '../models'
-import { Op } from 'sequelize'
+import { Op, Transaction } from 'sequelize'
 
 export const getDefinitionsByWord = async (word: string) => {
   const foundWords = await Word.findAll({
@@ -34,10 +34,20 @@ export const getDefinitionsByWord = async (word: string) => {
   })
 }
 
-export const getDefinitionsForCard = async (cardId: string, offset = 0, limit = 15) => {
+// safe means from dictionary and userApproved
+type Source = 'safe' | 'user' | 'userUnreviewed' | 'userApproved' | 'dictionary'
+
+export const getDefinitionsForCard = async (
+  cardId: string,
+  source: Source = 'safe',
+  offset = 0,
+  limit = 15,
+  transaction?: Transaction
+) => {
   const ctws = await CardTargetWord.findAll({
     where: { cardId },
     attributes: ['id', 'wordId'],
+    transaction,
   })
   const ctwIds = ctws.map(ctw => ctw.id)
   const wordIds = ctws.map(ctw => ctw.wordId)
@@ -46,22 +56,33 @@ export const getDefinitionsForCard = async (cardId: string, offset = 0, limit = 
   const cds = await CardDefinition.findAll({
     where: { cardTargetWordId: ctwIds },
     attributes: ['definitionId'],
+    transaction,
   })
   const cdDefIds = cds.map(cdw => cdw.definitionId)
 
+  const filters =
+    source === 'safe'
+      ? // 'safe' means Definition should be from dictionary,
+        // or explicitly connected to the card
+        // or approved by admin
+        [{ source: 'dictionary' }, { id: cdDefIds }, { approved: true }]
+      : source === 'user'
+      ? [{ source: 'user' }]
+      : source === 'userApproved'
+      ? [{ source: 'user', approved: true }]
+      : source === 'userUnreviewed'
+      ? [{ source: 'user', approved: false }]
+      : source === 'dictionary'
+      ? [{ source: 'dictionary' }]
+      : undefined
+
   return await Definition.findAll({
     where: {
-      // Definition should be from dictionary,
-      // or explicitly connected to the card
-      // or approved by admin
-      [Op.or]: [
-        { [Op.and]: [{ wordId: wordIds }, { source: 'dictionary' }] },
-        { [Op.and]: [{ wordId: wordIds }, { id: cdDefIds }] },
-        { [Op.and]: [{ wordId: wordIds }, { approved: true }] },
-      ],
+      [Op.and]: [{ wordId: wordIds }, { [Op.or]: filters }],
     },
     limit,
     offset,
+    include: [Word],
     attributes: [
       'id',
       'wordId',
@@ -76,6 +97,7 @@ export const getDefinitionsForCard = async (cardId: string, offset = 0, limit = 
       'sourceName',
       'createdByUserId',
     ],
+    transaction,
   })
 }
 

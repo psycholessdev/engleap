@@ -60,6 +60,11 @@ export const editDeck = async (deckId: string, data: EditDeckRequest): Promise<D
   return res.data
 }
 
+export const copyDeck = async (deckId: string): Promise<Deck> => {
+  const res = await $axios.post(`/decks/${deckId}/copy`)
+  return res.data
+}
+
 export interface ChangeFollowStatusDeckRequest {
   deckId: string
 }
