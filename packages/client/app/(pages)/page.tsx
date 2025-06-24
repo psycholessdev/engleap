@@ -142,7 +142,11 @@ export default async function Home() {
           <AccordionContent className="flex flex-col gap-4 text-balance font-ubuntu">
             <p>
               Yes! EngLeap is completely free and open-source. If you find it helpful, please
-              support the project by giving it a ⭐️ on GitHub — it really helps!
+              support the project by{' '}
+              <Link href="https://github.com/psycholessdev/engleap" target="_blank">
+                giving it a ⭐️ on GitHub
+              </Link>{' '}
+              — it really helps!
             </p>
           </AccordionContent>
         </AccordionItem>
