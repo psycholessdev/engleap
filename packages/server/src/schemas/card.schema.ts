@@ -36,13 +36,14 @@ export const definitionTDOSchema = z
         'adverb',
         'phrasalVerb',
         'idiom',
+        'phrase',
         'preposition',
         'conjunction',
         'interjection',
       ],
       {
         message:
-          'partOfSpeech should be one of these: noun, pronoun, verb, adjective, adverb, phrasal verb, idiom, preposition, conjunction, interjection',
+          'partOfSpeech should be one of these: noun, pronoun, verb, adjective, adverb, phrasal verb, idiom, phrase, preposition, conjunction, interjection',
       }
     ),
 

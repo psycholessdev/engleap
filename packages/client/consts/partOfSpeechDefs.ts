@@ -48,6 +48,12 @@ export const partOfSpeechDefs: Record<string, PartOfSpeechDef> = {
     examples: ['break the ice', 'spill the beans', 'under the weather'],
     sentenceExample: 'He’s under the weather today. (He’s sick)',
   },
+  phrase: {
+    name: 'phrase',
+    text: "A group of words that work together as a single unit in a sentence but do not contain both a subject and a verb (so it's not a full sentence). Phrases can act like a noun, verb, adjective, or adverb.",
+    examples: ['in the morning', 'to win the game', 'very tired', 'running down the street'],
+    sentenceExample: 'The man running down the street is my uncle.',
+  },
   preposition: {
     name: 'preposition',
     text: 'Shows direction, place, or time. Always comes before a noun or pronoun.',
