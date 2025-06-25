@@ -39,7 +39,7 @@ import { useCardController } from '@/hooks'
 import { useRouter } from 'next/navigation'
 import { syllabify } from '@/utils'
 
-import { partOfSpeechDefs, type PartOfSpeechDef } from '@/app/consts'
+import { partOfSpeechDefs, type PartOfSpeechDef } from '@/consts'
 
 const PartOfSpeechSuggestionCard: React.FC<{ value: PartOfSpeechDef }> = ({ value }) => {
   return (

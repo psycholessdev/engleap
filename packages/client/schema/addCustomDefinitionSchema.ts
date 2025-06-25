@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { partOfSpeechDefs } from '@/app/consts'
+import { partOfSpeechDefs } from '@/consts'
 
 const partOfSpeechList = Object.keys(partOfSpeechDefs)
 

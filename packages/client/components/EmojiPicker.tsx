@@ -4,7 +4,7 @@ import { Toggle } from '@/components/ui/toggle'
 import { IconCaretDownFilled } from '@tabler/icons-react'
 
 import React from 'react'
-import { emojiList } from '@/app/consts'
+import { emojiList } from '@/consts'
 
 interface IEmojiPicker {
   pickedEmoji: string

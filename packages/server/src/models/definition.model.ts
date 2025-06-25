@@ -37,21 +37,7 @@ export class Definition extends Model {
   @Column({ allowNull: false, type: DataType.TEXT })
   text!: string
 
-  @Column({
-    type: DataType.ENUM(
-      'noun',
-      'pronoun',
-      'verb',
-      'adjective',
-      'adverb',
-      'phrasalVerb',
-      'idiom',
-      'preposition',
-      'conjunction',
-      'interjection'
-    ),
-    allowNull: false,
-  })
+  @Column({ allowNull: false })
   partOfSpeech!: string
 
   @Column({ allowNull: false, type: DataType.ARRAY(DataType.STRING), defaultValue: [] })
