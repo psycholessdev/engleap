@@ -40,7 +40,7 @@ const CardItem: React.FC<ICardItem> = ({
     <div className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
       <div className="flex flex-col gap-2" onClick={() => onClick(cardId)}>
         <Label className="text-white text-lg leading-5">{sentence}</Label>
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           {targetWords.map(t => (
             <Badge key={t.id}>{t.word.text}</Badge>
           ))}
