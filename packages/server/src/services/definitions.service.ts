@@ -1,5 +1,5 @@
 import { CardTargetWord, Definition, Word, CardDefinition } from '../models'
-import { Op, Transaction } from 'sequelize'
+import { Sequelize, Op, Transaction } from 'sequelize'
 
 export const getDefinitionsByWord = async (word: string) => {
   const foundWords = await Word.findAll({
@@ -96,6 +96,10 @@ export const getDefinitionsForCard = async (
       'source',
       'sourceName',
       'createdByUserId',
+    ],
+    order: [
+      // Prioritize user definitions by sorting source='user' first
+      [Sequelize.literal(`CASE WHEN source = 'user' THEN 0 ELSE 1 END`), 'ASC'],
     ],
     transaction,
   })
