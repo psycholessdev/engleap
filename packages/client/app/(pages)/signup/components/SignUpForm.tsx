@@ -18,8 +18,7 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import FormInputError from '@/components/FormInputError'
-import FailureAlert from '@/components/FailureAlert'
+import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -103,7 +102,7 @@ const SignUpForm = () => {
                 {...form.register('username')}
               />
               <p className="text-muted-foreground text-sm">This is your public display name.</p>
-              <FormInputError error={form.formState.errors?.username} />
+              <FormInputErrorMessage message={form.formState.errors?.username} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -115,7 +114,7 @@ const SignUpForm = () => {
                 required
                 {...form.register('email')}
               />
-              <FormInputError error={form.formState.errors?.email} />
+              <FormInputErrorMessage message={form.formState.errors?.email} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
@@ -126,7 +125,7 @@ const SignUpForm = () => {
                 required
                 {...form.register('password')}
               />
-              <FormInputError error={form.formState.errors?.password} />
+              <FormInputErrorMessage message={form.formState.errors?.password} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="proficiencyLevel">Your Proficiency level</Label>
@@ -140,11 +139,11 @@ const SignUpForm = () => {
               {/* custom Select is not handled by useForm by default */}
               <ProficiencyLevelPicker disabled={isLoading} onSelect={handleSelectChange} />
 
-              <FormInputError error={form.formState.errors?.proficiencyLevel} />
+              <FormInputErrorMessage message={form.formState.errors?.proficiencyLevel} />
             </div>
 
             {/* General failure */}
-            {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
+            {failureMessage && <FormInputErrorMessage title="Failure" message={failureMessage} />}
 
             {isLoading ? (
               <Button className="w-full" disabled>

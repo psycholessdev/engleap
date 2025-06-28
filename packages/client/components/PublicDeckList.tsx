@@ -1,7 +1,7 @@
 'use client'
 import { Input } from '@/components/ui/input'
-import PublicDeckItem, { PublicDeckItemSkeleton } from '@/components/PublicDeckItem'
-import FailureFallback from '@/components/FailureFallback'
+import PublicDeckItem, { PublicDeckItemSkeleton } from '@/components/common/PublicDeckItem'
+import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 
 import React, { useState, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
@@ -54,7 +54,7 @@ const PublicDeckList = () => {
               followersCount={pd.usersFollowing}
             />
           ))}
-        {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
+        {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
         {isFetching &&
           Array(4)
             .fill(null)

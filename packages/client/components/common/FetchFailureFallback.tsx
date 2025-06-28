@@ -5,7 +5,8 @@ import { IconReload } from '@tabler/icons-react'
 
 import { Button } from '@/components/ui/button'
 
-const FailureFallback: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
+// Beautiful card with retry button
+const FetchFailureFallback: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
   return (
     <div className="w-full py-6 px-3 border-1 border-el-outline rounded-2xl flex flex-col justify-center items-center gap-3">
       <div className="flex flex-col items-center">
@@ -28,4 +29,4 @@ const FailureFallback: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
     </div>
   )
 }
-export default FailureFallback
+export default FetchFailureFallback

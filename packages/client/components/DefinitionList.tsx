@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
-import DefinitionCard, { DefinitionCardSkeleton } from '@/components/DefinitionCard'
-import FailureFallback from '@/components/FailureFallback'
+import DefinitionCard, { DefinitionCardSkeleton } from '@/components/common/DefinitionCard'
+import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 
 import { useInView } from 'react-intersection-observer'
 import { useAuth, useInfiniteDefinitions } from '@/hooks'
@@ -56,7 +56,7 @@ const DefinitionList: React.FC<IDefinitionList> = ({
             onDelete={onDelete}
           />
         ))}
-      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

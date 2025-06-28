@@ -1,6 +1,6 @@
 'use client'
-import DeckItem, { DeckItemSkeleton } from '@/components/DeckItem'
-import FailureFallback from '@/components/FailureFallback'
+import DeckItem, { DeckItemSkeleton } from '@/components/common/DeckItem'
+import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 
 import React, { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -21,7 +21,7 @@ const DeckList = () => {
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
 
   return (
-    <div className="flex flex-col gap-2 pb-20">
+    <div className="flex flex-col gap-2 pb-20" aria-live="polite">
       {decks &&
         decks.map((deck: DeckWithCardInfo) => (
           <DeckItem
@@ -34,7 +34,7 @@ const DeckList = () => {
             editable={deck.creatorId === userId}
           />
         ))}
-      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(6)

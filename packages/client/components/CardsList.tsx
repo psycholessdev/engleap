@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import AddButtonGhost from './AddButtonGhost'
-import CardItem, { CardItemSkeleton } from '@/components/CardItem'
-import FailureFallback from '@/components/FailureFallback'
+import AddButtonGhost from '@/components/common/AddButtonGhost'
+import CardItem, { CardItemSkeleton } from '@/components/common/CardItem'
+import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 import CardPreviewModal from '@/components/CardPreviewModal'
 
 import { type Card } from '@/api'
@@ -76,7 +76,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
             onDelete={handleDeleteCard}
           />
         ))}
-      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

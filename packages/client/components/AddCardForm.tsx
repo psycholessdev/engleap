@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge'
 import { Toggle } from '@/components/ui/toggle'
 import { Button } from '@/components/ui/button'
 import DefinitionEditorModal from '@/components/DefinitionEditorModal'
-import FormInputError from '@/components/FormInputError'
+import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import DefinitionList from '@/components/DefinitionList'
-import AddButtonGhost from '@/components/AddButtonGhost'
+import AddButtonGhost from '@/components/common/AddButtonGhost'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { generateTargetWords, normalizeCard, deepCompare } from '@/utils'
@@ -204,7 +204,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
         className="flex flex-col gap-6 items-start w-full"
         onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid gap-2">
-          <FormInputError error={failureMessage} />
+          <FormInputErrorMessage message={failureMessage} />
 
           <h2 className="font-ubuntu text-lg text-white">Sentence containing the target word(s)</h2>
           <Textarea
@@ -214,7 +214,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
             disabled={isLoading}
             {...form.register('sentence')}
           />
-          <FormInputError error={form.formState.errors.sentence} />
+          <FormInputErrorMessage message={form.formState.errors.sentence} />
           {!form.getValues().sentence && (
             <Alert>
               <IconBulb />
@@ -253,7 +253,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
               Idioms, like &apos;Spill the beans&apos;, &apos;Look after&apos; or &apos;Plot
               armor&apos;.
             </p>
-            <FormInputError error={form.formState.errors.userSpecifiedTargetWords} />
+            <FormInputErrorMessage message={form.formState.errors.userSpecifiedTargetWords} />
           </div>
         )}
 

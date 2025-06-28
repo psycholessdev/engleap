@@ -22,14 +22,14 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import EmojiPicker from '@/components/EmojiPicker'
+import EmojiPicker from '@/components/common/EmojiPicker'
 
 import { editDeckSchema } from '@/schema'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDeckController } from '@/hooks'
-import FailureAlert from '@/components/FailureAlert'
+import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import { Loader2Icon } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
@@ -171,7 +171,7 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
             </div>
 
             {/* General failure */}
-            {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
+            {failureMessage && <FormInputErrorMessage title="Failure" message={failureMessage} />}
 
             <DialogFooter>
               <DialogClose disabled={isLoading} asChild>
