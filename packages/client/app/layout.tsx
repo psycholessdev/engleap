@@ -16,8 +16,11 @@ const ubuntu = Ubuntu({
 })
 
 export const metadata: Metadata = {
-  title:
-    'EngLeap — Start thinking in English — not just translating it. Make your next leap with EngLeap',
+  title: {
+    template: '%s | EngLeap',
+    default:
+      'EngLeap — Start thinking in English — not just translating it. Make your next leap with EngLeap!',
+  },
   description:
     'EngLeap is a powerful English learning app that helps you master the language naturally and effectively, without relying on your native tongue.',
 }

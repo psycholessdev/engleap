@@ -5,6 +5,11 @@ import Link from 'next/link'
 
 import DeckList from '@/components/DeckList'
 import AddButtonGhost from '@/components/AddButtonGhost'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'My Decks',
+}
 
 export default async function Home() {
   if (!(await getIsAuthed())) {

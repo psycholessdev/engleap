@@ -2,6 +2,11 @@ import { getIsAuthed } from '@/utils'
 import { notFound, redirect } from 'next/navigation'
 import { getDeck } from '@/serverApi'
 import AddCardForm from '@/components/AddCardForm'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Create Card',
+}
 
 export default async function Home({ params }: { params: Promise<{ deckId: string }> }) {
   const userId = await getIsAuthed()
