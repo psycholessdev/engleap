@@ -16,7 +16,7 @@ export const Sentence: React.FC<{
   const dissectedSentence = dissectSentenceByTargetWords(text, targetWords)
   return (
     <div
-      className={`w-full rounded-2xl flex justify-center items-center transition-colors my-6 py-5 px-3 ${
+      className={`w-full rounded-2xl flex justify-center items-center transition-colors sm:my-6 my-4 py-5 px-3 ${
         showBg ? 'bg-el-tertiary-container' : ''
       }`}>
       <p className="font-ubuntu lg:text-2xl text-lg leading-7 text-white">
