@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCardController, useAlert } from '@/hooks'
-import { type Card, type CreateCardRequest, type EditCardRequest } from '@/api'
+import type { Card, CreateCardRequest, EditCardRequest } from '@/types'
 import { z } from 'zod'
 
 const TargetWordsPicker: React.FC<{

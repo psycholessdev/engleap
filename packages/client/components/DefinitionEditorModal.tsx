@@ -124,7 +124,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
   const [syllableInfo, setSyllableInfo] = useState<PartOfSpeechDef | null>(null)
   const [idAutofilled, setIdAutofilled] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const { loading, failureMessage, addCustomDefinition } = useCardController()
+  const { isLoading, failureMessage, addCustomDefinition } = useCardController()
   const form = useForm<z.infer<typeof addCustomDefinitionSchema>>({
     resolver: zodResolver(addCustomDefinitionSchema),
     defaultValues: {
@@ -191,7 +191,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
       form.setValue('sourceEntryId', wordValue)
       form.setFocus('sourceEntryId')
     }
-  }, [idAutofilled, wordValue, sourceEntryIdValue])
+  }, [idAutofilled, wordValue, sourceEntryIdValue, form])
 
   return (
     <Dialog open={modalOpen}>
@@ -216,7 +216,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
 
               {/* custom Select is not handled by useForm by default */}
               <TargetWordSelector
-                disabled={loading}
+                disabled={isLoading}
                 selectedTargetWords={selectedTargetWords}
                 onValueChange={handleSelectTargetWordChange}
               />
@@ -228,7 +228,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
               <Input
                 id="sourceEntryId"
                 name="sourceEntryId"
-                disabled={loading}
+                disabled={isLoading}
                 {...form.register('sourceEntryId')}
               />
               <p className="text-muted-foreground text-sm">
@@ -241,7 +241,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
               <Label htmlFor="partOfSpeech">Part of speech</Label>
 
               <PartOfSpeechSelector
-                disabled={loading}
+                disabled={isLoading}
                 onValueChange={handleSelectPartOfSpeechChange}
               />
 
@@ -254,7 +254,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
               <Checkbox
                 id="offensive"
                 name="offensive"
-                disabled={loading}
+                disabled={isLoading}
                 onCheckedChange={val => form.setValue('offensive', val)}
               />
               <Label htmlFor="offensive">Offensive</Label>
@@ -262,7 +262,7 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
 
             <div className="grid gap-3">
               <Label htmlFor="text">Definition text</Label>
-              <Textarea id="text" name="text" disabled={loading} {...form.register('text')} />
+              <Textarea id="text" name="text" disabled={isLoading} {...form.register('text')} />
               <FormInputErrorMessage message={form.formState.errors.text} />
             </div>
 
@@ -272,10 +272,10 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
                 id="syllabifiedWord"
                 name="syllabifiedWord"
                 placeholder="fas*ci*nat*ing"
-                disabled={loading}
+                disabled={isLoading}
                 {...form.register('syllabifiedWord')}
               />
-              <Button disabled={loading} type="button" onClick={handleGenerateSyllabifiedWord}>
+              <Button disabled={isLoading} type="button" onClick={handleGenerateSyllabifiedWord}>
                 💡 Generate Syllabified Word
               </Button>
               <p className="text-muted-foreground text-sm">
@@ -290,13 +290,13 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
           {failureMessage && <FormInputErrorMessage title="Failure" message={failureMessage} />}
 
           <DialogFooter>
-            <DialogClose disabled={loading} asChild>
-              <Button disabled={loading} variant="outline" onClick={() => setModalOpen(false)}>
+            <DialogClose disabled={isLoading} asChild>
+              <Button disabled={isLoading} variant="outline" onClick={() => setModalOpen(false)}>
                 Cancel
               </Button>
             </DialogClose>
 
-            {loading ? (
+            {isLoading ? (
               <Button disabled>
                 <Loader2Icon className="animate-spin" />
                 Creating

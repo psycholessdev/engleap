@@ -3,9 +3,23 @@ import React, { useEffect } from 'react'
 import DefinitionCard, { DefinitionCardSkeleton } from '@/components/common/DefinitionCard'
 import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 
+import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
 import { useAuth, useInfiniteDefinitions } from '@/hooks'
-import type { Definition } from '@/api'
+import { canEditDefinition } from '@/utils'
+import type { Definition } from '@/types'
+
+const DefinitionsListSkeleton = () => {
+  return (
+    <>
+      {Array(4)
+        .fill(null)
+        .map((_, i) => (
+          <DefinitionCardSkeleton key={i} />
+        ))}
+    </>
+  )
+}
 
 interface IDefinitionList {
   cardId: string
@@ -32,40 +46,30 @@ const DefinitionList: React.FC<IDefinitionList> = ({
     status,
   } = useInfiniteDefinitions(cardId)
 
+  const debouncedFetchNextPage = useDebouncedCallback(() => {
+    fetchNextPage()
+  }, 200)
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      debouncedFetchNextPage()
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+  }, [inView, hasNextPage, debouncedFetchNextPage, isFetchingNextPage])
 
   return (
-    <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 pb-20 w-full">
+    <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 pb-20 w-full" aria-live="polite">
       {definitions &&
         definitions.map((def: Definition) => (
           <DefinitionCard
             key={def.id}
             disabled={disabled}
             definition={def}
-            showButtons={
-              showButtons &&
-              userId &&
-              def.createdByUserId &&
-              def.source === 'user' &&
-              def.createdByUserId === userId
-            }
+            showButtons={showButtons && canEditDefinition(def, userId)}
             onDelete={onDelete}
           />
         ))}
       {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
-      {isFetching && (
-        <>
-          {Array(4)
-            .fill(null)
-            .map((_, i) => (
-              <DefinitionCardSkeleton key={i} />
-            ))}
-        </>
-      )}
+      {isFetching && <DefinitionsListSkeleton />}
       <div ref={ref} />
     </div>
   )

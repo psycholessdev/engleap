@@ -8,7 +8,19 @@ import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
 import { useInfinitePublicDecks } from '@/hooks'
 
-import type { PublicDeck } from '@/api'
+import type { PublicDeck } from '@/types'
+
+const PublicDeckListSkeleton = () => {
+  return (
+    <>
+      {Array(5)
+        .fill(null)
+        .map((_, i) => (
+          <PublicDeckItemSkeleton key={i} />
+        ))}
+    </>
+  )
+}
 
 const PublicDeckList = () => {
   const { ref, inView } = useInView()
@@ -27,11 +39,15 @@ const PublicDeckList = () => {
     setSearchQuery(e.target.value)
   }, 700)
 
+  const debouncedFetchNextPage = useDebouncedCallback(() => {
+    fetchNextPage()
+  }, 200)
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      debouncedFetchNextPage()
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+  }, [inView, hasNextPage, debouncedFetchNextPage, isFetchingNextPage])
 
   useEffect(() => {
     refetch()
@@ -39,9 +55,15 @@ const PublicDeckList = () => {
 
   return (
     <div className="flex flex-col items-start gap-3 pb-20">
-      <Input id="search" name="search" placeholder="Search Decks" onChange={handleSearchChange} />
+      <Input
+        id="search"
+        name="search"
+        aria-label="Search public decks"
+        placeholder="Search Decks"
+        onChange={handleSearchChange}
+      />
 
-      <div className="grid xl:grid-cols-2 grid-cols-1 lg:gap-2 w-full">
+      <div className="grid xl:grid-cols-2 grid-cols-1 lg:gap-2 w-full" aria-live="polite">
         {publicDecks &&
           publicDecks.map((pd: PublicDeck) => (
             <PublicDeckItem
@@ -55,10 +77,7 @@ const PublicDeckList = () => {
             />
           ))}
         {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
-        {isFetching &&
-          Array(4)
-            .fill(null)
-            .map((_, i) => <PublicDeckItemSkeleton key={i} />)}
+        {isFetching && <PublicDeckListSkeleton />}
       </div>
 
       <div ref={ref} />

@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import { useAuth } from '@/hooks'
 
-import type { Definition } from '@/api'
+import type { Definition } from '@/types'
 
 interface ISpeakerButton {
   audioUrl?: string

@@ -7,10 +7,20 @@ import {
   copyDeck as copyDeckHandler,
   followDeck as followDeckHandler,
   unfollowDeck as unfollowDeckHandler,
-  type ChangeFollowStatusDeckRequest,
-  type CreateDeckRequest,
-  type EditDeckRequest,
 } from '@/api'
+import type { ChangeFollowStatusDeckRequest, CreateDeckRequest, EditDeckRequest } from '@/types'
+import {
+  DECK_CREATED,
+  DECK_CREATE_FAILED,
+  CHANGES_SAVE_FAILED,
+  CHANGES_SAVED,
+  DECK_COPIED,
+  DECK_COPY_FAILED,
+  DECK_FOLLOWED,
+  DECK_FOLLOW_FAILED,
+  DECK_UNFOLLOW_FAILED,
+  DECK_UNFOLLOWED,
+} from '@/consts'
 
 export const useDeckController = () => {
   const router = useRouter()
@@ -23,11 +33,11 @@ export const useDeckController = () => {
         await createDeckHandler(data)
         return true
       },
-      { errorMessage: 'Failed to create Deck' }
+      { errorMessage: DECK_CREATE_FAILED }
     )
 
     if (isSuccess) {
-      alert('Created', 'Your Deck was successfully created.')
+      alert('Created', DECK_CREATED)
       router.push('/decks')
     }
     return !!isSuccess
@@ -38,11 +48,11 @@ export const useDeckController = () => {
       async () => {
         return await editDeckHandler(deckId, data)
       },
-      { errorMessage: 'Failed to edit Deck' }
+      { errorMessage: CHANGES_SAVE_FAILED }
     )
 
     if (editedDeck) {
-      alert('Saved', 'The changes were saved')
+      alert('Saved', CHANGES_SAVED)
     }
     return editedDeck
   }
@@ -52,14 +62,11 @@ export const useDeckController = () => {
       async () => {
         return await copyDeckHandler(deckId)
       },
-      { errorMessage: 'Failed to copy Deck' }
+      { errorMessage: DECK_COPY_FAILED }
     )
 
     if (copiedDeck) {
-      alert(
-        'Copied',
-        'The copy was made and all of your study progress was transferred successfully'
-      )
+      alert('Copied', DECK_COPIED)
     }
     return copiedDeck
   }
@@ -70,11 +77,11 @@ export const useDeckController = () => {
         await followDeckHandler(data)
         return true
       },
-      { errorMessage: 'Failed to follow Deck' }
+      { errorMessage: DECK_FOLLOW_FAILED }
     )
 
     if (isSuccess) {
-      alert('Followed', 'Now you are following the Deck')
+      alert('Following', DECK_FOLLOWED)
     }
     return !!isSuccess
   }
@@ -85,11 +92,11 @@ export const useDeckController = () => {
         await unfollowDeckHandler(data)
         return true
       },
-      { errorMessage: 'Failed to unfollow Deck' }
+      { errorMessage: DECK_UNFOLLOW_FAILED }
     )
 
     if (isSuccess) {
-      alert('Unfollowed', 'You are no longer following the Deck')
+      alert('Unfollowed', DECK_UNFOLLOWED)
     }
     return !!isSuccess
   }

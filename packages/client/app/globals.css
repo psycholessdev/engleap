@@ -163,6 +163,21 @@ body {
   @apply p-0 m-0 min-h-[100vh] bg-el-root-bg selection:bg-[#FFFFFF19];
 }
 
-.root-element_p {
+.main {
+  @apply w-full h-screen overflow-y-auto box-border flex flex-col items-center justify-start pt-[90px] lg:pb-0 pb-20 transition-all;
+}
+.main.nav-padding {
   @apply lg:pl-[90px];
+}
+
+.header-container {
+  @apply fixed top-0 left-0 lg:h-[90px] h-20 w-full bg-el-root-bg z-[4500] flex justify-between items-center px-4 border-b-1 border-b-el-outline;
+}
+
+.nav-item {
+  @apply block lg:size-16 size-14 p-1 rounded-lg cursor-pointer transition-colors border-2 border-transparent hover:border-el-secondary active:bg-el-secondary active:border-el-primary;
+}
+
+.nav-item.active {
+  @apply bg-el-secondary border-el-primary;
 }

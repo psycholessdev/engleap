@@ -7,7 +7,7 @@ import { IconEdit, IconTrash } from '@tabler/icons-react'
 
 import React from 'react'
 import Link from 'next/link'
-import type { TargetWord } from '@/api'
+import type { TargetWord } from '@/types'
 
 // Highlighted list of target words
 const TargetWordsBadges: React.FC<{ targetWords: TargetWord[] }> = ({ targetWords }) => {

@@ -7,7 +7,7 @@ import CardItem, { CardItemSkeleton } from '@/components/common/CardItem'
 import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 import CardPreviewModal from '@/components/CardPreviewModal'
 
-import { type Card } from '@/api'
+import type { Card } from '@/types'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
@@ -41,11 +41,15 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
     setSearchQuery(e.target.value)
   }, 700)
 
+  const debouncedFetchNextPage = useDebouncedCallback(() => {
+    fetchNextPage()
+  }, 200)
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      debouncedFetchNextPage()
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+  }, [inView, hasNextPage, debouncedFetchNextPage, isFetchingNextPage])
 
   useEffect(() => {
     refetch()

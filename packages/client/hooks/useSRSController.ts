@@ -1,7 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { getCardsToReview, updateCardProgress, type NormalizedCardProgress } from '@/api'
+import { getCardsToReview, updateCardProgress } from '@/api'
+import type { NormalizedCardProgress } from '@/types'
 import { useAxiosErrorHandler } from '@/hooks/useAxiosErrorHandler'
+import { SRS_PAGE_SIZE, PROGRESS_SAVE_FAILED } from '@/consts'
 
 export const useSRSController = (deckId?: string) => {
   const { handleAxios, isLoading } = useAxiosErrorHandler()
@@ -24,7 +26,7 @@ export const useSRSController = (deckId?: string) => {
 
         // API has a limit of 20 cards per request
         // if received less than 20, not further requests required
-        if (fetchedCards.length < 20) {
+        if (fetchedCards.length < SRS_PAGE_SIZE) {
           setAllCardsFetched(true)
         }
       }
@@ -47,8 +49,9 @@ export const useSRSController = (deckId?: string) => {
       },
       {
         errorTitle: 'Failed to save your progress',
-        errorMessage: 'Better refresh the page to restore the connectivity',
+        errorMessage: PROGRESS_SAVE_FAILED,
         allowParallelLoading: true,
+        ignoreLoading: true,
       }
     )
 
