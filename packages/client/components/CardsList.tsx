@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import AddButtonGhost from './AddButtonGhost'
-import CardItem, { CardItemSkeleton } from '@/components/CardItem'
-import FailureFallback from '@/components/FailureFallback'
+import AddButtonGhost from '@/components/common/AddButtonGhost'
+import CardItem, { CardItemSkeleton } from '@/components/common/CardItem'
+import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 import CardPreviewModal from '@/components/CardPreviewModal'
 
-import { type Card } from '@/api'
+import type { Card } from '@/types'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
@@ -41,11 +41,15 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
     setSearchQuery(e.target.value)
   }, 700)
 
+  const debouncedFetchNextPage = useDebouncedCallback(() => {
+    fetchNextPage()
+  }, 200)
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      debouncedFetchNextPage()
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+  }, [inView, hasNextPage, debouncedFetchNextPage, isFetchingNextPage])
 
   useEffect(() => {
     refetch()
@@ -76,7 +80,7 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
             onDelete={handleDeleteCard}
           />
         ))}
-      {status === 'error' && !isFetching && <FailureFallback onRetry={refetch} />}
+      {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
           {Array(4)

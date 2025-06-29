@@ -8,7 +8,17 @@ import {
   deleteDefinition as deleteDefinitionHandler,
 } from '@/api'
 import { useQueryClient } from '@tanstack/react-query'
-import type { CreateCardRequest, EditCardRequest, UserProvidedDefinition } from '@/api'
+import type { CreateCardRequest, EditCardRequest, UserProvidedDefinition } from '@/types'
+import {
+  CARD_CREATED,
+  CARD_CREATE_FAILED,
+  CHANGES_SAVED,
+  CHANGES_SAVE_FAILED,
+  DELETED,
+  DELETE_FAILED,
+  DEFINITION_CREATE_FAILED,
+  DEFINITION_CREATED,
+} from '@/consts'
 
 export const useCardController = () => {
   const router = useRouter()
@@ -21,11 +31,11 @@ export const useCardController = () => {
       async () => {
         return await createCardHandler(deckId, data)
       },
-      { errorMessage: 'Failed to create Card' }
+      { errorMessage: CARD_CREATE_FAILED }
     )
 
     if (creationDetails) {
-      alert('Created', 'The Card was successfully created.')
+      alert('Created', CARD_CREATED)
       router.push(`/decks/${deckId}/card/${creationDetails.card.id}`)
     }
     return creationDetails
@@ -36,11 +46,11 @@ export const useCardController = () => {
       async () => {
         return await editCardHandler(cardId, data)
       },
-      { errorMessage: 'Failed to edit Card' }
+      { errorMessage: CHANGES_SAVE_FAILED }
     )
 
     if (editingDetails) {
-      alert('Saved', 'The changes were saved.')
+      alert('Saved', CHANGES_SAVED)
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
@@ -58,11 +68,11 @@ export const useCardController = () => {
       async () => {
         return await editCardHandler(cardId, { sentence, targetWords, definitions: [def] })
       },
-      { errorMessage: 'Failed to add custom Definition' }
+      { errorMessage: DEFINITION_CREATE_FAILED }
     )
 
     if (editingDetails) {
-      alert('Saved', 'The changes were saved.')
+      alert('Saved', DEFINITION_CREATED)
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
@@ -76,11 +86,11 @@ export const useCardController = () => {
         await deleteDefinitionHandler(defId)
         return true
       },
-      { errorMessage: 'Failed to delete custom Definition' }
+      { errorMessage: DELETE_FAILED }
     )
 
     if (success) {
-      alert('Deleted', 'The Definition was deleted.')
+      alert('Deleted', DELETED)
 
       router.refresh()
       await queryClient.invalidateQueries({ queryKey: ['definitions'] })
@@ -94,7 +104,7 @@ export const useCardController = () => {
         await deleteCardHandler(cardId)
         return true
       },
-      { errorMessage: 'Card does not exist or you do not have the right to delete it' }
+      { errorMessage: DELETE_FAILED }
     )
 
     return !!success

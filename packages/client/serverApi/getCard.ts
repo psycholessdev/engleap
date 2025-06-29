@@ -8,7 +8,6 @@ export const getCard = async (cardId: string) => {
   if (!headers) return null
   try {
     const res = await fetch(`${backendUrl}/cards/${cardId}`, {
-      cache: 'no-cache',
       headers,
     })
     const data = await res.json()

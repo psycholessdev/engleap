@@ -13,9 +13,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import FailureAlert from '@/components/FailureAlert'
+import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import { Button } from '@/components/ui/button'
-import EmojiPicker from '@/components/EmojiPicker'
+import EmojiPicker from '@/components/common/EmojiPicker'
 import { Loader2Icon } from 'lucide-react'
 
 import { z } from 'zod'
@@ -129,7 +129,7 @@ const CreateDeckForm = () => {
           </div>
 
           {/* General failure */}
-          {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
+          {failureMessage && <FormInputErrorMessage title="Failure" message={failureMessage} />}
 
           {isLoading ? (
             <Button disabled>

@@ -1,8 +1,8 @@
 'use client'
 import { getMyDecks } from '@/api'
 import { useInfiniteQuery } from '@tanstack/react-query'
-
-const PAGE_SIZE = 15
+import { PAGE_SIZE } from '@/consts'
+import { DeckWithCardInfo } from '@/types'
 
 export const useInfiniteDecks = () => {
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch, status } =
@@ -17,7 +17,7 @@ export const useInfiniteDecks = () => {
       },
     })
 
-  const decks = data?.pages.flat() ?? []
+  const decks: DeckWithCardInfo[] = data?.pages.flat() ?? []
 
   return { decks, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch, status }
 }

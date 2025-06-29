@@ -1,14 +1,8 @@
 'use client'
 import React, { createContext, useContext, useMemo, useEffect, useState } from 'react'
 import { useNotifications } from '@/hooks/useNotifications'
-import {
-  userLogOut,
-  userSignIn,
-  userSignUp,
-  getUser,
-  type UserSignInData,
-  type UserSignUpData,
-} from '@/api'
+import { userLogOut, userSignIn, userSignUp, getUser } from '@/api'
+import type { UserSignInData, UserSignUpData } from '@/types'
 import { useRouter } from 'next/navigation'
 import { useAxiosErrorHandler } from '@/hooks'
 
@@ -126,7 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       failureMessage,
       logout,
     }),
-    [isLogged, isLoading, failureMessage]
+    [isLogged, userId, isLoading, failureMessage]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

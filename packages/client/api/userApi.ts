@@ -1,10 +1,18 @@
 import { $axios } from '@/api/baseApi'
+import { UserSignInData, UserSignUpData, UserSignResponse, GetUserResponse } from '@/types'
 
-interface GetUserResponse {
-  id: string
-  username: string
-  email: string
-  proficiencyLevel: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'
+export const userSignIn = async (data: UserSignInData): Promise<UserSignResponse> => {
+  const res = await $axios.post('/auth/signin', data)
+  return res.data
+}
+
+export const userSignUp = async (data: UserSignUpData): Promise<UserSignResponse> => {
+  const res = await $axios.post('/auth/signup', data)
+  return res.data
+}
+
+export const userLogOut = async () => {
+  await $axios.post('/auth/logout')
 }
 
 export const getUser = async (): Promise<GetUserResponse> => {

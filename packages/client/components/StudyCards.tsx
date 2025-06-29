@@ -16,7 +16,7 @@ export const Sentence: React.FC<{
   const dissectedSentence = dissectSentenceByTargetWords(text, targetWords)
   return (
     <div
-      className={`w-full rounded-2xl flex justify-center items-center transition-colors my-6 py-5 px-3 ${
+      className={`w-full rounded-2xl flex justify-center items-center transition-colors sm:my-6 my-4 py-5 px-3 ${
         showBg ? 'bg-el-tertiary-container' : ''
       }`}>
       <p className="font-ubuntu lg:text-2xl text-lg leading-7 text-white">
@@ -76,6 +76,14 @@ const ActionBar: React.FC<{
   )
 }
 
+const StudyCardsLoading = () => {
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <Loader2Icon className="animate-spin" />
+    </div>
+  )
+}
+
 interface IStudyCards {
   deckId?: string
 }
@@ -91,11 +99,7 @@ const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
 
   return (
     <div className="w-full h-full py-3">
-      {!allCardsFetched && cardSRSPool.length === 0 && (
-        <div className="w-full h-full flex justify-center items-center">
-          <Loader2Icon className="animate-spin" />
-        </div>
-      )}
+      {!allCardsFetched && cardSRSPool.length === 0 && <StudyCardsLoading />}
 
       {allCardsFetched && cardSRSPool.length === 0 && (
         <div className="w-full h-full flex justify-center items-center">
@@ -105,7 +109,9 @@ const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
 
       {cardSRSPool.length > 0 && (
         <>
-          <div className="w-full h-auto min-h-full flex flex-col justify-center items-center lg:border-1 lg:border-el-outline rounded-3xl lg:p-6">
+          <div
+            aria-live="polite"
+            className="w-full h-auto min-h-full flex flex-col justify-center items-center lg:border-1 lg:border-el-outline rounded-3xl lg:p-6">
             <Sentence
               text={cardSRSPool[0].card.sentence}
               targetWords={cardSRSPool[0].card.targetWords}

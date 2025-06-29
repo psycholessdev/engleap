@@ -8,7 +8,6 @@ export const getDeck = async (deckId: string) => {
   if (!headers) return null
   try {
     const res = await fetch(`${backendUrl}/decks/${deckId}`, {
-      cache: 'no-cache',
       headers,
     })
     const data = await res.json()

@@ -9,12 +9,15 @@ interface HandleAxiosOptions {
   createFailureMessage?: boolean
 
   // parallel requests are blocked by default
-  // if set to true loading state will be ignored for this request and parallel request can be performed
   allowParallelLoading?: boolean
+
+  // if set to true, loading state will not be affected for this request
+  // Note: request still will be rejected if parallel loading disabled and another request is executing
+  ignoreLoading?: boolean
 }
 
 export const useAxiosErrorHandler = () => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [parallelLoadings, setParallelLoadings] = useState(0)
   const [failureMessage, setFailureMessage] = useState('')
   const alert = useNotifications()
 
@@ -28,13 +31,18 @@ export const useAxiosErrorHandler = () => {
       showAlert = true,
       createFailureMessage = true,
       allowParallelLoading = false,
+      ignoreLoading = false,
     } = options || {}
 
-    try {
-      if (!allowParallelLoading && isLoading) return null
+    if (!allowParallelLoading && parallelLoadings > 0) {
+      throw new Error(
+        'Cannot perform another request until the previous one is finished. If you want to do requests in parallel, enable the allowParallelLoading flag.'
+      )
+    }
 
-      if (!allowParallelLoading) {
-        setIsLoading(true)
+    try {
+      if (!ignoreLoading) {
+        setParallelLoadings(value => value + 1)
       }
       setFailureMessage('')
 
@@ -56,11 +64,11 @@ export const useAxiosErrorHandler = () => {
 
       return null
     } finally {
-      if (!allowParallelLoading) {
-        setIsLoading(false)
+      if (!ignoreLoading) {
+        setParallelLoadings(value => value - 1)
       }
     }
   }
 
-  return { handleAxios, isLoading, failureMessage }
+  return { handleAxios, isLoading: parallelLoadings > 0, failureMessage }
 }

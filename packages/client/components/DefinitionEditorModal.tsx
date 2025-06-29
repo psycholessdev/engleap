@@ -25,9 +25,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import FormInputError from '@/components/FormInputError'
-import AddButtonGhost from '@/components/AddButtonGhost'
-import FailureAlert from '@/components/FailureAlert'
+import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
+import AddButtonGhost from '@/components/common/AddButtonGhost'
 import { Loader2Icon } from 'lucide-react'
 import { AlertCircleIcon } from 'lucide-react'
 
@@ -125,13 +124,15 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
   const [syllableInfo, setSyllableInfo] = useState<PartOfSpeechDef | null>(null)
   const [idAutofilled, setIdAutofilled] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const { loading, failureMessage, addCustomDefinition } = useCardController()
+  const { isLoading, failureMessage, addCustomDefinition } = useCardController()
   const form = useForm<z.infer<typeof addCustomDefinitionSchema>>({
     resolver: zodResolver(addCustomDefinitionSchema),
     defaultValues: {
       offensive: false,
     },
   })
+  const wordValue = form.watch('word')
+  const sourceEntryIdValue = form.watch('sourceEntryId')
 
   const onSubmit = async (data: z.infer<typeof addCustomDefinitionSchema>) => {
     // requesting after zod validation has passed
@@ -181,23 +182,16 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
     }
   }, [modalOpen, form])
 
+  // When user selected the targetWord, autofill the sourceEntryId field
+  // and suggests that the user reviews it (by focusing)
+  // works only once
   useEffect(() => {
-    const callback = form.subscribe({
-      formState: {
-        values: true,
-        touchedFields: true,
-      },
-      callback: ({ values }) => {
-        if (!idAutofilled && values.word && !values.sourceEntryId) {
-          setIdAutofilled(true)
-          form.setValue('sourceEntryId', values.word)
-          form.setFocus('sourceEntryId')
-        }
-      },
-    })
-
-    return () => callback()
-  }, [form, form.subscribe, idAutofilled])
+    if (!idAutofilled && wordValue && !sourceEntryIdValue) {
+      setIdAutofilled(true)
+      form.setValue('sourceEntryId', wordValue)
+      form.setFocus('sourceEntryId')
+    }
+  }, [idAutofilled, wordValue, sourceEntryIdValue, form])
 
   return (
     <Dialog open={modalOpen}>
@@ -222,11 +216,11 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
 
               {/* custom Select is not handled by useForm by default */}
               <TargetWordSelector
-                disabled={loading}
+                disabled={isLoading}
                 selectedTargetWords={selectedTargetWords}
                 onValueChange={handleSelectTargetWordChange}
               />
-              <FormInputError error={form.formState.errors.word} />
+              <FormInputErrorMessage message={form.formState.errors.word} />
             </div>
 
             <div className="grid gap-3">
@@ -234,33 +228,33 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
               <Input
                 id="sourceEntryId"
                 name="sourceEntryId"
-                disabled={loading}
+                disabled={isLoading}
                 {...form.register('sourceEntryId')}
               />
               <p className="text-muted-foreground text-sm">
                 Example: if the Target Word is “Ducks,” the exact word might be “Duck.”
               </p>
-              <FormInputError error={form.formState.errors.sourceEntryId} />
+              <FormInputErrorMessage message={form.formState.errors.sourceEntryId} />
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="partOfSpeech">Part of speech</Label>
 
               <PartOfSpeechSelector
-                disabled={loading}
+                disabled={isLoading}
                 onValueChange={handleSelectPartOfSpeechChange}
               />
 
               {syllableInfo && <PartOfSpeechSuggestionCard value={syllableInfo} />}
 
-              <FormInputError error={form.formState.errors.partOfSpeech} />
+              <FormInputErrorMessage message={form.formState.errors.partOfSpeech} />
             </div>
 
             <div className="flex items-center gap-1">
               <Checkbox
                 id="offensive"
                 name="offensive"
-                disabled={loading}
+                disabled={isLoading}
                 onCheckedChange={val => form.setValue('offensive', val)}
               />
               <Label htmlFor="offensive">Offensive</Label>
@@ -268,8 +262,8 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
 
             <div className="grid gap-3">
               <Label htmlFor="text">Definition text</Label>
-              <Textarea id="text" name="text" disabled={loading} {...form.register('text')} />
-              <FormInputError error={form.formState.errors.text} />
+              <Textarea id="text" name="text" disabled={isLoading} {...form.register('text')} />
+              <FormInputErrorMessage message={form.formState.errors.text} />
             </div>
 
             <div className="grid gap-3 items-start">
@@ -278,31 +272,31 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
                 id="syllabifiedWord"
                 name="syllabifiedWord"
                 placeholder="fas*ci*nat*ing"
-                disabled={loading}
+                disabled={isLoading}
                 {...form.register('syllabifiedWord')}
               />
-              <Button disabled={loading} type="button" onClick={handleGenerateSyllabifiedWord}>
+              <Button disabled={isLoading} type="button" onClick={handleGenerateSyllabifiedWord}>
                 💡 Generate Syllabified Word
               </Button>
               <p className="text-muted-foreground text-sm">
                 Automatic syllable generation may be incorrect. Double-check to ensure correct
                 pronunciation.
               </p>
-              <FormInputError error={form.formState.errors.syllabifiedWord} />
+              <FormInputErrorMessage message={form.formState.errors.syllabifiedWord} />
             </div>
           </div>
 
           {/* General failure */}
-          {failureMessage && <FailureAlert title="Failure" message={failureMessage} />}
+          {failureMessage && <FormInputErrorMessage title="Failure" message={failureMessage} />}
 
           <DialogFooter>
-            <DialogClose disabled={loading} asChild>
-              <Button disabled={loading} variant="outline" onClick={() => setModalOpen(false)}>
+            <DialogClose disabled={isLoading} asChild>
+              <Button disabled={isLoading} variant="outline" onClick={() => setModalOpen(false)}>
                 Cancel
               </Button>
             </DialogClose>
 
-            {loading ? (
+            {isLoading ? (
               <Button disabled>
                 <Loader2Icon className="animate-spin" />
                 Creating

@@ -7,7 +7,18 @@ import { IconEdit, IconTrash } from '@tabler/icons-react'
 
 import React from 'react'
 import Link from 'next/link'
-import type { TargetWord } from '@/api'
+import type { TargetWord } from '@/types'
+
+// Highlighted list of target words
+const TargetWordsBadges: React.FC<{ targetWords: TargetWord[] }> = ({ targetWords }) => {
+  return (
+    <div className="flex flex-wrap items-center gap-1">
+      {targetWords.map(t => (
+        <Badge key={t.id}>{t.word.text}</Badge>
+      ))}
+    </div>
+  )
+}
 
 interface ICardItem {
   loading: boolean
@@ -40,23 +51,24 @@ const CardItem: React.FC<ICardItem> = ({
     <div className="w-full py-5 border-b border-b-el-outline flex items-center justify-between hover:bg-el-secondary-container/20 cursor-pointer">
       <div className="flex flex-col gap-2" onClick={() => onClick(cardId)}>
         <Label className="text-white text-lg leading-5">{sentence}</Label>
-        <div className="flex items-center gap-1">
-          {targetWords.map(t => (
-            <Badge key={t.id}>{t.word.text}</Badge>
-          ))}
-        </div>
+        <TargetWordsBadges targetWords={targetWords} />
       </div>
       <div className="flex items-center gap-2">
         {loading && <Loader2Icon className="animate-spin" />}
         {showButtons && (
-          <Button variant="outline" size="sm" disabled={loading} asChild>
+          <Button variant="outline" size="sm" aria-label="Edit Card" disabled={loading} asChild>
             <Link href={`/decks/${deckId}/card/${cardId}`}>
               <IconEdit /> <span className="lg:inline hidden">Edit</span>
             </Link>
           </Button>
         )}
         {showButtons && (
-          <Button variant="outline" size="sm" onClick={handleDeleteCard} disabled={loading}>
+          <Button
+            variant="outline"
+            size="sm"
+            aria-label="Delete Card"
+            onClick={handleDeleteCard}
+            disabled={loading}>
             <IconTrash />
           </Button>
         )}
@@ -79,4 +91,4 @@ export const CardItemSkeleton: React.FC = () => {
   )
 }
 
-export default CardItem
+export default React.memo(CardItem)

@@ -1,13 +1,13 @@
 'use client'
 import { getCardsByDeckId } from '@/api'
 import { useInfiniteQuery } from '@tanstack/react-query'
-
-const PAGE_SIZE = 15
+import { PAGE_SIZE } from '@/consts'
+import { Card } from '@/types'
 
 export const useInfiniteCards = (deckId: string, querySentence?: string) => {
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch, status } =
     useInfiniteQuery({
-      queryKey: ['cards', deckId],
+      queryKey: ['cards', deckId, querySentence],
       queryFn: async ({ pageParam = 0 }) => {
         return await getCardsByDeckId(deckId, querySentence, pageParam, PAGE_SIZE)
       },
@@ -17,7 +17,7 @@ export const useInfiniteCards = (deckId: string, querySentence?: string) => {
       },
     })
 
-  const cards = data?.pages.flat() ?? []
+  const cards: Card[] = data?.pages.flat() ?? []
 
   return { cards, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch, status }
 }

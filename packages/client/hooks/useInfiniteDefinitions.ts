@@ -1,8 +1,8 @@
 'use client'
 import { getDefinitionsForCard } from '@/api'
 import { useInfiniteQuery } from '@tanstack/react-query'
-
-const PAGE_SIZE = 15
+import { PAGE_SIZE } from '@/consts'
+import { Definition } from '@/types'
 
 export const useInfiniteDefinitions = (cardId: string) => {
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, refetch, status } =
@@ -17,9 +17,7 @@ export const useInfiniteDefinitions = (cardId: string) => {
       },
     })
 
-  // user definitions are prioritized
-  const definitions =
-    data?.pages.flat().sort((a, b) => (a.source === 'user' && b.source !== 'user' ? -1 : 0)) ?? []
+  const definitions: Definition[] = data?.pages.flat() ?? []
 
   return {
     definitions,
