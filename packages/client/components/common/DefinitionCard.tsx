@@ -99,7 +99,7 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
                 <IconHelpOctagon />
               </Badge>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent className="z-8600">
               {userId && definition.createdByUserId === userId ? (
                 <span>Written by you</span>
               ) : userId && definition.approved ? (

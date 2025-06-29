@@ -35,7 +35,7 @@ const TargetWordsPicker: React.FC<{
           onPressedChange={() => onTargetWordClick(w)}
           variant="outline"
           className="cursor-pointer"
-          key={i}
+          key={`${w}-${i}`}
           disabled={disabled}>
           {w}
         </Toggle>
