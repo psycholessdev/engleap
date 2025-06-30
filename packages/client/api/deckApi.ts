@@ -1,21 +1,11 @@
 import { $axios } from '@/api/baseApi'
-
-export interface Deck {
-  id: string
-  title: string
-  description: string
-  emoji: string
-  creatorId: string
-  isPublic: string
-}
-
-export type DeckWithCardInfo = Deck & {
-  cardCount: string
-  dueCardCount: string
-  usersFollowing: string
-  isUserFollowing: boolean
-}
-type GetMyDecksResponse = DeckWithCardInfo[]
+import {
+  Deck,
+  GetMyDecksResponse,
+  GetPublicDecksResponse,
+  CreateDeckRequest,
+  EditDeckRequest,
+} from '@/types'
 
 export const getMyDecks = async (offset: number, limit: number): Promise<GetMyDecksResponse> => {
   const res = await $axios.get('/decks/my', {
@@ -23,12 +13,6 @@ export const getMyDecks = async (offset: number, limit: number): Promise<GetMyDe
   })
   return res.data
 }
-
-export type PublicDeck = Deck & {
-  cardCount: string
-  usersFollowing: string
-}
-type GetPublicDecksResponse = PublicDeck[]
 
 export const getPublicDecks = async (
   query: string,
@@ -40,15 +24,6 @@ export const getPublicDecks = async (
   })
   return res.data
 }
-
-export interface CreateDeckRequest {
-  title: string
-  description?: string
-  emoji?: string
-  isPublic: boolean
-}
-
-type EditDeckRequest = Partial<CreateDeckRequest>
 
 export const createDeck = async (data: CreateDeckRequest): Promise<Deck> => {
   const res = await $axios.post('/decks', data)

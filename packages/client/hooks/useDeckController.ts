@@ -1,16 +1,9 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useNotifications, useAxiosErrorHandler } from '@/hooks'
-import {
-  createDeck as createDeckHandler,
-  editDeck as editDeckHandler,
-  copyDeck as copyDeckHandler,
-  followDeck as followDeckHandler,
-  unfollowDeck as unfollowDeckHandler,
-  type ChangeFollowStatusDeckRequest,
-  type CreateDeckRequest,
-  type EditDeckRequest,
-} from '@/api'
+import { createDeck as createDeckHandler, editDeck as editDeckHandler } from '@/api'
+import type { CreateDeckRequest, EditDeckRequest } from '@/types'
+import { DECK_CREATED, DECK_CREATE_FAILED, CHANGES_SAVE_FAILED, CHANGES_SAVED } from '@/consts'
 
 export const useDeckController = () => {
   const router = useRouter()
@@ -23,11 +16,11 @@ export const useDeckController = () => {
         await createDeckHandler(data)
         return true
       },
-      { errorMessage: 'Failed to create Deck' }
+      { errorMessage: DECK_CREATE_FAILED }
     )
 
     if (isSuccess) {
-      alert('Created', 'Your Deck was successfully created.')
+      alert('Created', DECK_CREATED)
       router.push('/decks')
     }
     return !!isSuccess
@@ -38,61 +31,14 @@ export const useDeckController = () => {
       async () => {
         return await editDeckHandler(deckId, data)
       },
-      { errorMessage: 'Failed to edit Deck' }
+      { errorMessage: CHANGES_SAVE_FAILED }
     )
 
     if (editedDeck) {
-      alert('Saved', 'The changes were saved')
+      alert('Saved', CHANGES_SAVED)
     }
     return editedDeck
   }
 
-  const copyDeck = async (deckId: string) => {
-    const copiedDeck = await handleAxios(
-      async () => {
-        return await copyDeckHandler(deckId)
-      },
-      { errorMessage: 'Failed to copy Deck' }
-    )
-
-    if (copiedDeck) {
-      alert(
-        'Copied',
-        'The copy was made and all of your study progress was transferred successfully'
-      )
-    }
-    return copiedDeck
-  }
-
-  const followDeck = async (data: ChangeFollowStatusDeckRequest) => {
-    const isSuccess = await handleAxios(
-      async () => {
-        await followDeckHandler(data)
-        return true
-      },
-      { errorMessage: 'Failed to follow Deck' }
-    )
-
-    if (isSuccess) {
-      alert('Followed', 'Now you are following the Deck')
-    }
-    return !!isSuccess
-  }
-
-  const unfollowDeck = async (data: ChangeFollowStatusDeckRequest) => {
-    const isSuccess = await handleAxios(
-      async () => {
-        await unfollowDeckHandler(data)
-        return true
-      },
-      { errorMessage: 'Failed to unfollow Deck' }
-    )
-
-    if (isSuccess) {
-      alert('Unfollowed', 'You are no longer following the Deck')
-    }
-    return !!isSuccess
-  }
-
-  return { failureMessage, isLoading, createDeck, editDeck, copyDeck, followDeck, unfollowDeck }
+  return { failureMessage, isLoading, createDeck, editDeck }
 }

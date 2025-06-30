@@ -1,8 +1,8 @@
+import React from 'react'
+import Link from 'next/link'
+
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-
-import Link from 'next/link'
-import React from 'react'
 
 interface IPublicDeckItem {
   deckId: string
@@ -52,4 +52,4 @@ export const PublicDeckItemSkeleton: React.FC<{ key?: string | number }> = () =>
   )
 }
 
-export default PublicDeckItem
+export default React.memo(PublicDeckItem)

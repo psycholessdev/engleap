@@ -4,7 +4,12 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 import DeckList from '@/components/DeckList'
-import AddButtonGhost from '@/components/AddButtonGhost'
+import AddButtonGhost from '@/components/common/AddButtonGhost'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'My Decks',
+}
 
 export default async function Home() {
   if (!(await getIsAuthed())) {

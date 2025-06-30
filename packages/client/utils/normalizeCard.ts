@@ -1,4 +1,4 @@
-import type { Card, TargetWord } from '@/api'
+import { Card, TargetWord } from '@/types'
 
 const convertRawTargetWords = (rawTargetWords: TargetWord[]): string[] => {
   return rawTargetWords.map(rtw => rtw.word.text)

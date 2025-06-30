@@ -1,8 +1,15 @@
+import type { Metadata } from 'next'
 import React from 'react'
 import { getIsAuthed } from '@/utils'
 import { redirect } from 'next/navigation'
 
 import PublicDeckList from '@/components/PublicDeckList'
+
+export const metadata: Metadata = {
+  title: 'Search Public Decks - choose the topic you like',
+  description:
+    'Browse or study decks created by other users for inspiration or specific themes. Learn only what you find interesting!',
+}
 
 export default async function Home() {
   if (!(await getIsAuthed())) {

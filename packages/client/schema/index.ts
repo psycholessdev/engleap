@@ -1,5 +1,5 @@
 export * from './createDeckFormSchema'
 export * from './createCardFormSchema'
 export * from './addCustomDefinitionSchema'
-export * from './signInSchema'
-export * from './signupSchema'
+export * from './userSignInFormSchema'
+export * from './userSignupFormSchema'

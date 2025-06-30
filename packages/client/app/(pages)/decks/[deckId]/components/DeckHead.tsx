@@ -8,7 +8,7 @@ import UnfollowConfirmDialog from './UnfollowConfirmDialog'
 import CopyDeckConfirmDialog from './CopyDeckConfirmDialog'
 
 import { useRouter } from 'next/navigation'
-import { useDeckController } from '@/hooks'
+import { useDeckActions } from '@/hooks'
 
 interface IDeckHead {
   deckId: string
@@ -17,8 +17,8 @@ interface IDeckHead {
   emoji: string
   followingDefault: boolean
   isPublic: boolean
-  cardsTotal: string
-  usersFollowing: string
+  cardsTotal: string | number
+  usersFollowing: string | number
   showEditButtons: boolean
 }
 
@@ -70,6 +70,31 @@ const DeckActions: React.FC<{
   )
 }
 
+const DeckTitleAndBadges: React.FC<{
+  emoji: string
+  title: string
+  isPublic: boolean
+  cardsTotal: number
+  usersFollowing: number
+}> = ({ emoji, title, isPublic, cardsTotal, usersFollowing }) => {
+  return (
+    <div className="flex flex-col self-start gap-2">
+      <div className="flex items-center gap-1">
+        <h1 className="font-ubuntu lg:text-3xl text-2xl text-white">
+          {emoji} {title}
+        </h1>
+        <Badge variant={isPublic ? 'default' : 'destructive'}>
+          {isPublic ? 'public' : 'private'}
+        </Badge>
+      </div>
+      <div className="flex items-center gap-1">
+        <Badge variant="secondary">{cardsTotal} cards</Badge>
+        <Badge variant="secondary">{usersFollowing} people use it</Badge>
+      </div>
+    </div>
+  )
+}
+
 const DeckHead: React.FC<IDeckHead> = ({
   title,
   description,
@@ -86,7 +111,7 @@ const DeckHead: React.FC<IDeckHead> = ({
   const [unfollowModalOpened, setUnfollowModalOpened] = useState(false)
   const [copyModalOpened, setCopyModalOpened] = useState(false)
   const [following, setFollowing] = useState(followingDefault)
-  const { isLoading, followDeck, unfollowDeck, copyDeck } = useDeckController()
+  const { isLoading, followDeck, unfollowDeck, copyDeck } = useDeckActions()
 
   const handleFollowClick = () => {
     followDeck({ deckId }).then(success => {
@@ -127,20 +152,13 @@ const DeckHead: React.FC<IDeckHead> = ({
         onCopy={() => setCopyModalOpened(true)}
       />
 
-      <div className="flex flex-col self-start gap-2">
-        <div className="flex items-center gap-1">
-          <h1 className="font-ubuntu lg:text-3xl text-2xl text-white">
-            {emoji} {title}
-          </h1>
-          <Badge variant={isPublic ? 'default' : 'destructive'}>
-            {isPublic ? 'public' : 'private'}
-          </Badge>
-        </div>
-        <div className="flex items-center gap-1">
-          <Badge variant="secondary">{cardsTotal} cards</Badge>
-          <Badge variant="secondary">{usersFollowing} people use it</Badge>
-        </div>
-      </div>
+      <DeckTitleAndBadges
+        title={title}
+        emoji={emoji}
+        isPublic={isPublic}
+        usersFollowing={Number(usersFollowing)}
+        cardsTotal={Number(cardsTotal)}
+      />
 
       <DeckEditorModal
         deckId={deckId}

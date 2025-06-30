@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Sentence } from '@/components/StudyCards'
 import DefinitionList from '@/components/DefinitionList'
-import FailureFallback from '@/components/FailureFallback'
+import FetchFailureFallback from '@/components/common/FetchFailureFallback'
 import { Loader2Icon } from 'lucide-react'
 
 import React from 'react'
@@ -46,7 +46,7 @@ const CardPreviewModal: React.FC<ICardPreviewModal> = ({ cardId, opened, onClose
         {card && !isLoading && <DefinitionList cardId={card.id} />}
 
         {/* Fallback UI */}
-        {!isLoading && !card && <FailureFallback onRetry={refetch} />}
+        {!isLoading && !card && <FetchFailureFallback onRetry={refetch} />}
 
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Close</AlertDialogCancel>

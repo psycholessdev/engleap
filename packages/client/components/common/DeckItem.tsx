@@ -26,7 +26,10 @@ const DeckItem: React.FC<IDeckItem> = ({
 }) => {
   return (
     <div className="w-full py-5 px-3 flex items-center justify-between rounded-2xl cursor-pointer last:border-b-transparent hover:bg-el-secondary-container/20">
-      <Link href={`/study?deckId=${deckId}`} className="flex flex-col gap-1 w-full">
+      <Link
+        href={`/study?deckId=${deckId}`}
+        aria-label="Review Deck"
+        className="flex flex-col gap-1 w-full">
         <span className="font-ubuntu text-2xl text-white select-none mr-3">
           {emoji} {title}
         </span>
@@ -42,7 +45,7 @@ const DeckItem: React.FC<IDeckItem> = ({
         </div>
       </Link>
       <Button asChild variant="secondary" size="sm">
-        <Link href={`/decks/${deckId}`}>
+        <Link href={`/decks/${deckId}`} aria-label={editable ? 'Edit Deck' : 'View deck details'}>
           {editable ? (
             <>
               <IconPencil /> Edit
@@ -73,4 +76,4 @@ export const DeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
   )
 }
 
-export default DeckItem
+export default React.memo(DeckItem)

@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import { useAuth } from '@/hooks'
 
-import type { Definition } from '@/api'
+import type { Definition } from '@/types'
 
 interface ISpeakerButton {
   audioUrl?: string
@@ -38,6 +38,7 @@ const SpeakerButton: React.FC<ISpeakerButton> = ({ audioUrl }) => {
       type="button"
       disabled={!audioUrl}
       onClick={handlePlayAudio}
+      aria-label="Play pronunciation"
       className={`p-2.5 rounded-full bg-el-primary text-white hover:bg-el-primary/60 ${
         audioUrl ? 'cursor-pointer' : 'opacity-30 bg-el-primary/60'
       }`}>
@@ -98,7 +99,7 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
                 <IconHelpOctagon />
               </Badge>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent className="z-8600">
               {userId && definition.createdByUserId === userId ? (
                 <span>Written by you</span>
               ) : userId && definition.approved ? (
@@ -131,4 +132,4 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
     </div>
   )
 }
-export default DefinitionCard
+export default React.memo(DefinitionCard)

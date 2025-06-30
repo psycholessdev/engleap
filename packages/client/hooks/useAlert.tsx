@@ -45,5 +45,9 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 }
 
 export const useAlert = () => {
-  return useContext(AlertContext)
+  const context = useContext(AlertContext)
+  if (!context) {
+    throw new Error('useAlert must be used within an AlertProvider')
+  }
+  return context
 }

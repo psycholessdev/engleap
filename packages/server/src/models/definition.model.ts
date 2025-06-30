@@ -44,7 +44,7 @@ export class Definition extends Model {
   labels!: string[]
 
   // divided into syllables
-  // examples: "in-side", "de-sign"
+  // examples: "in*side", "de*sign"
   @Column({ allowNull: false })
   syllabifiedWord!: string
 

@@ -1,14 +1,8 @@
 'use client'
 import React, { createContext, useContext, useMemo, useEffect, useState } from 'react'
 import { useNotifications } from '@/hooks/useNotifications'
-import {
-  userLogOut,
-  userSignIn,
-  userSignUp,
-  getUser,
-  type UserSignInData,
-  type UserSignUpData,
-} from '@/api'
+import { userLogOut, userSignIn, userSignUp, getUser } from '@/api'
+import type { UserSignInFormData, UserSignUpFormData } from '@/types'
 import { useRouter } from 'next/navigation'
 import { useAxiosErrorHandler } from '@/hooks'
 
@@ -18,8 +12,8 @@ type AuthContextType = {
   isLogged: boolean
   userId: null | string
   isLoading: boolean
-  signIn: (data: UserSignInData) => Promise<AuthenticateResult>
-  signUp: (data: UserSignUpData) => Promise<AuthenticateResult>
+  signIn: (data: UserSignInFormData) => Promise<AuthenticateResult>
+  signUp: (data: UserSignUpFormData) => Promise<AuthenticateResult>
   failureMessage: string
   logout: () => Promise<void>
 }
@@ -63,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus()
   }, [])
 
-  const signIn = async (data: UserSignInData) => {
+  const signIn = async (data: UserSignInFormData) => {
     const user = await handleAxios(
       async () => {
         return await userSignIn(data)
@@ -81,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: !!user }
   }
 
-  const signUp = async (data: UserSignUpData) => {
+  const signUp = async (data: UserSignUpFormData) => {
     const user = await handleAxios(
       async () => {
         await userSignUp(data)
@@ -126,7 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       failureMessage,
       logout,
     }),
-    [isLogged, isLoading, failureMessage]
+    [isLogged, userId, isLoading, failureMessage]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
