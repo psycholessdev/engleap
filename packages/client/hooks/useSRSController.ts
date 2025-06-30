@@ -24,8 +24,8 @@ export const useSRSController = (deckId?: string) => {
           setCardSRSPool(cards => [...cards, ...fetchedCards])
         }
 
-        // API has a limit of 20 cards per request
-        // if received less than 20, not further requests required
+        // API has a limit of cards per request
+        // if received less than the limit, not further requests required
         if (fetchedCards.length < SRS_PAGE_SIZE) {
           setAllCardsFetched(true)
         }

@@ -2,7 +2,7 @@ import React from 'react'
 import './globals.css'
 import Header from '@/components/Header'
 import Navbar from '@/components/Navbar'
-import RootElement from '@/components/RootElement'
+import MainElementWrapper from '@/components/MainElementWrapper'
 import AppProviders from '@/components/AppProviders'
 import { Ubuntu } from 'next/font/google'
 
@@ -42,11 +42,11 @@ export default function RootLayout({
         />
 
         <AppProviders>
-          <RootElement>
+          <MainElementWrapper>
             <Header />
             <Navbar />
             <div className="w-[90%] h-full">{children}</div>
-          </RootElement>
+          </MainElementWrapper>
         </AppProviders>
       </body>
     </html>

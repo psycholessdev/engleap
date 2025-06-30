@@ -1,3 +1,9 @@
+import { createDeckFormSchema, editDeckFormSchema } from '@/schema'
+import { z } from 'zod'
+
+export type CreateDeckFormData = z.infer<typeof createDeckFormSchema>
+export type EditDeckFormData = z.infer<typeof editDeckFormSchema>
+
 export interface Deck {
   id: string
   title: string

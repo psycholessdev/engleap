@@ -22,17 +22,93 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import FormSubmitButton from '@/components/common/FormSubmitButton'
+import { Switch } from '@/components/ui/switch'
 import EmojiPicker from '@/components/common/EmojiPicker'
 
-import { editDeckSchema } from '@/schema'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { useForm, type UseFormReturn } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDeckController } from '@/hooks'
 import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
-import { Loader2Icon } from 'lucide-react'
-import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
+import { editDeckFormSchema } from '@/schema'
+import type { EditDeckFormData } from '@/types'
+
+const DeckEditorFormFields: React.FC<{
+  form: UseFormReturn<EditDeckFormData>
+  loading: boolean
+}> = ({ form, loading }) => {
+  return (
+    <div className="grid gap-4">
+      <FormField
+        control={form.control}
+        name="title"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Title</FormLabel>
+            <FormControl>
+              <Input {...field} disabled={loading} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="emoji"
+        render={({ field }) => (
+          <FormItem className="flex flex-col items-start">
+            <FormLabel>Deck Icon</FormLabel>
+            <EmojiPicker
+              pickedEmoji={field.value}
+              onPick={field.onChange}
+              disabled={field.disabled}
+            />
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Most used terms regarding casual US Law"
+                disabled={loading}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="isPublic"
+        render={({ field }) => (
+          <FormItem>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="isPublicSwitch"
+                disabled={field.disabled}
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <Label htmlFor="isPublicSwitch">Public Deck</Label>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  )
+}
 
 interface IDeckEditorModal {
   deckId: string
@@ -55,8 +131,8 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
 }) => {
   const router = useRouter()
   const { failureMessage, isLoading, editDeck } = useDeckController()
-  const form = useForm<z.infer<typeof editDeckSchema>>({
-    resolver: zodResolver(editDeckSchema),
+  const form = useForm<EditDeckFormData>({
+    resolver: zodResolver(editDeckFormSchema),
     defaultValues: {
       title: defaultTitle,
       emoji: defaultEmoji,
@@ -65,7 +141,7 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof editDeckSchema>) => {
+  const onSubmit = async (data: EditDeckFormData) => {
     // requesting after zod validation has passed
     const editedDeck = await editDeck(deckId, data)
     if (editedDeck) {
@@ -79,13 +155,6 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
     }
   }
 
-  const handleSwitchChange = (value: boolean) => {
-    form.setValue('isPublic', value)
-  }
-  const handleEmojiChange = (emoji: string) => {
-    form.setValue('emoji', emoji)
-  }
-
   return (
     <Dialog open={opened}>
       <DialogContent className="sm:max-w-[425px]">
@@ -97,78 +166,8 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
                 Make changes to your Deck here. Click save when you&apos;re done.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isLoading} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="emoji"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start">
-                    <FormLabel>Deck Icon</FormLabel>
-                    <EmojiPicker
-                      pickedEmoji={field.value}
-                      onPick={handleEmojiChange}
-                      disabled={field.disabled}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Most used terms regarding casual US Law"
-                        disabled={isLoading}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="checkbox"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input type="checkbox" hidden {...field} />
-                    </FormControl>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        id="isPublicSwitch"
-                        disabled={field.disabled}
-                        checked={field.value}
-                        defaultChecked={defaultIsPublic}
-                        onCheckedChange={handleSwitchChange}
-                      />
-                      <Label htmlFor="isPublicSwitch">Public Deck</Label>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <DeckEditorFormFields form={form} loading={isLoading} />
 
             {/* General failure */}
             {failureMessage && <FormInputErrorMessage title="Failure" message={failureMessage} />}
@@ -180,14 +179,7 @@ const DeckEditorModal: React.FC<IDeckEditorModal> = ({
                 </Button>
               </DialogClose>
 
-              {isLoading ? (
-                <Button disabled>
-                  <Loader2Icon className="animate-spin" />
-                  Saving
-                </Button>
-              ) : (
-                <Button type="submit">Save changes</Button>
-              )}
+              <FormSubmitButton text="Save changes" loadingText="Saving" loading={isLoading} />
             </DialogFooter>
           </form>
         </Form>

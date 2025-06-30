@@ -181,3 +181,11 @@ body {
 .nav-item.active {
   @apply bg-el-secondary border-el-primary;
 }
+
+.auth-card {
+  @apply w-full max-w-sm;
+}
+
+.form-field {
+  @apply grid gap-2;
+}

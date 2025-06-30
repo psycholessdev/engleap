@@ -1,12 +1,12 @@
 import { $axios } from '@/api/baseApi'
-import { UserSignInData, UserSignUpData, UserSignResponse, GetUserResponse } from '@/types'
+import { UserSignInFormData, UserSignUpFormData, UserSignResponse, GetUserResponse } from '@/types'
 
-export const userSignIn = async (data: UserSignInData): Promise<UserSignResponse> => {
+export const userSignIn = async (data: UserSignInFormData): Promise<UserSignResponse> => {
   const res = await $axios.post('/auth/signin', data)
   return res.data
 }
 
-export const userSignUp = async (data: UserSignUpData): Promise<UserSignResponse> => {
+export const userSignUp = async (data: UserSignUpFormData): Promise<UserSignResponse> => {
   const res = await $axios.post('/auth/signup', data)
   return res.data
 }

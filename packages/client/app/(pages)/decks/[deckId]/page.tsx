@@ -48,7 +48,9 @@ export default async function Home({ params }: { params: Params }) {
         usersFollowing={deck.usersFollowing}
         followingDefault={deck.isUserFollowing}
       />
-      <p className="font-ubuntu my-5 text-white lg:text-lg">{deck.description}</p>
+      <p className="font-ubuntu my-5 text-white lg:text-lg" aria-label="Deck description">
+        {deck.description}
+      </p>
 
       <CardsList
         deckId={deckId}

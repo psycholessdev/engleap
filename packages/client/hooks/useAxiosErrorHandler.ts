@@ -12,7 +12,7 @@ interface HandleAxiosOptions {
   allowParallelLoading?: boolean
 
   // if set to true, loading state will not be affected for this request
-  // Note: request still will be rejected if parallel loading disabled and another request is executing
+  // Note: request still will be rejected if parallel loading is disabled and another request is executing
   ignoreLoading?: boolean
 }
 

@@ -22,4 +22,4 @@ export const createDeckFormSchema = z.object({
   isPublic: z.boolean().default(true),
 })
 
-export const editDeckSchema = createDeckFormSchema.partial()
+export const editDeckFormSchema = createDeckFormSchema.partial()

@@ -203,7 +203,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       <form
         className="flex flex-col gap-6 items-start w-full"
         onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid gap-2">
+        <div className="form-field">
           <FormInputErrorMessage message={failureMessage} />
 
           <h2 className="font-ubuntu text-lg text-white">Sentence containing the target word(s)</h2>
@@ -227,7 +227,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
         </div>
 
         {form.getValues().sentence && (
-          <div className="grid gap-2">
+          <div className="form-field">
             <h2 className="font-ubuntu text-lg text-white">🧩 Select the target word(s)</h2>
             <div className="flex flex-wrap gap-1">
               <TargetWordsPicker
