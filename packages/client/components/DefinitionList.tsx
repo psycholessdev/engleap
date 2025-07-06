@@ -68,6 +68,16 @@ const DefinitionList: React.FC<IDefinitionList> = ({
             onDelete={onDelete}
           />
         ))}
+
+      {!isFetching && definitions && definitions.length === 0 && (
+        <FetchFailureFallback
+          className="col-span-full"
+          hideButton
+          icon="/icons/book-with-skull.png"
+          title="Nothing here"
+          text="No definitions were found in the dictionary, and no substitutes have been provided. If you own this deck, please consider adding custom definitions to help yourself and others."
+        />
+      )}
       {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && <DefinitionsListSkeleton />}
       <div ref={ref} />

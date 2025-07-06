@@ -39,6 +39,15 @@ const DeckList = () => {
             editable={deck.creatorId === userId}
           />
         ))}
+
+      {!isFetching && decks && decks.length === 0 && (
+        <FetchFailureFallback
+          hideButton
+          icon="/icons/empty-cardboard-box.png"
+          title="Nothing here"
+          text="Create your first Deck or try to go over the Public Decks list"
+        />
+      )}
       {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
