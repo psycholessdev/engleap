@@ -1,15 +1,11 @@
 import express from 'express'
 import { validateRequestData } from '../middlewares'
 import { credentialsAuthSchema, createAccountSchema } from '../schemas'
-import {
-  credentialsAuthController,
-  createAccountController,
-  logoutController,
-} from '../controllers'
+import { authenticateController, createAccountController, logoutController } from '../controllers'
 
 const router = express.Router()
 
-router.post('/signin', validateRequestData(credentialsAuthSchema), credentialsAuthController)
+router.post('/signin', validateRequestData(credentialsAuthSchema), authenticateController)
 
 router.post('/signup', validateRequestData(createAccountSchema), createAccountController)
 

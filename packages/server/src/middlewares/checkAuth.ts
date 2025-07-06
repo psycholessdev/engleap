@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { getUserByAuth } from '../services'
 import { User } from '../models'
-import { getErrorObject, handleError } from '../utils'
+import { getErrorObject, handleError, verifyJwt } from '../utils'
 declare module 'express' {
   interface Request {
     authedUser?: User
@@ -10,19 +9,9 @@ declare module 'express' {
 
 export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // authHash cookie => ${user_id}_${passwordHash}
-    const authHash = (req.cookies?.authHash ?? '').toString().trim()
-    const parsedCookie = authHash.split('_')
-    if (authHash && parsedCookie.length == 2) {
-      try {
-        const user = await getUserByAuth(parsedCookie[0], parsedCookie[1])
-        if (user) {
-          req.authedUser = user
-        }
-      } catch (error) {
-        console.error(error)
-        return res.status(500).json(getErrorObject('Error while fetching the user'))
-      }
+    const authJwt = (req.cookies?.authJwt ?? '').toString()
+    if (authJwt) {
+      req.authedUser = await verifyJwt(authJwt)
     }
 
     if (req.path.startsWith('/api/auth') || req.authedUser) {
