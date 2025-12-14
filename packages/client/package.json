@@ -33,7 +33,7 @@
     "hyphen": "^1.10.6",
     "lucide-react": "^0.511.0",
     "motion": "^12.15.0",
-    "next": "15.3.2",
+    "next": "15.3.8",
     "nlp-syllables-async": "^0.1.2",
     "radix-ui": "^1.4.2",
     "react": "^19.0.0",
