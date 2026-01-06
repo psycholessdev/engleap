@@ -25,7 +25,7 @@ const FetchFailureFallback: React.FC<IFetchFailureFallback> = ({
 }) => {
   return (
     <div
-      className={`w-full py-6 px-3 border-1 border-el-outline rounded-2xl flex flex-col justify-center items-center gap-3 ${className}`}>
+      className={`w-full max-w-150 py-6 px-3 m-auto border-1 border-el-outline rounded-2xl flex flex-col justify-center items-center gap-3 ${className}`}>
       <div className="flex flex-col items-center gap-2">
         <Image
           src={icon}
@@ -35,7 +35,7 @@ const FetchFailureFallback: React.FC<IFetchFailureFallback> = ({
           className="select-none drag-none"
         />
         <h2 className="font-ubuntu text-xl text-white">{title}</h2>
-        <span className="text-el-outline-variant">{text}</span>
+        <span className="text-el-outline-variant text-center">{text}</span>
       </div>
       {!hideButton && (
         <Button onClick={onRetry} variant="outline">
