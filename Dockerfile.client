@@ -1,14 +1,13 @@
 ARG NODE_VERSION=20
-ARG CLIENT_PORT=${CLIENT_PORT:-3000}
+ARG CLIENT_PORT=3000
 
-# I use YARN_IGNORE_SCRIPTS to disable lefthook
-# Because it causes build to fail with node:$NODE_VERSION-bookworm
-
-FROM node:$NODE_VERSION-bookworm AS base
-
+FROM node:${NODE_VERSION}-bookworm AS base
 WORKDIR /app
 
 FROM base AS builder
+
+# I use YARN_IGNORE_SCRIPTS to disable lefthook
+# Because it causes build to fail with node:$NODE_VERSION-bookworm
 
 COPY package.json yarn.lock ./
 RUN YARN_IGNORE_SCRIPTS=1 yarn install --frozen-lockfile
@@ -16,15 +15,27 @@ RUN YARN_IGNORE_SCRIPTS=1 yarn install --frozen-lockfile
 COPY . .
 
 RUN yarn lerna bootstrap
-RUN rm -rf /app/packages/client/dist/ && yarn build --scope=client
 
+# Build only the client (must have output: 'standalone')
+RUN rm -rf /app/packages/client/.next && \
+    yarn build --scope=client
 
-FROM node:$NODE_VERSION-buster-slim AS production
+FROM node:${NODE_VERSION}-buster-slim AS runner
+
 WORKDIR /app
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=${CLIENT_PORT}
 
-COPY --from=builder /app/packages/client /app/
-COPY --from=builder /app/packages/client/package.json /app/package.json
-RUN YARN_IGNORE_SCRIPTS=1 yarn install --production=true
+# Copy standalone output
+COPY --from=builder /app/packages/client/.next/standalone ./
 
-EXPOSE $CLIENT_PORT
-CMD [ "yarn", "start" ]
+# Static assets must stay at root
+COPY --from=builder /app/packages/client/.next/static ./packages/client/.next/static
+COPY --from=builder /app/packages/client/public ./packages/client/public
+
+# Move into the actual Next.js app
+WORKDIR /app/packages/client
+
+EXPOSE ${CLIENT_PORT}
+CMD ["node", "server.js"]
