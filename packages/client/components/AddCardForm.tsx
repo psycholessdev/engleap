@@ -1,19 +1,17 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+import React, { useEffect, useRef } from 'react'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { IconBulb } from '@tabler/icons-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import DefinitionEditorModal from '@/components/DefinitionEditorModal'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import DefinitionList from '@/components/DefinitionList'
 import AddButtonGhost from '@/components/common/AddButtonGhost'
-import TargetWordsPicker from '@/components/TargetWordsPicker'
+import CardFormFields from '@/components/CardFormFields'
+import TargetWordsSection from '@/components/TargetWordsSection'
 
-import { useDebouncedCallback } from 'use-debounce'
-import { generateTargetWords, normalizeCard, deepCompare } from '@/utils'
+import { useTargetWordsManagement } from '@/hooks'
+import { normalizeCard } from '@/utils'
 import { useForm } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -34,16 +32,23 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
   const modalOpenBtnRef = useRef<HTMLButtonElement>(null)
   const { isLoading, failureMessage, createCard, editCard, deleteCustomDefinition } =
     useCardController()
-  const [targetWordsToSelect, setTargetWordsToSelect] = useState<string[]>([])
-  const [selectedTargetWords, setSelectedTargetWords] = useState<string[]>(
-    normalizedCardToEdit?.targetWords || []
-  )
   const form = useForm({
     resolver: zodResolver(createCardFormSchema),
     defaultValues: {
       sentence: cardToEdit?.sentence || '',
       targetWords: normalizedCardToEdit?.targetWords || [],
     },
+  })
+
+  const {
+    targetWordsToSelect,
+    selectedTargetWords,
+    handleTargetWordClick,
+    initializeForEditing,
+    reset: resetTargetWords,
+  } = useTargetWordsManagement({
+    form,
+    initialTargetWords: normalizedCardToEdit?.targetWords || [],
   })
 
   const onSubmit = async (data: z.infer<typeof createCardFormSchema>) => {
@@ -82,8 +87,7 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       const result = await createCard(deckId, requestData)
 
       if (result) {
-        setSelectedTargetWords([])
-        setTargetWordsToSelect([])
+        resetTargetWords()
         form.reset()
 
         if (result.notFoundWords.length > 0) {
@@ -98,70 +102,13 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
     }
   }
 
-  const updateTargetWords = useDebouncedCallback((newSentence: string) => {
-    setTargetWordsToSelect(generateTargetWords(newSentence.trim()))
-
-    // if the selected word was deleted, the selected word should be cleared as well
-    let correctedSelectedTargetWords = selectedTargetWords
-    for (const stw of selectedTargetWords) {
-      if (!targetWordsToSelect.includes(stw)) {
-        correctedSelectedTargetWords = correctedSelectedTargetWords.filter(w => w !== stw)
-      }
-    }
-    setSelectedTargetWords(correctedSelectedTargetWords)
-    if (deepCompare(form.formState.targetWords, correctedSelectedTargetWords)) {
-      form.setValue('targetWords', correctedSelectedTargetWords)
-    }
-  }, 300)
-
-  const handleTargetWordClick = (word: string) => {
-    if (!selectedTargetWords.includes(word)) {
-      const stw = [...selectedTargetWords, word]
-      setSelectedTargetWords(stw)
-      form.setValue('targetWords', stw)
-    } else {
-      setSelectedTargetWords(stw => {
-        const mstw = stw.filter(stw => stw !== word)
-        form.setValue('targetWords', mstw)
-        return mstw
-      })
-    }
-  }
-
-  useEffect(() => {
-    const callback = form.subscribe({
-      formState: {
-        values: true,
-        touchedFields: true,
-      },
-      callback: ({ values }) => {
-        updateTargetWords(values.sentence)
-      },
-    })
-
-    return () => callback()
-  }, [form, form.subscribe, updateTargetWords])
-
   useEffect(() => {
     if (cardToEdit) {
       const normalizedCardToEdit = normalizeCard(cardToEdit)
-      const targetWordsToSelect = generateTargetWords(normalizedCardToEdit.sentence.trim())
-      const selectedTargetWords = normalizedCardToEdit.targetWords
-
-      const selectableTargetWords = selectedTargetWords.filter(stw =>
-        targetWordsToSelect.includes(stw)
-      )
-      const userSpecifiedTargetWords = selectedTargetWords.filter(
-        stw => !targetWordsToSelect.includes(stw)
-      )
-
+      initializeForEditing(normalizedCardToEdit.sentence, normalizedCardToEdit.targetWords)
       form.setValue('sentence', normalizedCardToEdit.sentence.trim())
-      setTargetWordsToSelect(targetWordsToSelect)
-      setSelectedTargetWords(selectableTargetWords)
-      form.setValue('targetWords', selectableTargetWords)
-      form.setValue('userSpecifiedTargetWords', userSpecifiedTargetWords.join(', '))
     }
-  }, [form, cardToEdit])
+  }, [form, cardToEdit, initializeForEditing])
 
   const allTargetWords: string[] = [
     ...selectedTargetWords,
@@ -178,58 +125,16 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       <form
         className="flex flex-col gap-6 items-start w-full"
         onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="form-field">
-          <FormInputErrorMessage message={failureMessage} />
-
-          <h2 className="font-ubuntu text-lg text-white">Sentence containing the target word(s)</h2>
-          <Textarea
-            name="sentence"
-            placeholder="It's fascinating how she always manages to break the ice with strangers so easily"
-            className="w-full"
-            disabled={isLoading}
-            {...form.register('sentence')}
-          />
-          <FormInputErrorMessage message={form.formState.errors.sentence} />
-          {!form.getValues().sentence && (
-            <Alert>
-              <IconBulb />
-              <AlertTitle>
-                Try to find elaborate sentences. That way your brain will automatically memorize not
-                only the meaning, but the use cases as well.
-              </AlertTitle>
-            </Alert>
-          )}
-        </div>
+        <CardFormFields form={form} isLoading={isLoading} failureMessage={failureMessage} />
 
         {form.getValues().sentence && (
-          <div className="form-field">
-            <h2 className="font-ubuntu text-lg text-white">🧩 Select the target word(s)</h2>
-            <div className="flex flex-wrap gap-1">
-              <TargetWordsPicker
-                disabled={isLoading}
-                selectedTargetWords={selectedTargetWords}
-                targetWordsToSelect={targetWordsToSelect}
-                onTargetWordClick={handleTargetWordClick}
-              />
-            </div>
-            <h2 className="font-ubuntu text-lg text-white">
-              Or type them manually if we didn’t detect them correctly
-            </h2>
-            <Input
-              type="text"
-              name="userSpecifiedTargetWords"
-              placeholder="fascinated, break the ice"
-              className="w-full"
-              disabled={isLoading}
-              {...form.register('userSpecifiedTargetWords')}
-            />
-            <p className="text-muted-foreground text-sm">
-              Separate multiple words with commas. This field is very useful for Phrasal verbs or
-              Idioms, like &apos;Spill the beans&apos;, &apos;Look after&apos; or &apos;Plot
-              armor&apos;.
-            </p>
-            <FormInputErrorMessage message={form.formState.errors.userSpecifiedTargetWords} />
-          </div>
+          <TargetWordsSection
+            form={form}
+            isLoading={isLoading}
+            targetWordsToSelect={targetWordsToSelect}
+            selectedTargetWords={selectedTargetWords}
+            onTargetWordClick={handleTargetWordClick}
+          />
         )}
 
         <div className="flex flex-col items-start gap-2 w-full">
