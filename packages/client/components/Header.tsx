@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import AuthButton from '@/components/common/AuthButton'
+import { AuthButton } from '@/components/common'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -31,4 +31,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export { Header }

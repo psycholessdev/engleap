@@ -1,8 +1,9 @@
 import { getIsAuthed } from '@/utils'
 import { notFound, redirect } from 'next/navigation'
 import { getDeck } from '@/serverApi'
-import AddCardForm from '@/components/AddCardForm'
 import type { Metadata } from 'next'
+
+import { AddCardForm } from '@/components/AddCardForm'
 
 export const metadata: Metadata = {
   title: 'Create Card',

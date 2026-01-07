@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Toggle } from '@/components/ui/toggle'
+import { Toggle } from '@/components/ui'
 
 interface TargetWordsPickerProps {
   disabled: boolean
@@ -32,4 +32,4 @@ const TargetWordsPicker: React.FC<TargetWordsPickerProps> = ({
   )
 }
 
-export default TargetWordsPicker
+export { TargetWordsPicker }

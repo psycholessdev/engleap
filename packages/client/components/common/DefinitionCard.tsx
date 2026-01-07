@@ -1,10 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
+import { Badge, Skeleton, Button, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui'
 import { IconVolume, IconHelpOctagon } from '@tabler/icons-react'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 import { useAuth } from '@/hooks'
 
@@ -54,7 +51,7 @@ interface IDefinitionCard {
   onDelete?: (defId: string) => void
 }
 
-export const DefinitionCardSkeleton = () => {
+const DefinitionCardSkeleton = () => {
   return (
     <div className="w-full flex flex-col gap-2">
       <div className="flex items-center gap-2">
@@ -132,4 +129,7 @@ const DefinitionCard: React.FC<IDefinitionCard> = ({
     </div>
   )
 }
-export default React.memo(DefinitionCard)
+
+const DefinitionCardOptimized = React.memo(DefinitionCard)
+
+export { DefinitionCardOptimized as DefinitionCard, DefinitionCardSkeleton }

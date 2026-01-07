@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -79,4 +79,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export { Navbar }

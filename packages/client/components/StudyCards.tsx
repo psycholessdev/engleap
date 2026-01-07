@@ -1,14 +1,14 @@
 'use client'
 import React, { useState } from 'react'
-import DefinitionList from '@/components/DefinitionList'
-import { Button } from '@/components/ui/button'
+import { DefinitionList } from './DefinitionList'
+import { Button } from '@/components/ui'
 import { IconEye } from '@tabler/icons-react'
 import { Loader2Icon } from 'lucide-react'
 
 import { dissectSentenceByTargetWords } from '@/utils'
 import { useSRSController } from '@/hooks'
 
-export const Sentence: React.FC<{
+const Sentence: React.FC<{
   text: string
   targetWords: string[]
   showBg?: boolean
@@ -130,4 +130,4 @@ const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
     </div>
   )
 }
-export default StudyCards
+export { StudyCards, Sentence }

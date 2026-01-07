@@ -1,9 +1,9 @@
 import React from 'react'
 import './globals.css'
-import Header from '@/components/Header'
-import Navbar from '@/components/Navbar'
-import MainElementWrapper from '@/components/MainElementWrapper'
-import AppProviders from '@/components/AppProviders'
+import { Header } from '@/components/Header'
+import { Navbar } from '@/components/Navbar'
+import { MainElementWrapper } from '@/components/MainElementWrapper'
+import { AppProviders } from '@/components/AppProviders'
 import { Ubuntu } from 'next/font/google'
 
 import type { Metadata, Viewport } from 'next'

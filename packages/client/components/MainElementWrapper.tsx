@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/hooks'
 
 const MainElementWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLogged } = useAuth()
@@ -10,4 +10,4 @@ const MainElementWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
     </main>
   )
 }
-export default MainElementWrapper
+export { MainElementWrapper }

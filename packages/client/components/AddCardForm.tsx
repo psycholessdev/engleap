@@ -1,14 +1,12 @@
 'use client'
 import React, { useEffect, useRef } from 'react'
-import { Alert, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertTitle, Badge, Button } from '@/components/ui'
+import { DefinitionEditorModal } from './DefinitionEditorModal'
+import { DefinitionList } from './DefinitionList'
+import { AddButtonGhost } from './common/AddButtonGhost'
+import { CardFormFields } from './CardFormFields'
+import { TargetWordsSection } from './TargetWordsSection'
 import { IconBulb } from '@tabler/icons-react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import DefinitionEditorModal from '@/components/DefinitionEditorModal'
-import DefinitionList from '@/components/DefinitionList'
-import AddButtonGhost from '@/components/common/AddButtonGhost'
-import CardFormFields from '@/components/CardFormFields'
-import TargetWordsSection from '@/components/TargetWordsSection'
 
 import { useTargetWordsManagement } from '@/hooks'
 import { normalizeCard } from '@/utils'
@@ -192,4 +190,4 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
     </div>
   )
 }
-export default AddCardForm
+export { AddCardForm }

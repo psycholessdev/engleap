@@ -6,10 +6,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Sentence } from '@/components/StudyCards'
-import DefinitionList from '@/components/DefinitionList'
-import FetchFailureFallback from '@/components/common/FetchFailureFallback'
+} from '@/components/ui'
+import { Sentence } from './StudyCards'
+import { DefinitionList } from './DefinitionList'
+import { FetchFailureFallback } from '@/components/common'
 import { Loader2Icon } from 'lucide-react'
 
 import React from 'react'
@@ -55,4 +55,4 @@ const CardPreviewModal: React.FC<ICardPreviewModal> = ({ cardId, opened, onClose
     </AlertDialog>
   )
 }
-export default CardPreviewModal
+export { CardPreviewModal }

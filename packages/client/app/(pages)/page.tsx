@@ -1,12 +1,12 @@
-import { Button } from '@/components/ui/button'
 import TipItem from '@/app/(pages)/components/TipItem'
-import { Badge } from '@/components/ui/badge'
 import {
+  Button,
+  Badge,
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
+} from '@/components/ui'
 
 import Image from 'next/image'
 import Link from 'next/link'

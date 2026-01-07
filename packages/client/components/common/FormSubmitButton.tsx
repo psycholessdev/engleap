@@ -1,6 +1,6 @@
 import React from 'react'
-import LoadingButton from '@/components/common/LoadingButton'
-import { Button } from '@/components/ui/button'
+import { LoadingButton } from './LoadingButton'
+import { Button } from '@/components/ui'
 
 const FormSubmitButton: React.FC<{
   loading: boolean
@@ -16,4 +16,4 @@ const FormSubmitButton: React.FC<{
     </Button>
   )
 }
-export default FormSubmitButton
+export { FormSubmitButton }

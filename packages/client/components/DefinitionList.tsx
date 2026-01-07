@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import DefinitionCard, { DefinitionCardSkeleton } from '@/components/common/DefinitionCard'
-import FetchFailureFallback from '@/components/common/FetchFailureFallback'
+import { DefinitionCard, DefinitionCardSkeleton, FetchFailureFallback } from '@/components/common'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
@@ -85,4 +84,4 @@ const DefinitionList: React.FC<IDefinitionList> = ({
   )
 }
 
-export default DefinitionList
+export { DefinitionList }

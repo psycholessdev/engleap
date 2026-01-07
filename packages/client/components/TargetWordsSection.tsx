@@ -1,11 +1,12 @@
 'use client'
 import React from 'react'
-import { Input } from '@/components/ui/input'
+import { TargetWordsPicker } from './TargetWordsPicker'
+import { FormInputErrorMessage } from '@/components/common'
+import { Input } from '@/components/ui'
+
 import { UseFormReturn } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
 import { z } from 'zod'
-import TargetWordsPicker from '@/components/TargetWordsPicker'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 
 interface TargetWordsSectionProps {
   form: UseFormReturn<z.infer<typeof createCardFormSchema>>
@@ -53,4 +54,4 @@ const TargetWordsSection: React.FC<TargetWordsSectionProps> = ({
   )
 }
 
-export default TargetWordsSection
+export { TargetWordsSection }

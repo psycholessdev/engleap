@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import StudyCards from '@/components/StudyCards'
 import { getIsAuthed } from '@/utils'
 import { redirect, notFound } from 'next/navigation'
+
+import { StudyCards } from '@/components/StudyCards'
 
 import { getDeck } from '@/serverApi'
 

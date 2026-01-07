@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 
+import { FormInputErrorMessage, AddButtonGhost } from '@/components/common'
 import {
   Dialog,
   DialogClose,
@@ -10,23 +11,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Button } from '@/components/ui/button'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
-import AddButtonGhost from '@/components/common/AddButtonGhost'
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Badge,
+  Input,
+  Textarea,
+  Label,
+  Checkbox,
+  Button,
+} from '@/components/ui'
 import { Loader2Icon } from 'lucide-react'
 import { AlertCircleIcon } from 'lucide-react'
 
@@ -310,4 +309,4 @@ const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
     </Dialog>
   )
 }
-export default DefinitionEditorModal
+export { DefinitionEditorModal }

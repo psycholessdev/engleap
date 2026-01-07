@@ -2,7 +2,7 @@ import React from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
 import { IconExclamationCircle } from '@tabler/icons-react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui'
 
 interface IFormInputError {
   title?: string
@@ -37,4 +37,4 @@ const FormInputErrorMessage: React.FC<IFormInputError> = ({
     </AnimatePresence>
   )
 }
-export default FormInputErrorMessage
+export { FormInputErrorMessage }

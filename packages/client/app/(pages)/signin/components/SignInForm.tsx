@@ -1,18 +1,17 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import FormSubmitButton from '@/components/common/FormSubmitButton'
 import {
+  Button,
   Card,
   CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
+  Input,
+  Label,
+} from '@/components/ui'
+import { FormSubmitButton, FormInputErrorMessage } from '@/components/common'
 import Image from 'next/image'
 import Link from 'next/link'
 

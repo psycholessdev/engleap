@@ -1,12 +1,12 @@
 'use client'
 import React from 'react'
-import { Textarea } from '@/components/ui/textarea'
-import { Alert, AlertTitle } from '@/components/ui/alert'
+import { FormInputErrorMessage } from '@/components/common'
+import { Textarea, Alert, AlertTitle } from '@/components/ui'
 import { IconBulb } from '@tabler/icons-react'
+
+import { z } from 'zod'
 import { UseFormReturn } from 'react-hook-form'
 import { createCardFormSchema } from '@/schema'
-import { z } from 'zod'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 
 interface CardFormFieldsProps {
   form: UseFormReturn<z.infer<typeof createCardFormSchema>>
@@ -41,4 +41,4 @@ const CardFormFields: React.FC<CardFormFieldsProps> = ({ form, isLoading, failur
   )
 }
 
-export default CardFormFields
+export { CardFormFields }

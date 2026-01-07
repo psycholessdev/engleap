@@ -1,8 +1,9 @@
 import { getIsAuthed } from '@/utils'
 import { notFound, redirect } from 'next/navigation'
 import { getCard } from '@/serverApi'
-import AddCardForm from '@/components/AddCardForm'
 import type { Metadata } from 'next'
+
+import { AddCardForm } from '@/components/AddCardForm'
 
 type Params = Promise<{ deckId: string; cardId: string }>
 

@@ -24,4 +24,4 @@ const AddButtonGhost: React.FC<IAddCardButton> = ({ onClick, text, disabled, hid
     </button>
   )
 }
-export default AddButtonGhost
+export { AddButtonGhost }

@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { IconReload } from '@tabler/icons-react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 
 interface IFetchFailureFallback {
   className?: string
@@ -45,4 +45,4 @@ const FetchFailureFallback: React.FC<IFetchFailureFallback> = ({
     </div>
   )
 }
-export default FetchFailureFallback
+export { FetchFailureFallback }
