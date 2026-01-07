@@ -5,12 +5,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { IconBulb } from '@tabler/icons-react'
 import { Badge } from '@/components/ui/badge'
-import { Toggle } from '@/components/ui/toggle'
 import { Button } from '@/components/ui/button'
 import DefinitionEditorModal from '@/components/DefinitionEditorModal'
 import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import DefinitionList from '@/components/DefinitionList'
 import AddButtonGhost from '@/components/common/AddButtonGhost'
+import TargetWordsPicker from '@/components/TargetWordsPicker'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { generateTargetWords, normalizeCard, deepCompare } from '@/utils'
@@ -21,28 +21,7 @@ import { useCardController, useAlert } from '@/hooks'
 import type { Card, CreateCardRequest, EditCardRequest } from '@/types'
 import { z } from 'zod'
 
-const TargetWordsPicker: React.FC<{
-  disabled: boolean
-  targetWordsToSelect: string[]
-  selectedTargetWords: string[]
-  onTargetWordClick: (word: string) => void
-}> = ({ targetWordsToSelect, selectedTargetWords, onTargetWordClick, disabled }) => {
-  return (
-    <>
-      {targetWordsToSelect.map((w, i) => (
-        <Toggle
-          pressed={selectedTargetWords.includes(w)}
-          onPressedChange={() => onTargetWordClick(w)}
-          variant="outline"
-          className="cursor-pointer"
-          key={`${w}-${i}`}
-          disabled={disabled}>
-          {w}
-        </Toggle>
-      ))}
-    </>
-  )
-}
+import { AUTO_DEFS_NOT_FOUND, AUTO_DEFS_NOT_FOUND_SUGGESTION } from '@/consts'
 
 interface IAddCardForm {
   deckId: string
@@ -89,12 +68,8 @@ const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
       const editingDetails = await editCard(cardToEdit.id, requestData)
 
       if (editingDetails && editingDetails.notFoundWords.length > 0) {
-        alert(
-          'Could not find Definitions',
-          `Your changes were saved. However, we could not find definitions for ${editingDetails.notFoundWords.join(
-            ', '
-          )}. Consider adding your own definitions.`
-        )
+        const failedDefList = editingDetails.notFoundWords.join(', ')
+        alert(AUTO_DEFS_NOT_FOUND, AUTO_DEFS_NOT_FOUND_SUGGESTION.replace('{0}', failedDefList))
       }
     } else {
       // creating mode
