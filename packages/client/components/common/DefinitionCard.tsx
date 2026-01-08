@@ -7,11 +7,11 @@ import { useAuth } from '@/hooks'
 
 import type { Definition } from '@/types'
 
-interface ISpeakerButton {
+interface SpeakerButtonProps {
   audioUrl?: string
 }
 
-const SpeakerButton: React.FC<ISpeakerButton> = ({ audioUrl }) => {
+const SpeakerButton: React.FC<SpeakerButtonProps> = ({ audioUrl }) => {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
 
   const handlePlayAudio = () => {
@@ -44,7 +44,7 @@ const SpeakerButton: React.FC<ISpeakerButton> = ({ audioUrl }) => {
   )
 }
 
-interface IDefinitionCard {
+interface DefinitionCardProps {
   disabled?: boolean
   definition: Definition
   showButtons?: boolean
@@ -65,7 +65,7 @@ const DefinitionCardSkeleton = () => {
   )
 }
 
-const DefinitionCard: React.FC<IDefinitionCard> = ({
+const DefinitionCard: React.FC<DefinitionCardProps> = ({
   definition,
   disabled = false,
   showButtons = false,

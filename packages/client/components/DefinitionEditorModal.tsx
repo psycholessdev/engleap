@@ -106,14 +106,14 @@ const TargetWordSelector: React.FC<{
   )
 }
 
-interface IDefinitionEditorModal {
+interface DefinitionEditorModalProps {
   cardId: string
   sentence: string
   selectedTargetWords: string[]
   openBtnRef: React.Ref<HTMLButtonElement>
 }
 
-const DefinitionEditorModal: React.FC<IDefinitionEditorModal> = ({
+const DefinitionEditorModal: React.FC<DefinitionEditorModalProps> = ({
   cardId,
   sentence,
   selectedTargetWords,

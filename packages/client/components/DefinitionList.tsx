@@ -20,14 +20,14 @@ const DefinitionsListSkeleton = () => {
   )
 }
 
-interface IDefinitionList {
+interface DefinitionListProps {
   cardId: string
   disabled?: boolean
   showButtons?: boolean
   onDelete?: (defId: string) => void
 }
 
-const DefinitionList: React.FC<IDefinitionList> = ({
+const DefinitionList: React.FC<DefinitionListProps> = ({
   cardId,
   disabled = false,
   showButtons = false,

@@ -84,11 +84,11 @@ const StudyCardsLoading = () => {
   )
 }
 
-interface IStudyCards {
+interface StudyCardsProps {
   deckId?: string
 }
 
-const StudyCards: React.FC<IStudyCards> = ({ deckId }) => {
+const StudyCards: React.FC<StudyCardsProps> = ({ deckId }) => {
   const { cardSRSPool, finishCard, allCardsFetched } = useSRSController(deckId)
   const [revealed, setRevealed] = useState(false)
 

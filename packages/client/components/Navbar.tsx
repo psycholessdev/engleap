@@ -9,13 +9,13 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from '@/hooks'
 import { AnimatePresence, motion } from 'motion/react'
 
-interface INavItem {
+interface NavItemProps {
   icon: string
   link: string
   currentPath: string
   title: string
 }
-const NavItemRaw: React.FC<INavItem> = ({ icon, link, currentPath, title }) => {
+const NavItemRaw: React.FC<NavItemProps> = ({ icon, link, currentPath, title }) => {
   return (
     <Tooltip disableHoverableContent>
       <TooltipTrigger asChild>

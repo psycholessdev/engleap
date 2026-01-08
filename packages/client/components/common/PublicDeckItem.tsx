@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { Badge, Skeleton } from '@/components/ui'
 
-interface IPublicDeckItem {
+interface PublicDeckItemProps {
   deckId: string
   title: string
   description: string
@@ -12,7 +12,7 @@ interface IPublicDeckItem {
   followersCount: number
 }
 
-const PublicDeckItem: React.FC<IPublicDeckItem> = ({
+const PublicDeckItem: React.FC<PublicDeckItemProps> = ({
   deckId,
   title,
   description,

@@ -1,4 +1,4 @@
-import { IDictionaryService } from './baseDictionaryService'
+import { DictionaryService } from './baseDictionaryService'
 import {
   DictionaryServiceResult,
   DefinitionDTO,
@@ -8,7 +8,7 @@ import {
 
 const API_KEY = process.env.MERRIAM_WEBSTER_INTERMEDIATE_DICTIONARY_API_KEY
 
-export class MerriamWebsterIntermediateService implements IDictionaryService {
+export class MerriamWebsterIntermediateService implements DictionaryService {
   readonly sourceName = 'merriam-webster-intermediate'
   private readonly apiKey: string
 

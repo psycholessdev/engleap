@@ -19,12 +19,12 @@ import { z } from 'zod'
 
 import { AUTO_DEFS_NOT_FOUND, AUTO_DEFS_NOT_FOUND_SUGGESTION } from '@/consts'
 
-interface IAddCardForm {
+interface AddCardFormProps {
   deckId: string
   cardToEdit?: Card // if specified, editing mode is enabled
 }
 
-const AddCardForm: React.FC<IAddCardForm> = ({ deckId, cardToEdit }) => {
+const AddCardForm: React.FC<AddCardFormProps> = ({ deckId, cardToEdit }) => {
   const alert = useAlert()
   const normalizedCardToEdit = cardToEdit ? normalizeCard(cardToEdit) : null
   const modalOpenBtnRef = useRef<HTMLButtonElement>(null)

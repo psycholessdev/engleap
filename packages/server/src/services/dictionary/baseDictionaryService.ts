@@ -1,6 +1,6 @@
 import type { DictionaryServiceResult } from '../../types'
 
-export interface IDictionaryService {
+export interface DictionaryService {
   /**
    * A unique name or key for this source, e.g. "merriam-webster-intermediate"
    * Used for logging or storing sourceName in DB.
