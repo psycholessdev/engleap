@@ -15,7 +15,7 @@ export const upsertWordsAndDefinitions = async (
       existingWords: [],
       insertedWords: [],
       allWords: [],
-      insertedDefinitions: [],
+      allDefinitions: [],
     }
   }
 
@@ -49,6 +49,7 @@ export const upsertWordsAndDefinitions = async (
 
   // Builds payload for Definition rows
   const definitionsToInsert: Record<string, unknown>[] = []
+  const existingDefinitions: Definition[] = []
 
   for (const def of definitions) {
     const wordText = def.word
@@ -65,10 +66,11 @@ export const upsertWordsAndDefinitions = async (
         partOfSpeech: def.partOfSpeech,
         createdByUserId,
       },
-      attributes: ['id'],
+      attributes: ['id', 'wordId'],
       transaction,
     })
     if (fetchedDefinition) {
+      existingDefinitions.push(fetchedDefinition)
       continue
     }
 
@@ -93,10 +95,12 @@ export const upsertWordsAndDefinitions = async (
       ? await Definition.bulkCreate(definitionsToInsert, { transaction })
       : []
 
+  const allDefinitions = [...existingDefinitions, ...insertedDefinitions]
+
   return {
     existingWords,
     insertedWords,
     allWords,
-    insertedDefinitions,
+    allDefinitions,
   }
 }

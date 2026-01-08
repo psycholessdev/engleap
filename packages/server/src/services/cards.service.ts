@@ -215,7 +215,7 @@ export const linkDefinitionsToCard = async (
 
   // For each user definition, find the right CardTargetWord row,
   // then link them if they weren't before
-  for (const def of userPersisted.insertedDefinitions) {
+  for (const def of userPersisted.allDefinitions) {
     const ctw = cardTargetWordRows.find(r => r.wordId == def.wordId)
     if (ctw) {
       await CardDefinition.findOrCreate({
