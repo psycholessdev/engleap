@@ -54,6 +54,6 @@ export const ensureWordsInDictionary = async (
     insertedWords: persistResult.insertedWords,
     existingWords,
     notFoundWords,
-    insertedDefinitions: persistResult.insertedDefinitions,
+    insertedDefinitions: persistResult.allDefinitions,
   }
 }

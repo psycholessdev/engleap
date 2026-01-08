@@ -2,8 +2,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
+import { Skeleton, Button } from '@/components/ui'
 import { IconLogout2, IconUserCircle } from '@tabler/icons-react'
 
 const AuthButton: React.FC<{
@@ -27,4 +26,4 @@ const AuthButton: React.FC<{
     </Button>
   )
 }
-export default AuthButton
+export { AuthButton }

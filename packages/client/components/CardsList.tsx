@@ -1,11 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import AddButtonGhost from '@/components/common/AddButtonGhost'
-import CardItem, { CardItemSkeleton } from '@/components/common/CardItem'
-import FetchFailureFallback from '@/components/common/FetchFailureFallback'
-import CardPreviewModal from '@/components/CardPreviewModal'
+import { Badge, Input } from '@/components/ui'
+import {
+  AddButtonGhost,
+  CardItem,
+  CardItemSkeleton,
+  FetchFailureFallback,
+} from '@/components/common'
+import { CardPreviewModal } from './CardPreviewModal'
 
 import type { Card } from '@/types'
 
@@ -102,4 +104,4 @@ const CardsList: React.FC<ICardsList> = ({ deckId, cardCount, showButtons }) => 
   )
 }
 
-export default CardsList
+export { CardsList }

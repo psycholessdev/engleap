@@ -1,10 +1,10 @@
 'use client'
 import React from 'react'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
+  Label,
+  Switch,
+  Input,
+  Textarea,
   Form,
   FormControl,
   FormDescription,
@@ -12,10 +12,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
-import FormSubmitButton from '@/components/common/FormSubmitButton'
-import EmojiPicker from '@/components/common/EmojiPicker'
+} from '@/components/ui'
+import { FormInputErrorMessage, FormSubmitButton, EmojiPicker } from '@/components/common'
 
 import { useForm, type UseFormReturn } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'

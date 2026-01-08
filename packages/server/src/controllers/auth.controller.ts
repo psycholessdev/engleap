@@ -5,7 +5,7 @@ import md5 from 'md5'
 import { getErrorObject, handleError } from '../utils'
 import { setAuthCookie, deleteAuthCookie } from './utils'
 
-export const credentialsAuthController = async (req: CredentialsAuthRequest, res: Response) => {
+export const authenticateController = async (req: CredentialsAuthRequest, res: Response) => {
   try {
     if (req.authedUser) {
       return res
@@ -22,7 +22,7 @@ export const credentialsAuthController = async (req: CredentialsAuthRequest, res
         .status(403)
         .json(getErrorObject('Authentication failed: The credentials are wrong'))
     }
-    setAuthCookie(res, user.id, hashedPassword)
+    setAuthCookie(res, user.id)
     return res.status(200).json({ authenticated: true, userId: user.id, username: user.username })
   } catch (error) {
     return handleError(error, res, 'Failed to authenticate')
@@ -59,7 +59,7 @@ export const createAccountController = async (req: CreateAccountRequest, res: Re
     const hashedPassword = md5(password)
     const createdUser = await createUser(username, email, hashedPassword, proficiencyLevel)
 
-    setAuthCookie(res, createdUser.id, hashedPassword)
+    setAuthCookie(res, createdUser.id)
     return res
       .status(201)
       .json({ success: true, userId: createdUser.id, username: createdUser.username })

@@ -1,7 +1,6 @@
 'use client'
-import { Input } from '@/components/ui/input'
-import PublicDeckItem, { PublicDeckItemSkeleton } from '@/components/common/PublicDeckItem'
-import FetchFailureFallback from '@/components/common/FetchFailureFallback'
+import { Input } from '@/components/ui'
+import { PublicDeckItem, PublicDeckItemSkeleton, FetchFailureFallback } from '@/components/common'
 
 import React, { useState, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
@@ -84,4 +83,4 @@ const PublicDeckList = () => {
     </div>
   )
 }
-export default PublicDeckList
+export { PublicDeckList }

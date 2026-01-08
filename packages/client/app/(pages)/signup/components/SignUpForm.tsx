@@ -1,20 +1,23 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import FormSubmitButton from '@/components/common/FormSubmitButton'
 import {
+  Button,
   Card,
   CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { FormField, FormItem } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import ProficiencyLevelPicker from '@/components/common/ProficiencyLevelPicker'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
+  FormField,
+  FormItem,
+  Input,
+  Label,
+} from '@/components/ui'
+import {
+  FormSubmitButton,
+  ProficiencyLevelPicker,
+  FormInputErrorMessage,
+} from '@/components/common'
 import Image from 'next/image'
 import Link from 'next/link'
 

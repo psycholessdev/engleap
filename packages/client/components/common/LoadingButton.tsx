@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { Loader2Icon } from 'lucide-react'
 
 const LoadingButton: React.FC<{
@@ -13,4 +13,4 @@ const LoadingButton: React.FC<{
     </Button>
   )
 }
-export default LoadingButton
+export { LoadingButton }

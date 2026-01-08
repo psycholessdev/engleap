@@ -1,9 +1,9 @@
-import { IDictionaryService } from './baseDictionaryService'
+import { DictionaryService } from './baseDictionaryService'
 import { MerriamWebsterIntermediateService } from './merriamWebsterIntermediateService'
 import type { DictionaryServiceResult } from '../../types'
 import { getCachedServiceResponse, cacheServiceResponse } from '../../services'
 
-const services: IDictionaryService[] = [new MerriamWebsterIntermediateService()]
+const services: DictionaryService[] = [new MerriamWebsterIntermediateService()]
 
 // Fetch definitions using available services in order, until found
 // If a service returns found=true, return that result.

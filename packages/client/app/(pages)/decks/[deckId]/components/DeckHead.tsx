@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Button, Badge } from '@/components/ui'
 import { IconOctagonPlus, IconCancel, IconEdit, IconCopy } from '@tabler/icons-react'
 import DeckEditorModal from './DeckEditorModal'
 import UnfollowConfirmDialog from './UnfollowConfirmDialog'

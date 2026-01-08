@@ -1,6 +1,5 @@
 'use client'
-import DeckItem, { DeckItemSkeleton } from '@/components/common/DeckItem'
-import FetchFailureFallback from '@/components/common/FetchFailureFallback'
+import { DeckItem, DeckItemSkeleton, FetchFailureFallback } from '@/components/common'
 
 import { useDebouncedCallback } from 'use-debounce'
 import React, { useEffect } from 'react'
@@ -34,11 +33,20 @@ const DeckList = () => {
             deckId={deck.id}
             title={deck.title}
             emoji={deck.emoji}
-            cardsTotalCount={deck.cardCount}
-            cardsDueCount={deck.dueCardCount}
+            cardsTotalCount={Number(deck.cardCount)}
+            cardsDueCount={Number(deck.dueCardCount)}
             editable={deck.creatorId === userId}
           />
         ))}
+
+      {!isFetching && decks && decks.length === 0 && (
+        <FetchFailureFallback
+          hideButton
+          icon="/icons/empty-cardboard-box.png"
+          title="Nothing here"
+          text="Create your first Deck or try to go over the Public Decks list"
+        />
+      )}
       {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && (
         <>
@@ -53,4 +61,4 @@ const DeckList = () => {
     </div>
   )
 }
-export default DeckList
+export { DeckList }

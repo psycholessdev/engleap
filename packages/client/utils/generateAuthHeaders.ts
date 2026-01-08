@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 
 export const generateAuthHeaders = async () => {
   const cookieStore = await cookies()
-  const authCookie = cookieStore.get('authHash')
+  const authCookie = cookieStore.get('authJwt')
 
   if (!authCookie) {
     return null

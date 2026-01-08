@@ -1,12 +1,6 @@
 'use client'
 import React from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 
 const ProficiencyLevelPicker: React.FC<{
   disabled: boolean
@@ -29,4 +23,7 @@ const ProficiencyLevelPicker: React.FC<{
     </Select>
   )
 }
-export default React.memo(ProficiencyLevelPicker)
+
+const ProficiencyLevelPickerOptimized = React.memo(ProficiencyLevelPicker)
+
+export { ProficiencyLevelPickerOptimized as ProficiencyLevelPicker }

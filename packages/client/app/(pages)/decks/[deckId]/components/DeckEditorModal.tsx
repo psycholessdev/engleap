@@ -9,27 +9,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import FormSubmitButton from '@/components/common/FormSubmitButton'
-import { Switch } from '@/components/ui/switch'
-import EmojiPicker from '@/components/common/EmojiPicker'
+  Input,
+  Textarea,
+  Label,
+  Button,
+  Switch,
+} from '@/components/ui'
+import { FormSubmitButton, EmojiPicker, FormInputErrorMessage } from '@/components/common'
 
 import { useForm, type UseFormReturn } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDeckController } from '@/hooks'
-import FormInputErrorMessage from '@/components/common/FormInputErrorMessage'
 import { useRouter } from 'next/navigation'
 import { editDeckFormSchema } from '@/schema'
 import type { EditDeckFormData } from '@/types'

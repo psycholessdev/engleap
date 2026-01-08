@@ -1,8 +1,5 @@
-import { Skeleton } from '@/components/ui/skeleton'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
+import { Skeleton, Label, Badge, Button } from '@/components/ui'
 import { Loader2Icon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { IconEdit, IconTrash } from '@tabler/icons-react'
 
 import React from 'react'
@@ -77,7 +74,9 @@ const CardItem: React.FC<ICardItem> = ({
   )
 }
 
-export const CardItemSkeleton: React.FC = () => {
+const CardItemOptimized = React.memo(CardItem)
+
+const CardItemSkeleton: React.FC = () => {
   return (
     <div className="w-full h-23 py-5">
       <div className="flex flex-col lg:gap-1 gap-2">
@@ -91,4 +90,4 @@ export const CardItemSkeleton: React.FC = () => {
   )
 }
 
-export default React.memo(CardItem)
+export { CardItemOptimized as CardItem, CardItemSkeleton }

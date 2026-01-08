@@ -17,4 +17,4 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     </NotificationsProvider>
   )
 }
-export default AppProviders
+export { AppProviders }

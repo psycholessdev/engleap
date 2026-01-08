@@ -2,10 +2,10 @@ import React from 'react'
 import { getIsAuthed } from '@/utils'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-
-import DeckList from '@/components/DeckList'
-import AddButtonGhost from '@/components/common/AddButtonGhost'
 import type { Metadata } from 'next'
+
+import { DeckList } from '@/components/DeckList'
+import { AddButtonGhost } from '@/components/common'
 
 export const metadata: Metadata = {
   title: 'My Decks',

@@ -1,7 +1,5 @@
-import { Badge } from '@/components/ui/badge'
+import { Badge, Skeleton, Button } from '@/components/ui'
 import { IconCircleCheckFilled, IconMenuDeep, IconPencil } from '@tabler/icons-react'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
 
 import Link from 'next/link'
 import React from 'react'
@@ -61,7 +59,9 @@ const DeckItem: React.FC<IDeckItem> = ({
   )
 }
 
-export const DeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
+const DeckItemOptimized = React.memo(DeckItem)
+
+const DeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
   return (
     <div className="w-full h-26 py-5 px-3 flex items-center justify-between">
       <div className="flex flex-col gap-1">
@@ -76,4 +76,4 @@ export const DeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
   )
 }
 
-export default React.memo(DeckItem)
+export { DeckItemOptimized as DeckItem, DeckItemSkeleton }

@@ -1,4 +1,4 @@
-// common messages
+// Common messages
 export const CHANGES_SAVED = 'The changes were saved.'
 export const CHANGES_SAVE_FAILED = 'Failed to save the changes.'
 
@@ -6,8 +6,11 @@ export const DELETED = 'Deleted successfully.'
 export const DELETE_FAILED =
   'Failed to delete. Maybe the object does not exist or you do not have the right to delete it.'
 
-// specific messages
+// Specific messages
 export const CARD_CREATED = 'The Card was successfully created.'
+export const AUTO_DEFS_NOT_FOUND = 'The Card was successfully created.'
+export const AUTO_DEFS_NOT_FOUND_SUGGESTION =
+  'Your changes were saved. However, we could not find definitions for {0}. Consider adding your own definitions.'
 export const CARD_CREATE_FAILED = 'Failed to create Card.'
 
 export const DECK_CREATED = 'Your Deck was successfully created.'

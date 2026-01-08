@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import DefinitionCard, { DefinitionCardSkeleton } from '@/components/common/DefinitionCard'
-import FetchFailureFallback from '@/components/common/FetchFailureFallback'
+import { DefinitionCard, DefinitionCardSkeleton, FetchFailureFallback } from '@/components/common'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { useInView } from 'react-intersection-observer'
@@ -21,14 +20,14 @@ const DefinitionsListSkeleton = () => {
   )
 }
 
-interface IDefinitionList {
+interface DefinitionListProps {
   cardId: string
   disabled?: boolean
   showButtons?: boolean
   onDelete?: (defId: string) => void
 }
 
-const DefinitionList: React.FC<IDefinitionList> = ({
+const DefinitionList: React.FC<DefinitionListProps> = ({
   cardId,
   disabled = false,
   showButtons = false,
@@ -68,6 +67,16 @@ const DefinitionList: React.FC<IDefinitionList> = ({
             onDelete={onDelete}
           />
         ))}
+
+      {!isFetching && definitions && definitions.length === 0 && (
+        <FetchFailureFallback
+          className="col-span-full"
+          hideButton
+          icon="/icons/book-with-skull.png"
+          title="Nothing here"
+          text="No definitions were found in the dictionary, and no substitutes have been provided. If you own this deck, please consider adding custom definitions to help yourself and others."
+        />
+      )}
       {status === 'error' && !isFetching && <FetchFailureFallback onRetry={refetch} />}
       {isFetching && <DefinitionsListSkeleton />}
       <div ref={ref} />
@@ -75,4 +84,4 @@ const DefinitionList: React.FC<IDefinitionList> = ({
   )
 }
 
-export default DefinitionList
+export { DefinitionList }

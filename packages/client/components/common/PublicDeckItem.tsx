@@ -1,10 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Badge, Skeleton } from '@/components/ui'
 
-interface IPublicDeckItem {
+interface PublicDeckItemProps {
   deckId: string
   title: string
   description: string
@@ -13,7 +12,7 @@ interface IPublicDeckItem {
   followersCount: number
 }
 
-const PublicDeckItem: React.FC<IPublicDeckItem> = ({
+const PublicDeckItem: React.FC<PublicDeckItemProps> = ({
   deckId,
   title,
   description,
@@ -39,7 +38,9 @@ const PublicDeckItem: React.FC<IPublicDeckItem> = ({
   )
 }
 
-export const PublicDeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
+const PublicDeckItemOptimized = React.memo(PublicDeckItem)
+
+const PublicDeckItemSkeleton: React.FC<{ key?: string | number }> = () => {
   return (
     <div className="flex flex-col w-full p-5 gap-1">
       <Skeleton className="w-60 h-6 rounded-2xl" />
@@ -52,4 +53,4 @@ export const PublicDeckItemSkeleton: React.FC<{ key?: string | number }> = () =>
   )
 }
 
-export default React.memo(PublicDeckItem)
+export { PublicDeckItemOptimized as PublicDeckItem, PublicDeckItemSkeleton }

@@ -85,5 +85,5 @@ networks:
   postgres-network:
     driver: bridge
   engleap-app-network:
-    driver: bridge
-    #external: true
+    external: true
+    

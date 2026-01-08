@@ -1,6 +1,5 @@
 'use client'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Toggle } from '@/components/ui/toggle'
+import { Popover, PopoverContent, PopoverTrigger, Toggle } from '@/components/ui'
 import { IconCaretDownFilled } from '@tabler/icons-react'
 
 import React from 'react'
@@ -37,4 +36,4 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ pickedEmoji, onPick, disabled }) 
     </Popover>
   )
 }
-export default EmojiPicker
+export { EmojiPicker }

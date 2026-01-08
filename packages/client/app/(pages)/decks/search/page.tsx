@@ -3,7 +3,7 @@ import React from 'react'
 import { getIsAuthed } from '@/utils'
 import { redirect } from 'next/navigation'
 
-import PublicDeckList from '@/components/PublicDeckList'
+import { PublicDeckList } from '@/components/PublicDeckList'
 
 export const metadata: Metadata = {
   title: 'Search Public Decks - choose the topic you like',

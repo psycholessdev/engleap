@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import React from 'react'
 
 import DeckHead from '@/app/(pages)/decks/[deckId]/components/DeckHead'
-import CardsList from '@/components/CardsList'
+import { CardsList } from '@/components/CardsList'
 
 type Params = Promise<{ deckId: string }>
 

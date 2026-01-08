@@ -34,6 +34,7 @@ export const getDefinitionsForCardController = async (
   res: Response
 ) => {
   try {
+    const userId = getRequestUserId(req)
     const { offset, limit } = req.query
     const { cardId } = req.params
 
@@ -42,11 +43,11 @@ export const getDefinitionsForCardController = async (
     if (!card) {
       return res.status(404).json(getErrorObject('Card not found'))
     }
-    const deck = await getDeckPlainById(card.deckId, ['id', 'isPublic'])
+    const deck = await getDeckPlainById(card.deckId, ['id', 'isPublic', 'creatorId'])
     if (!deck) {
       return res.status(404).json(getErrorObject('Deck not found'))
     }
-    if (!deck.isPublic) {
+    if (!deck.isPublic && deck.creatorId !== userId) {
       return res.status(403).json(getErrorObject('Deck is not public'))
     }
 
